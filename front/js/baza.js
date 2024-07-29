@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function(){
             populateTable(jsonResponse.data);
             initMap();
         },
-        error: function(){
-            console.log("Błąd");
+        error: function(error){
+            console.log("Błąd: ", error);
         }
     })
 });
@@ -87,16 +87,39 @@ function transformToWSG84(epsg2180coords) {
     return coords;
 }
 
-async function downloadMap(routeId) {
+function downloadMap(routeId) {
+    $.ajax({
+        url: 'http://localhost:8000/api/map-download',
+        method: 'GET',
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(data) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const uint8Array = new Uint8Array(reader.result);
+                modifyMap(uint8Array, routeId);
+            };
+            reader.readAsArrayBuffer(data);
+        },
+        error: function(error) {
+            console.error('Error downloading map: ', error);
+        }
+    });
+
+};
+
+async function modifyMap(uint8Array, routeId) {
     let points = jsonResponse.data.find(r => r.id == routeId).points;
 
     points.sort((p1, p2) => {
         return p1.position - p2.position;
     });
+    console.log("Punkty: ");
+    console.log(points);
+    console.log("ścieżka: ", routeId);
 
-    const { PDFDocument, rgb } = PDFLib;
-    const existingPdfBytes = await fetch('resources/mapa_org.pdf').then(res => res.arrayBuffer());
-    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pdfDoc = await PDFLib.PDFDocument.load(uint8Array);
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
@@ -104,10 +127,11 @@ async function downloadMap(routeId) {
     console.log("height: ", height);
     console.log("width: ", width);
 
-    for(let i = 1; i < points; i++) {
+    for(let i = 1; i < points.length; i++) {
+
         let circleSize = 15;
         let thickness = 2;
-        let color = rgb(1, 0, 0);
+        let color = PDFLib.rgb(1,0,0);
 
         let start = getPDFCoords(points[i-1]);
         let end = getPDFCoords(points[i]);
@@ -148,15 +172,11 @@ async function downloadMap(routeId) {
     const url = URL.createObjectURL(blob);
 
     // Tworzenie linku do pobrania
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mapa_${id}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `mapa.pdf`;
+    link.click();
+
 }
 
 function getPDFCoords(point) {
