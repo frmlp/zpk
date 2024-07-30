@@ -36,6 +36,14 @@ $(document).on('change', '#dropdown', function() {
     }
 })
 
+$(document).on('click', '#remove-btn', function() {
+    $(this).closest('#dropdown-group').remove();
+})
+
+$(document).on('click', '#reset-btn', function() {
+    resetDropdowns(jsonResponse.data);
+})
+
 function createDropdown(points) {
     let optionList = `<option selected disabled>Wybierz punkt</option>`;
     points.forEach(function(point) {
