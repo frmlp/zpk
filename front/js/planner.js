@@ -1,6 +1,7 @@
 var jsonResponse;
 var map;
 var mapMarkers;
+var mapRoute;
 // Definicje układów współrzędnych
 proj4.defs([
     [
@@ -34,15 +35,45 @@ $(document).on('change', '#dropdown', function() {
     if($('#dropdown-container #dropdown-group:last-child select').val() !== null) {
         $('#dropdown-container').append(createDropdown(jsonResponse.data));
     }
+
+    updateRoute();
 })
 
 $(document).on('click', '#remove-btn', function() {
     $(this).closest('#dropdown-group').remove();
+    updateRoute();
 })
 
-$(document).on('click', '#reset-btn', function() {
+$('#reset-btn').on('click', function() {
     resetDropdowns(jsonResponse.data);
 })
+
+$('#finish-btn').on('click', function() {
+    //updateRoute();
+})
+
+function updateRoute() {
+    mapRoute.clearLayers();
+    let wsg84points = [];
+    $('select').each(function() {
+        let id = $(this).val();
+        if(id) {
+            let point = jsonResponse.data.find(p => p.id == id);
+            let epsg2180coords = [point.easting, point.northing];
+            let wsg84coords = transformToWSG84(epsg2180coords);
+            wsg84points.push(wsg84coords);
+            //selectedPoints.push(value);
+            // console.log(epsg2180coords);
+            
+        }
+    });
+
+    let polyline = L.polyline(wsg84points, {color: 'red'});
+    mapRoute.addLayer(polyline);
+    mapRoute.addTo(map);
+    // console.log(selectedPoints);
+
+}
 
 function createDropdown(points) {
     let optionList = `<option selected disabled>Wybierz punkt</option>`;
@@ -70,6 +101,7 @@ function initMap(points) {
     }).addTo(map);
       
     mapMarkers = L.layerGroup();
+    mapRoute = L.layerGroup();
 
     points.forEach(function(point) {
         let epsg2180coords = [point.easting, point.northing];
