@@ -19,6 +19,8 @@
         <script src="https://unpkg.com/pdf-lib"></script>
         <!-- PROJ4JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.min.js"></script>
+
+        <link rel="stylesheet" href="css/style.css" />
         
     </head>
     <body>
@@ -47,71 +49,78 @@
         <!-- CONTENT -->
         <div class="content mt-4">
             <div class="container-md bg-light">
-                <div id="form-wrapper">
-                    <form id="generator-form">
-                        <div class="mb-4">
-                            <label class="form-label row" for="start-point">Punkt startu trasy:</label>
-                            <select class="form-select dropdown-points dropdown-start" id="start-point" required>
-    
-                            </select>
+                <div class="row">
+                    <div class="col">
+                        <div id="form-wrapper">
+                            <form id="generator-form">
+                                <div class="mb-4">
+                                    <label class="form-label row" for="start-point">Punkt startu trasy:</label>
+                                    <select class="form-select dropdown-points dropdown-start" id="start-point" required>
+            
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label row" for="end-point">Punkt końca trasy:</label>
+                                    <select class="form-select dropdown-points dropdown-end" id="start-point" required>
+            
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label row" for="distance">Długość trasy:</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="distance" id="KM2-4" value="KM2-4" required >
+                                        <label class="form-check-label" for="KM2-4">2 - 4 km</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="distance" id="KM5-7" value="KM5-7" required>
+                                        <label class="form-check-label" for="KM5-7">5 - 7 km</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="distance" id="KM8-10" value="KM8-10" required>
+                                        <label class="form-check-label" for="KM8-10">8 - 10 km</label>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label row" for="points">Liczba punktów kontrolnych:</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="points" id="P4-6" value="P4-6" required>
+                                        <label class="form-check-label" for="P4-6">4 - 6</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="points" id="P7-9" value="P7-9" required>
+                                        <label class="form-check-label" for="P7-9">7 - 9</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="points" id="P10-12" value="P10-12" required>
+                                        <label class="form-check-label" for="P10-12">10 - 12</label>
+                                    </div>
+                                </div>
+                                <button id="generate-btn" class="btn btn-primary" type="submit" >Generuj trasy</button>
+                            </form>
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label row" for="end-point">Punkt końca trasy:</label>
-                            <select class="form-select dropdown-points dropdown-end" id="start-point" required>
-    
-                            </select>
+
+                        <div id="table-wrapper" style="display: none;">
+                            <table class="table table-hover" id="routesTable" >
+                                <thead>
+                                    <tr>
+                                        <th>Przebieg</th>
+                                        <th>Obszar</th>
+                                        <th>Liczba punktów</th>
+                                        <th>Długość trasy</th>
+                                        <th>Typ trasy</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <button id="regenerate-btn" class="btn btn-primary">Wygeneruj nowe trasy</button>
+                            <button id="change-parameters-btn" class="btn btn-primary">Zmień parametry</button>
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label row" for="distance">Długość trasy:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="distance" id="KM2-4" value="KM2-4" required >
-                                <label class="form-check-label" for="KM2-4">2 - 4 km</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="distance" id="KM5-7" value="KM5-7" required>
-                                <label class="form-check-label" for="KM5-7">5 - 7 km</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="distance" id="KM8-10" value="KM8-10" required>
-                                <label class="form-check-label" for="KM8-10">8 - 10 km</label>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label row" for="points">Liczba punktów kontrolnych:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="points" id="P4-6" value="P4-6" required>
-                                <label class="form-check-label" for="P4-6">4 - 6</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="points" id="P7-9" value="P7-9" required>
-                                <label class="form-check-label" for="P7-9">7 - 9</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="points" id="P10-12" value="P10-12" required>
-                                <label class="form-check-label" for="P10-12">10 - 12</label>
-                            </div>
-                        </div>
-                        <button id="generate-btn" class="btn btn-primary" type="submit" >Generuj trasy</button>
-                    </form>
+                    </div>
+                    <div class="col" id="map"></div>
                 </div>
-                <div id="table-wrapper" style="display: none;">
-                    <table class="table table-hover" id="routesTable" >
-                        <thead>
-                            <tr>
-                                <th>Przebieg</th>
-                                <th>Obszar</th>
-                                <th>Liczba punktów</th>
-                                <th>Długość trasy</th>
-                                <th>Typ trasy</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <button id="regenerate-btn" class="btn btn-primary">Wygeneruj nowe trasy</button>
-                    <button id="change-parameters-btn" class="btn btn-primary">Zmień parametry</button>
-                </div>
+                
 
             </div>
         </div>
