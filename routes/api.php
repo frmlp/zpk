@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GeneratorServer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +26,12 @@ Route::get('/points', function() {
 Route::get('/map-download', MapDownloadController::class);
 
 Route::get('/generator', GeneratorServer::class);
+
+Route::post('/login', [AuthController::class, 'authenticate']);
+
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');;
+
+Route::get('/admin/main', function() {
+    return view('auth.main');
+});
+

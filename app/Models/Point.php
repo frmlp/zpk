@@ -10,6 +10,8 @@ class Point extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['code', 'description', 'easting', 'northing'];
+
     public function paths(): BelongsToMany
     {
         return $this
