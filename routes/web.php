@@ -19,6 +19,9 @@ Route::get('/planner', function () {
     return view('planner-tras');
 });
 
+Route::get('/spacer', function () {
+    return view('spacer-TEMP');
+});
 // =========================
 
 // Route::get('/login', function() {
@@ -42,7 +45,6 @@ Route::get('/token', function() {
 // Route::get('/auth-main', function () {
 //     return view('auth.main');
 // })->middleware(['auth', 'verified'])->name('auth-main');
-
 
 require __DIR__.'/admin.php';
 
