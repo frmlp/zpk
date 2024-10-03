@@ -224,7 +224,9 @@ function initMap(points) {
         let epsg2180coords = [point.easting, point.northing];
         let wsg84coords = transformToWSG84(epsg2180coords);
         let marker = L.marker(wsg84coords, {icon: yellowIcon});
-        marker.bindPopup(point.code.concat(" - ", point.description));
+        marker.bindPopup(point.code.concat(" - ", point.description) +
+            "</div><div><button class='btn btn-primary btn-sm'>Guzik</button></div>"
+    );
         mapMarkers.addLayer(marker);
     });
     mapMarkers.addTo(map);
