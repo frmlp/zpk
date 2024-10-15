@@ -87,7 +87,167 @@
       view: view,
       pinFirstLevel: true
     });
+       
+    // Get the hotspot container for scene.
+    var container = scene.hotspotContainer();
 
+    /****************************** */
+    console.log("Data:");
+    console.log(data);
+
+    
+
+    let frameID = data.id + "_frame";
+    let mapID = data.id + "_map";
+
+    var mapsContainer = document.getElementById("mapsContainer");
+    // var iframe = document.createElement('iframe');
+    // iframe.id = frameID;
+
+    var div = document.createElement('div');
+    // console.log(div1);
+    div.id = mapID;
+    div.className = "frame"
+
+    // var div2 = document.createElement('div');
+    // div2.className = "message";
+    
+    // console.log(data.name);
+    // div2.textContent = data.name;
+
+    // div1.appendChild(div2);
+    // iframe.appendChild(div);
+    mapsContainer.appendChild(div);
+    // console.log(iframe);
+
+    // let map = L.map(mapID).setView([54.52935, 18.46631], 16);
+    //   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 20,
+    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // }).addTo(map);
+
+    let map = L.map(mapID, {
+      center: [54.52935, 18.46631],
+      zoom: 16,
+      dragging: false
+    });
+
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // let southWest = L.latLng(54.50913, 18.43547);
+    // let northEast = L.latLng(54.54956, 18.49717);
+    // let bounds = L.latLngBounds(southWest, northEast);
+    // map.setMaxBounds(bounds);
+
+    // map.on('drag', function() {
+    //   map.panInsideBounds(bounds, { animate: false})
+    // })
+
+    // // function blockMarzipanoEvents(div) {
+    //   div.addEventListener('mouseover', function() {
+    //     viewer.controls().disable();
+    //   });
+
+    //   div.addEventListener('mouseout', function() {
+    //     viewer.controls().enable();
+    //   });
+
+      let pointsData = new Map([
+        ["S2", [54.52322, 18.46609]],
+        ["65", [54.52464, 18.46606]],
+        ["60", [54.52753, 18.46427]],
+        ["68", [54.53095, 18.46024]],
+        ["51", [54.53424, 18.45831]],
+        ["71", [54.53594, 18.46647]],
+        ["59", [54.53336, 18.46699]],
+        ["53", [54.53176, 18.46709]],
+        ["67", [54.53163, 18.47234]],
+        ["50", [54.52750, 18.47425]],
+        ["49", [54.52445, 18.47233]],
+        ["57", [54.52277, 18.47178]]
+    ]);
+    // Niestandardowa ikona o większym rozmiarze (dwukrotność domyślnego)
+    let customIcon = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png', // Domyślny obrazek ikony Leaflet
+      iconSize: [50, 82], // Rozmiar ikony (dwukrotny w stosunku do domyślnego)
+      iconAnchor: [25, 82], // Punkt, gdzie ikona będzie przypięta (odpowiednio dostosowany)
+      popupAnchor: [0, -76] // Pozycja okienka dialogowego względem ikony
+  });
+
+    
+      let yellowIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+        // shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [50, 82],
+        iconAnchor: [25, 82],
+        popupAnchor: [0, -76],
+        // shadowSize: [33, 33]
+    })
+    
+
+    
+  
+    function addPointsAndPolyline(map, pointsData) {
+        let latlngs = [];
+  
+        // Iterowanie po punktach, dodawanie markerów i zbieranie współrzędnych
+        pointsData.forEach((coords, label) => {
+          let icon = customIcon;
+            // Dodanie markera dla każdego punktu
+            if(data.id === "0-1_s2" && label === "S2") {
+              icon = yellowIcon;
+            }
+            if(data.id === "1-2_65_2" && label === "65") {
+              icon = yellowIcon;
+            }
+            if(data.id === "2-3_60_2" && label === "60") {
+              icon = yellowIcon;
+            }
+            
+            L.marker(coords, {icon: icon}).bindPopup(label).addTo(map);
+            
+            // Zbieranie współrzędnych dla polyline
+            latlngs.push(coords);
+        });
+  
+        // Dodanie ostatniego punktu "S2" na koniec, aby zamknąć pętlę
+        latlngs.push(pointsData.get("S2"));
+  
+        // Narysowanie czerwonej linii polyline (zamknięta pętla)
+        L.polyline(latlngs, {color: 'red', weight: 5}).addTo(map);
+      }
+  
+      // Wywołanie funkcji, aby dodać punkty i polyline do mapy
+      addPointsAndPolyline(map, pointsData);
+    // }
+
+    // Zatrzymanie propagacji zdarzeń, aby nie przenosiły się do wirtualnego spaceru
+    // L.DomEvent.on(div.getContainer(), 'mousewheel', L.DomEvent.stopPropagation);
+    // L.DomEvent.on(div.getContainer(), 'mousedown', L.DomEvent.stopPropagation);
+    // L.DomEvent.on(div.getContainer(), 'touchstart', L.DomEvent.stopPropagation);
+    // L.DomEvent.on(div.getContainer(), 'dblclick', L.DomEvent.stopPropagation);
+
+    let yaw = 0.0;
+    if(data.id == "0-1_s2") {
+      yaw = -146 * Math.PI / 180;
+      
+    }
+    else if(data.id == "1-2_65_2") {
+      yaw = -34 * Math.PI / 180;
+    }
+    else if(data.id == "2-3_60_2") {
+      yaw = 58 * Math.PI / 180;
+    }
+
+    // Create hotspot with different sources.
+    container.createHotspot(document.getElementById(mapID), { yaw: yaw, pitch: 90*Math.PI/180 },
+      { perspective: { radius: 1230 }});
+    // container.createHotspot(document.getElementById('iframeselect'), { yaw: -0.35, pitch: -0.239 });
+
+    /*************************************** */
+   
     // Create link hotspots.
     data.linkHotspots.forEach(function(hotspot) {
       var element = createLinkHotspotElement(hotspot);
@@ -100,6 +260,7 @@
       scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
 
+    
     return {
       data: data,
       scene: scene,
@@ -150,11 +311,17 @@
     var el = document.querySelector('#sceneList .scene[data-id="' + scene.data.id + '"]');
     el.addEventListener('click', function() {
       switchScene(scene);
+
+      
+
+
       // On mobile, hide scene list after selecting a scene.
       if (document.body.classList.contains('mobile')) {
         hideSceneList();
       }
+
     });
+
   });
 
   // DOM elements for view controls.
@@ -189,6 +356,10 @@
     startAutorotate();
     updateSceneName(scene);
     updateSceneList(scene);
+
+
+    
+
   }
 
   function updateSceneName(scene) {
@@ -388,5 +559,6 @@
 
   // Display the initial scene.
   switchScene(scenes[0]);
+
 
 })();

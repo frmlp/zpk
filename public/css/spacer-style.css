@@ -829,3 +829,40 @@ body.view-control-buttons .viewControlButton {
 .viewControlButton-6 {
   margin-left: 105px;
 }
+
+/* mapa */
+
+
+
+#iframespot{
+}
+
+iframe {
+  background-color: #444;
+  position: relative;
+  width: 1600px;
+  height: 1600px;
+}
+
+.frame {
+  background-color: #444;
+  position: relative;
+  width: 1600px;
+  height: 1600px;
+}
+
+.frame .message {
+  text-align: center;
+  padding-top: 190px;
+  font-size: 70px;
+  color: #ddd;
+}
+
+.leaflet-popup-content {
+  font-size: 5rem;  /* Zwiększenie rozmiaru czcionki */
+}
+
+/* Powiększenie ikony zamknięcia okna popup */
+.leaflet-popup-close-button {
+  display: none;
+}

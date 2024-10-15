@@ -1,8 +1,8 @@
 var APP_DATA = {
   "scenes": [
     {
-      "id": "0-punkt-startowy-chylonia",
-      "name": "Punkt startowy Chylonia",
+      "id": "0-1_s2",
+      "name": "1_S2",
       "levels": [
         {
           "tileSize": 256,
@@ -24,15 +24,15 @@ var APP_DATA = {
       ],
       "faceSize": 1520,
       "initialViewParameters": {
+        "yaw": -2.545962023323888,
         "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
+        "fov": 1.1887029286416593
       },
       "linkHotspots": [
         {
-          "yaw": -2.940468990554937,
-          "pitch": 0.06247694343829657,
-          "rotation": 13.351768777756625,
+          "yaw": -2.740171747288473,
+          "pitch": 0.0,
+          "rotation": 0,
           "target": "1-2_65_2"
         }
       ],
@@ -62,20 +62,20 @@ var APP_DATA = {
       ],
       "faceSize": 1520,
       "initialViewParameters": {
-        "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
+        "yaw": -0.5906805218634705,
+        "pitch": 0.0007712408876940913,
+        "fov": 1.1887029286416593
       },
       "linkHotspots": [
         {
-          "yaw": -2.2561462585309613,
-          "pitch": 0.08366891921075492,
-          "rotation": 5.497787143782138,
-          "target": "0-punkt-startowy-chylonia"
+          "yaw": 2.740587992520749,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "0-1_s2"
         },
         {
-          "yaw": 0.9553192700979007,
-          "pitch": -0.038909153729623114,
+          "yaw": -1.023282302907159,
+          "pitch": 0.0,
           "rotation": 0,
           "target": "2-3_60_2"
         }
@@ -106,26 +106,26 @@ var APP_DATA = {
       ],
       "faceSize": 1520,
       "initialViewParameters": {
+        "yaw": 1.0182252743237754,
         "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
+        "fov": 1.1887029286416593
       },
       "linkHotspots": [
         {
-          "yaw": -0.1594387124850538,
-          "pitch": 0.15480094703795189,
-          "rotation": 15.707963267948973,
-          "target": "2-3_60_2"
+          "yaw": -2.4189724553632317,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "1-2_65_2"
         }
       ],
       "infoHotspots": []
     }
   ],
-  "name": "ZPK test",
+  "name": "Project Title",
   "settings": {
     "mouseViewMode": "drag",
     "autorotateEnabled": true,
-    "fullscreenButton": true,
-    "viewControlButtons": true
+    "fullscreenButton": false,
+    "viewControlButtons": false
   }
 };
