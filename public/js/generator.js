@@ -131,7 +131,9 @@ function showPointsPreview(points, mapMarkers, map) {
         let epsg2180coords = [point.easting, point.northing];
         let wsg84coords = transformToWSG84(epsg2180coords);
         let marker = L.marker(wsg84coords);
-        marker.bindPopup(point.code.concat(" - ", point.description));
+        marker.bindPopup(point.code.concat(" - ", point.description + 
+            '<div class="row justify-content-center"><div class="col text-center"><button class="btn btn-primary btn-sm m-1 w-100">Ustaw start trasy</button></div></div><div class="row justify-content-center"><div class="col text-center"><button class="btn btn-primary btn-sm m-1 w-100">Ustaw koniec trasy</button></div></div>'
+        ));
         mapMarkers.addLayer(marker);
     });
     mapMarkers.addTo(map);

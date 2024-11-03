@@ -225,7 +225,7 @@ function initMap(points) {
         let wsg84coords = transformToWSG84(epsg2180coords);
         let marker = L.marker(wsg84coords, {icon: yellowIcon});
         marker.bindPopup(point.code.concat(" - ", point.description) +
-            "</div><div><button class='btn btn-primary btn-sm'>Guzik</button></div>"
+            "</div><div class=''><button class='btn btn-primary btn-sm m-3'>Dodaj do trasy</button></div>"
     );
         mapMarkers.addLayer(marker);
     });
