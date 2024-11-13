@@ -155,18 +155,18 @@
     //   });
 
       let pointsData = new Map([
-        ["S2", [54.52322, 18.46609]],
-        ["65", [54.52464, 18.46606]],
-        ["60", [54.52753, 18.46427]],
-        ["68", [54.53095, 18.46024]],
-        ["51", [54.53424, 18.45831]],
-        ["71", [54.53594, 18.46647]],
-        ["59", [54.53336, 18.46699]],
-        ["53", [54.53176, 18.46709]],
-        ["67", [54.53163, 18.47234]],
-        ["50", [54.52750, 18.47425]],
-        ["49", [54.52445, 18.47233]],
-        ["57", [54.52277, 18.47178]]
+        ["0-s2", [54.52322, 18.46609]],
+        ["1-65", [54.52464, 18.46606]],
+        ["2-60", [54.52753, 18.46427]],
+        ["3-68", [54.53095, 18.46024]],
+        ["4-51", [54.53424, 18.45831]],
+        ["5-71", [54.53594, 18.46647]],
+        ["6-59", [54.53336, 18.46699]],
+        ["7-53", [54.53176, 18.46709]],
+        ["8-67", [54.53163, 18.47234]],
+        ["9-50", [54.52750, 18.47425]],
+        ["10-49", [54.52445, 18.47233]],
+        ["11-57", [54.52277, 18.47178]]
     ]);
     // Niestandardowa ikona o większym rozmiarze (dwukrotność domyślnego)
     let customIcon = L.icon({
@@ -196,15 +196,10 @@
         pointsData.forEach((coords, label) => {
           let icon = customIcon;
             // Dodanie markera dla każdego punktu
-            if(data.id === "0-1_s2" && label === "S2") {
+            if(data.id === label) {
               icon = yellowIcon;
             }
-            if(data.id === "1-2_65_2" && label === "65") {
-              icon = yellowIcon;
-            }
-            if(data.id === "2-3_60_2" && label === "60") {
-              icon = yellowIcon;
-            }
+
             
             L.marker(coords, {icon: icon}).bindPopup(label).addTo(map);
             
@@ -213,7 +208,7 @@
         });
   
         // Dodanie ostatniego punktu "S2" na koniec, aby zamknąć pętlę
-        latlngs.push(pointsData.get("S2"));
+        latlngs.push(pointsData.get("0-s2"));
   
         // Narysowanie czerwonej linii polyline (zamknięta pętla)
         L.polyline(latlngs, {color: 'red', weight: 5}).addTo(map);
@@ -229,20 +224,9 @@
     // L.DomEvent.on(div.getContainer(), 'touchstart', L.DomEvent.stopPropagation);
     // L.DomEvent.on(div.getContainer(), 'dblclick', L.DomEvent.stopPropagation);
 
-    let yaw = 0.0;
-    if(data.id == "0-1_s2") {
-      yaw = -146 * Math.PI / 180;
-      
-    }
-    else if(data.id == "1-2_65_2") {
-      yaw = -34 * Math.PI / 180;
-    }
-    else if(data.id == "2-3_60_2") {
-      yaw = 58 * Math.PI / 180;
-    }
 
     // Create hotspot with different sources.
-    container.createHotspot(document.getElementById(mapID), { yaw: yaw, pitch: 90*Math.PI/180 },
+    container.createHotspot(document.getElementById(mapID), { yaw: data.northYaw, pitch: 90*Math.PI/180 },
       { perspective: { radius: 1230 }});
     // container.createHotspot(document.getElementById('iframeselect'), { yaw: -0.35, pitch: -0.239 });
 
