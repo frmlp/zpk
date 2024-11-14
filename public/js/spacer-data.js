@@ -1,8 +1,9 @@
 var APP_DATA = {
   "scenes": [
     {
-      "id": "0-1_s2",
-      "name": "1_S2",
+      "id": "0-s2",
+      "name": "Punkt startowy S2 - Chylonia",
+      "northYaw": -2.54818,
       "levels": [
         {
           "tileSize": 256,
@@ -24,23 +25,30 @@ var APP_DATA = {
       ],
       "faceSize": 1520,
       "initialViewParameters": {
-        "yaw": -2.545962023323888,
         "pitch": 0,
-        "fov": 1.1887029286416593
+        "yaw": 0.8,
+        "fov": 1.5707963267948966
       },
       "linkHotspots": [
         {
-          "yaw": -2.740171747288473,
-          "pitch": 0.0,
+          "yaw": -2.8030115588176385,
+          "pitch": 0,
+          "rotation": 6.283185307179586,
+          "target": "1-65"
+        },
+        {
+          "yaw": -0.700578513556053224,
+          "pitch": 0,
           "rotation": 0,
-          "target": "1-2_65_2"
+          "target": "11-57"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "1-2_65_2",
-      "name": "2_65_2",
+      "id": "1-65",
+      "name": "Punkt kontrolny #65",
+      "northYaw": -0.41887,
       "levels": [
         {
           "tileSize": 256,
@@ -62,29 +70,30 @@ var APP_DATA = {
       ],
       "faceSize": 1520,
       "initialViewParameters": {
-        "yaw": -0.5906805218634705,
-        "pitch": 0.0007712408876940913,
-        "fov": 1.1887029286416593
+        "pitch": 0.25,
+        "yaw": -1.8,
+        "fov": 1.5707963267948966
       },
       "linkHotspots": [
         {
-          "yaw": 2.740587992520749,
-          "pitch": 0.0,
+          "yaw": -0.52,
+          "pitch": 0,
           "rotation": 0,
-          "target": "0-1_s2"
+          "target": "2-60"
         },
         {
-          "yaw": -1.023282302907159,
-          "pitch": 0.0,
+          "yaw": -3.267672852280373,
+          "pitch": 0,
           "rotation": 0,
-          "target": "2-3_60_2"
+          "target": "0-s2"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "2-3_60_2",
-      "name": "3_60_2",
+      "id": "2-60",
+      "name": "Punkt kontrolny #60",
+      "northYaw": 1.01229,
       "levels": [
         {
           "tileSize": 256,
@@ -106,16 +115,427 @@ var APP_DATA = {
       ],
       "faceSize": 1520,
       "initialViewParameters": {
-        "yaw": 1.0182252743237754,
-        "pitch": 0,
-        "fov": 1.1887029286416593
+        "pitch": -0.15,
+        "yaw": 2.0,
+        "fov": 1.5707963267948966
       },
       "linkHotspots": [
         {
-          "yaw": -2.4189724553632317,
+          "yaw": 0.5707169131365568,
           "pitch": 0.0,
           "rotation": 0,
-          "target": "1-2_65_2"
+          "target": "3-68"
+        },
+        {
+          "yaw": -2.060686708635302,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "1-65"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "3-68",
+      "name": "Punkt kontrolny #68",
+      "northYaw": 1.57079,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 0.9047756283279949,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "4-51"
+        },
+        {
+          "yaw": -2.1308490889291534,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "2-60"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "4-51",
+      "name": "Punkt kontrolny #51",
+      "northYaw": 0.52359,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": -1.3,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 1.5447176512510822,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "5-71"
+        },
+        {
+          "yaw": -2.54088260425565,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "3-68"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "5-71",
+      "name": "Punkt kontrolny #71",
+      "northYaw": -1.57079,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": -0.15,
+        "yaw": 1.8,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 1.1190059509840626,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "6-59"
+        },
+        {
+          "yaw": 3.0738414845089565,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "4-51"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "6-59",
+      "name": "Punkt kontrolny #59",
+      "northYaw": 1.71042,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0.25,
+        "yaw": -1.9,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": -1.703414551130251,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "7-53"
+        },
+        {
+          "yaw": 1.3712496782074858,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "5-71"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "7-53",
+      "name": "Punkt kontrolny #53",
+      "northYaw": -2.51327,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0.25,
+        "yaw": 1.6,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 3.450014609352844,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "6-59"
+        },
+        {
+          "yaw": -1.252660876623165,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "8-67"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "8-67",
+      "name": "Punkt kontrolny #67",
+      "northYaw": 1.60570,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": -1.6,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": -2.121305176790826,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "9-50"
+        },
+        {
+          "yaw": 0.2552775493523072,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "7-53"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "9-50",
+      "name": "Punkt kontrolny #50",
+      "northYaw": -1.71042,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": -1.1,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 1.6743201817819635,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "10-49"
+        },
+        {
+          "yaw": -2.1155780023265507,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "8-67"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "10-49",
+      "name": "Punkt kontrolny #49",
+      "northYaw": 0.01745,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "yaw": 0.15,
+        "pitch": 0.0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 0.2443005889423262,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "9-50"
+        },
+        {
+          "yaw": -2.8955724231207803,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "11-57"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "11-57",
+      "name": "Punkt kontrolny #57",
+      "northYaw": 1.62315,
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 1520,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": -0.6,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 0.0536320218366125,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "0-s2"
+        },
+        {
+          "yaw": 2.120409126276964,
+          "pitch": 0.0,
+          "rotation": 0,
+          "target": "10-49"
         }
       ],
       "infoHotspots": []
@@ -125,7 +545,7 @@ var APP_DATA = {
   "settings": {
     "mouseViewMode": "drag",
     "autorotateEnabled": true,
-    "fullscreenButton": false,
-    "viewControlButtons": false
+    "fullscreenButton": true,
+    "viewControlButtons": true
   }
 };

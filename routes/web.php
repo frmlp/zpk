@@ -20,7 +20,7 @@ Route::get('/planner', function () {
 });
 
 Route::get('/spacer', function () {
-    return view('spacer-TEMP');
+    return view('spacer');
 });
 // =========================
 
