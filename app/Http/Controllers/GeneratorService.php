@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use PhpParser\Node\Expr\Cast\Double;
 
-class GeneratorServer extends Controller
+class GeneratorService extends Controller
 {
     
 
