@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 
 class PointController extends Controller
 {
+    // logika endpointu PUT|PATCH api/admin/points/{point}
     public function update(Request $request, Point $point)
     {
         error_log("PointController::update()");
@@ -25,6 +26,7 @@ class PointController extends Controller
         return redirect('/admin/zpk')->with('success', 'Zaktualizowano');
     }
 
+    // logika endpointu POST api/admin/points
     public function store(Request $request)
     {
         // Gate::authorize('create', Point::class);
@@ -39,5 +41,11 @@ class PointController extends Controller
         ]);
 
         return redirect('/admin/zpk')->with('success', 'Dodano');
+    }
+
+    // do zaimplementowania logika endpointu DELETE api/admin/points/{point}
+    public function destroy(Request $request)
+    {
+        
     }
 }

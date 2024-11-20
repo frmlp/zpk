@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // w tym pliku znajdują się ścieżki do poszczególnych stron aplikacji

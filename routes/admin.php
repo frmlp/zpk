@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\PointController;
 use Illuminate\Support\Facades\Route;
 

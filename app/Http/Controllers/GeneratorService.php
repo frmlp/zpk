@@ -15,6 +15,7 @@ class GeneratorService extends Controller
 
     public function __invoke(Request $request)
     {
+        // definicja stałych, nie wiem czy to tutaj powinno być, nie wiem czy w takiej formie
         define('MIN_POINTS', 'min_points');
         define('MAX_POINTS', 'max_points');
         define('MIN_DISTANCE', 'min_distance');
@@ -106,6 +107,8 @@ class GeneratorService extends Controller
 
     }
 
+    // funkcja tworząca macierz grafu - klika o ważonych krawędziach
+    // waga krawędzi jest odległością w kilometrach między punktami
     private function buildMatrix(Collection $points): array
     {
         $matrix = [];
@@ -125,8 +128,10 @@ class GeneratorService extends Controller
         return $matrix;
     }
 
+    //funkcja, która liczy odległość między punktami z tw. Pitagorasa
     private function calculateDistance(Point $p1, Point $p2): float 
     {
+        // konwersja jednostki z metrów na kilometry
         $x1 = $p1->easting/1000;
         $y1 = $p1->northing/1000;
         $x2 = $p2->easting/1000;
@@ -142,6 +147,9 @@ class GeneratorService extends Controller
         return $distance;
     }
 
+    // funkcja, która z tablicy indeksów, tworzy tablicę obiektów Punktów;
+    // generator tworzy tablicę indeksów, bo indeksy ułatwiają pracę z macierzą
+    // na koniec na frontend musimy wysłać obiekty Punktów z wszystkimi informacjami
     private function transformPathFromIdxToPointArray(array $path_idx, Collection $points_db): array
     {
         $path_points = [];
@@ -183,14 +191,26 @@ class GeneratorService extends Controller
         return GeneratorPathResource::collection($result);
     }
 
+    // główna funkcja tworząca ścieżki
+    // ogólnie to jest algorytm DFS 
+    // algorytm DFS dla naszej liczby punktów działa za długo, więc część punktów jest wybierana losowo
+    // im więcej punktów kontrolnych z których ma się składać trasa, lub im dłuższa trasa, tym więcej punktów jest wybieranych losowo (40-75%)
+    // do tego losowo wybierane punkty urozmaicają tworzone trasy, inaczej były drobne różnice między generowanymi ścieżkami
+    // $unloaded_start - boolean - czy pierwszy punkt ma być wybrany losowo, czy też nie
+    // poprawia różnorodność krótkich tras
     function findPath($matrix, $start_point, $end_point, $min_length, $max_length, $min_points, $max_points, $probability, $unloaded_start, $current_length = 0.0, $path = [], $visited_points = [],  $tekst="/")
     {
         if(count($path) == 0) {
             $path[] = $start_point;
+
+            // tablica odwiedzonych punktów
+            // dla trasy otwartej musimy dodać punkt startowy, żeby nie był brany pod uwagę
+            // dla pętli nie ma takiej potrzeby bo jest to równoznaczne z zakończeniem trasy
             $visited_points = $start_point != $end_point ? array_merge($visited_points, [$start_point]) : $visited_points;
 
         }
 
+        // wyjście z funkcji (null), jeśli wygenerowana trasa jest za długa lub ma za dużo punktów
         if(
             $current_length > $max_length || 
             count($path) > $max_points
@@ -198,6 +218,7 @@ class GeneratorService extends Controller
             return null;
         }
 
+        // wyjście z funkcji (null), jeśli doszliśmy do punktu końcowego, ale nasza trasa jest za krótka lub ma za mało punktów kontrolnych
         if(
             $start_point == $end_point &&
             ($current_length < $min_length || count($path) < $min_points) &&
@@ -206,6 +227,7 @@ class GeneratorService extends Controller
             return null;
         }
 
+        // wyjście z funkcji ($path - tablica indeksów składających się na trasę) jeśli wygenerowana trasa spełnia warunki
         if(
             $start_point == $end_point && 
             $current_length >= $min_length &&
@@ -213,29 +235,38 @@ class GeneratorService extends Controller
             count($path) >= $min_points &&
             count($path) <= $max_points
         ) {
-            error_log($tekst . "; distance: " . $current_length . "; points: " . count($path));
+            
             return $path;
         }
 
-        if(rand(1, 100) <= $probability || $unloaded_start)
+        
+        if(rand(1, 100) <= $probability || $unloaded_start) // warunek wybrania losowego punktu, lub pierwszy p[unkt wybierany losowo
         {
+            //wylosuj punkt z macierzy
             $point = array_rand($matrix);
 
+            // sprawdź czy punkt nie został już odwiedzony, lub czy nie jest punktem startowym
             if(!in_array($point, $visited_points) && $point != $start_point)
             {
+                //sprawdź odległość między punktami w macierzy
                 $distance = $matrix[$start_point][$point];
 
+                // rekurencyjne wywołanie funkcji z zaktualizowanymi argumentami
                 $result = $this->findPath($matrix, $point, $end_point, $min_length, $max_length, $min_points, $max_points, $probability, false, $current_length + $distance, array_merge($path, [$point]), array_merge($visited_points, [$point]), $tekst . $point . "/");
                 
+                // jeśli udało się stworzyć trasę, zwróć ją
                 if($result !== null) {
                     return $result;
                 }
             }
-        } else {
+        } else { // punkt wybrany z algorytmu DFS
             foreach($matrix[$start_point] as $point => $distance){
-                if(!in_array($point, $visited_points) && (bool)rand(0,1)){
+                if(!in_array($point, $visited_points) && (bool)rand(0,1)){ // sprawdź czy punkt nie został już odwiedzony i odrzuć co drugi punkt???? nie pamiętam po co to zrobiłem. Pewnie algorytm był za wolny.
+                    
+                    // rekurencyjne wywołanie funkcji z zaktualizowanymi argumentami
                     $result = $this->findPath($matrix, $point, $end_point, $min_length, $max_length, $min_points, $max_points, $probability, false,  $current_length + $distance, array_merge($path, [$point]), array_merge($visited_points, [$point]), $tekst . $point*100 . "/");
                     
+                    //jeśli udało się stworzyć trasę, zwróć ją
                     if($result !== null) {
                         return $result;
                     }
@@ -243,6 +274,7 @@ class GeneratorService extends Controller
             }
         }
         
+        // nic się nie udało xD
         return null;
     }
 }
