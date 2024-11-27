@@ -19,4 +19,9 @@ class Point extends Model
             ->withPivot('position')
             ->withTimestamps();
     }
+
+    //ggh
+    public function tags(){
+        return $this->belongsToMany(PointTag::class);
+    }
 }

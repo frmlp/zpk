@@ -8,21 +8,21 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/baza', function () {
-    return view('baza-tras');
-});
+Route::get('/baza', function () { 
+    return view('baza-tras'); 
+})->name("baza-tras");
 
 Route::get('/generator', function () {
     return view('generator');
-});
+})->name("generator");
 
 Route::get('/planner', function () {
     return view('planner-tras');
-});
+})->name("planer");
 
 Route::get('/spacer', function () {
     return view('spacer');
-});
+})->name("spacer");
 
 // ten endpoint niedługo nie będzie potrzebny, rozwiązanie tymczasowe
 // jak moje pliki html podmienie na templatki blade'a to token będzie wszysty w meta dane strony
