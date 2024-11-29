@@ -16,14 +16,23 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
 
         // definicja endpointów RESTfull dla zasobu points
         // utworzenie endpointów:
+        
         // POST /admin/points
+        //ggh
+        // Route::post('/admin/point', PointController::class, "store")->name("point.store");
+        
         // PUT|Patch /admin/points/{point}
+        
+
         // DELETE /admin/points/{point}
+        //ggh
+        // Route::post('/admin/point/{point}', PointController::class, "destroy")->name("point.destroy");
+
+
         Route::apiResource('points', PointController::class) 
             ->scoped()->except(['index', 'show']);
             // przyda się implementacja GET /admin/docelowa-nazwa-zasobu
             // narazie frontend korzysta z endpointu zdefiniowanego w pliku 'api.php' co nie jest najlepszym rozwiązaniem
-
         
         // do zaimplementowania:
         // 1. utworzenie endpointów RESTfull dla zasobu punktów wirtualnych podobnie jak dla punktów kontrolnych powyżej; rozważyć zmiany nazewnictwa 'control_points' i 'virtual_points'???

@@ -19,7 +19,19 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
+
+        //ggh
+        Schema::create('path_tags', function(Blueprint $table){
+            $table->id();
+
+            $table->string('tag');
+
+            $table->timestamps();
+        });
     }
+
+   
 
     /**
      * Reverse the migrations.
@@ -27,5 +39,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('point_tags');
+        Schema::dropIfExists('path_tags');
     }
 };

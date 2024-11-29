@@ -9,10 +9,8 @@ class PointTag extends Model
 {
     use HasFactory;
 
-    //ggh
     protected $fillable = ['tag'];
 
-    //ggh
     public function points(){
         return $this->belongsToMany(Point::class);
     }
