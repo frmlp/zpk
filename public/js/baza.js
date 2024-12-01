@@ -41,8 +41,8 @@ function highlightTableRow(id) {
 
     for(row of tableRows) {
         row.id != id ? 
-            row.classList.remove("table-info"): 
-            row.classList.add("table-info");
+            row.classList.remove("table-success"): 
+            row.classList.add("table-success");
     }
 }
 
@@ -195,7 +195,7 @@ function populateTable(data) {
                 <td>${item.points.length}</td>
                 <td>${calculateRouteLength(item.points)}</td>
                 <td>${checkRouteType(item.points)}</td>
-                <td><button class="btn btn-primary btn-sm w-100">Pobierz mapę</button></td>
+                <td><button class="btn btn-success btn-sm w-100">Pobierz mapę</button></td>
             </tr>
         `;
 

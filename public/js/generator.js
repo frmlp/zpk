@@ -13,10 +13,52 @@ function getPointsData() {
         dataType: 'json',
     })
 }
+var points = null;
+var startMarker = null;
+var endMarker = null;
+const defaultIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+});
+
+const greenIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+});
+
+const redIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+});
+
+const purpleIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+});
 
 $(document).ready(function() {
     var tableData;
     var table = initTable();
+    
+    
+
+    
 
     //init Map
     proj4.defs([
@@ -34,13 +76,17 @@ $(document).ready(function() {
     var map = initMap();
     getPointsData()
         .then(function(result) {
-            showPointsPreview(result.data, mapMarkers, map);
+            points = result.data;
+            showPointsPreview(points, mapMarkers, map);
         }).catch(() => console.log("Error"));
 
 
     $('#change-parameters-btn').on('click', function(event) {
         $('#table-wrapper').hide();
         $('#form-wrapper').show();
+        showPointsPreview(points, mapMarkers, map);
+        $('#start-point').change();
+        $('#end-point').change();
     })
 
     $('#regenerate-btn').on('click', function(event) {
@@ -48,7 +94,8 @@ $(document).ready(function() {
         getRouteData(event)
             .then(function(result) {
                 tableData = result.data;
-                populateTable(tableData, table)
+                populateTable(tableData, table);
+                updateMap(null, mapMarkers, map);
             }).catch(() => console.log("Error"));
     })
 
@@ -57,6 +104,7 @@ $(document).ready(function() {
             .then(function(result) {
                 tableData = result.data;
                 populateTable(tableData, table);
+                updateMap(null, mapMarkers, map);
                 $('#form-wrapper').hide();
                 $('#table-wrapper').show();
                 console.log(tableData);
@@ -72,6 +120,32 @@ $(document).ready(function() {
 
     });
 
+    setRouteStart();
+    setRouteFinish();
+
+    // Event listeners for dropdown changes
+    $('#start-point').on('change', function () {
+        const selectedPointId = $(this).val();
+        setStartPoint(selectedPointId, mapMarkers.getLayers());
+    });
+    
+    $('#end-point').on('change', function () {
+        const selectedPointId = $(this).val();
+        setEndPoint(selectedPointId, mapMarkers.getLayers());
+    });
+
+    // Event listeners for button clicks in marker popups
+    
+    $(document).on('click', '.route-start-btn', function () {
+        const pointId = $(this).val();
+        $('#start-point').val(pointId).change();
+    });
+    
+    $(document).on('click', '.route-finish-btn', function () {
+        const pointId = $(this).val();
+        $('#end-point').val(pointId).change();
+    });
+
 });
 
 function highlightTableRow(id) {
@@ -79,8 +153,8 @@ function highlightTableRow(id) {
     $('#routesTable > tbody > tr').each(function(){
         let row = $(this);
         row.find('button').attr('id') != id ?
-        row.removeClass("table-info"): 
-        row.addClass("table-info");
+        row.removeClass("table-success"): 
+        row.addClass("table-success");
     })
     // for(row of tableRows) {
     //     row.find('button').attr('id') != id ? 
@@ -90,31 +164,51 @@ function highlightTableRow(id) {
 }
 
 function updateMap(points, mapMarkers, map) {
+    // Clear all existing layers
     mapMarkers.clearLayers();
 
-    // let points = jsonResponse.data.find(r => r.id == routeId).points;
+    // Return early if no points are provided
+    if (!points || points.length === 0) return;
 
-    // points.sort((p1, p2) => {
-    //     return p1.position - p2.position;
-    // })
+    // Check if the first and last points are the same
+    const isLoop = points[0].id === points[points.length - 1].id;
 
-    if(points) {
-        let epsg2180points = points.map(p => ({coords: [p.easting, p.northing], description: p.code.concat(" - ", p.description)}));
-        let wsg84points = [];
-        epsg2180points.forEach(function(item) {
-            let wsg84coords = transformToWSG84(item.coords);
-            wsg84points.push(wsg84coords);
-            let marker = L.marker(wsg84coords);
-            marker.bindPopup(item.description);
-            mapMarkers.addLayer(marker);
-        })
+    // Convert points to WSG84 and prepare markers
+    const wsg84points = points.map((point, index) => {
+        const wsg84coords = transformToWSG84([point.easting, point.northing]);
+        const marker = L.marker(wsg84coords, { pointId: point.id });
+        marker.bindPopup(`${point.code} - ${point.description}`);
 
-        let polyline = L.polyline(wsg84points, {color: 'red'});
-        mapMarkers.addLayer(polyline);
-        mapMarkers.addTo(map);
+        // Set marker icon based on position
+        if (isLoop) {
+            // If the route is a loop, first and last points get a purple icon
+            if (index === 0 || index === points.length - 1) {
+                marker.setIcon(purpleIcon);
+            } else {
+                marker.setIcon(defaultIcon);
+            }
+        } else {
+            // For a non-loop route
+            if (index === 0) {
+                marker.setIcon(greenIcon); // Start point
+            } else if (index === points.length - 1) {
+                marker.setIcon(redIcon); // End point
+            } else {
+                marker.setIcon(defaultIcon); // Middle points
+            }
+        }
 
-    }
-};
+        mapMarkers.addLayer(marker); // Add marker to layer group
+        return wsg84coords; // Return coordinates for polyline
+    });
+
+    // Draw polyline connecting all points
+    const polyline = L.polyline(wsg84points, { color: 'red' });
+    mapMarkers.addLayer(polyline);
+
+    // Add all layers to the map
+    mapMarkers.addTo(map);
+}
 
 function initMap() {
     let map = L.map('map').setView([54.52, 18.49], 13);
@@ -127,12 +221,18 @@ function initMap() {
 }
 
 function showPointsPreview(points, mapMarkers, map) {
+    mapMarkers.clearLayers();
     points.forEach(function(point) {
         let epsg2180coords = [point.easting, point.northing];
         let wsg84coords = transformToWSG84(epsg2180coords);
-        let marker = L.marker(wsg84coords);
+        let marker = L.marker(wsg84coords, {pointId: point.id});
         marker.bindPopup(point.code.concat(" - ", point.description + 
-            '<div class="row justify-content-center"><div class="col text-center"><button class="btn btn-primary btn-sm m-1 w-100">Ustaw start trasy</button></div></div><div class="row justify-content-center"><div class="col text-center"><button class="btn btn-primary btn-sm m-1 w-100">Ustaw koniec trasy</button></div></div>'
+            `<div class="row justify-content-center">
+                <div class="col text-center">
+                    <button value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-start-btn">Ustaw start trasy</button>
+                    <button value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-finish-btn">Ustaw koniec trasy</button>
+                </div>
+            </div>`
         ));
         mapMarkers.addLayer(marker);
     });
@@ -158,11 +258,11 @@ function initTable() {
         responsive: true,
         columnDefs: [
             {responsivePriority: 4, targets: 0},
-            {responsivePriority: 5, targets: 1},
-            {responsivePriority: 3, targets: 2},
-            {responsivePriority: 2, targets: 3},
-            {responsivePriority: 6, targets: 4},
-            {responsivePriority: 1, targets: 5},
+            {responsivePriority: 3, targets: 1},
+            {responsivePriority: 2, targets: 2},
+            {responsivePriority: 5, targets: 3},
+            {responsivePriority: 1, targets: 4},
+            //{responsivePriority: 1, targets: 5},
         ]
         
     });
@@ -171,8 +271,8 @@ function initTable() {
 function getRouteData(event) {
     event.preventDefault(event);
  
-    let startPoint = $('.dropdown-start').val();
-    let endPoint = $('.dropdown-end').val();
+    let startPoint = $('#start-point').val();
+    let endPoint = $('#end-point').val();
     let distance = $('input[name="distance"]:checked').val();
     let points = $('input[name="points"]:checked').val();
 
@@ -196,28 +296,28 @@ function populateTable(tableData, table)
     table.clear().draw();
     tableData.forEach(function(route) {
         table.row.add([
-            routeToString(route.points),
+            //routeToString(route.points),
             "Obszar",
             route.points.length,
             calculateRouteLength(route.points),
             checkRouteType(route.points),
-            `<button id="${route.id}" class="btn btn-primary w-100">Pobierz mapę</button>`
+            `<button id="${route.id}" class="btn btn-success w-100">Pobierz mapę</button>`
         ]).draw(false);
     })
 }
 
-function routeToString(points) {
-    let path = "";
-    let delimiter = " > ";
+// function routeToString(points) {
+//     let path = "";
+//     let delimiter = " > ";
 
-    points.forEach(function(point) {
-        path += point.code + delimiter;
-    });
+//     points.forEach(function(point) {
+//         path += point.code + delimiter;
+//     });
 
-    path = path.slice(0, - delimiter.length);
+//     path = path.slice(0, - delimiter.length);
 
-    return path;
-}
+//     return path;
+// }
 
 function calculateRouteLength(points) {
     let totalLength = 0.0;
@@ -239,10 +339,11 @@ function calculateRouteLength(points) {
 }
 
 function checkRouteType(points) {
-    let firstPoint = Math.min(points.map(p => p.position)).id;
-    let lastPoint = Math.max(points.map(p => p.position)).id;
+    //console.log(points);
+    let firstPoint = points[0];
+    let lastPoint = points[points.length - 1];
 
-    if(firstPoint === lastPoint) {
+    if(firstPoint.id === lastPoint.id) {
         return "Pętla";
     } else {
         return "Otwarta";
@@ -257,4 +358,95 @@ function populateDropdowns(points) {
     $('.dropdown-points').each(function() {
         $(this).html(dropdownList);
     })
+}
+
+function setRouteStart() {
+    $(document).on('click', '.route-start-btn', function() {
+        const selectedValue = $(this).val(); // Pobierz wartość z klikniętego przycisku
+        $('#start-point').val(selectedValue).change(); // Ustaw wartość w dropdownie
+    });
+}
+
+function setRouteFinish() {
+    $(document).on('click', '.route-finish-btn', function() {
+        const selectedValue = $(this).val(); // Pobierz wartość z klikniętego przycisku
+        $('#end-point').val(selectedValue).change(); // Ustaw wartość w dropdownie
+    });
+}
+
+// Update marker color based on start or end point
+function updateMarkerColor(marker, isStart) {
+    if (marker) {
+        marker.setIcon(isStart ? greenIcon : redIcon);
+    }
+}
+
+// Reset a marker to its default color
+function resetMarker(marker) {
+    if (marker) {
+        marker.setIcon(defaultIcon);
+    }
+}
+
+// Handle start point selection
+function setStartPoint(pointId, markers) {
+    if (startMarker) {
+        // If start and end were the same, reset to end (red)
+        if (startMarker === endMarker) {
+            updateMarkerColor(startMarker, false, false); // Red
+        } else {
+            resetMarker(startMarker); // Reset to default
+        }
+    }
+
+    // Find the new start marker
+    startMarker = markers.find(marker => marker.options.pointId === parseInt(pointId));
+
+    // Check if start and end are the same
+    if (startMarker && endMarker && startMarker.options.pointId === endMarker.options.pointId) {
+        updateMarkerColor(startMarker, false, true); // Purple
+    } else if (startMarker) {
+        updateMarkerColor(startMarker, true, false); // Green
+    }
+}
+
+
+// Handle end point selection
+function setEndPoint(pointId, markers) {
+    if (endMarker) {
+        // If start and end were the same, reset to start (green)
+        if (endMarker === startMarker) {
+            updateMarkerColor(endMarker, true, false); // Green
+        } else {
+            resetMarker(endMarker); // Reset to default
+        }
+    }
+
+    // Find the new end marker
+    endMarker = markers.find(marker => marker.options.pointId === parseInt(pointId));
+
+    // Check if start and end are the same
+    if (startMarker && endMarker && startMarker.options.pointId === endMarker.options.pointId) {
+        updateMarkerColor(endMarker, false, true); // Purple
+    } else if (endMarker) {
+        updateMarkerColor(endMarker, false, false); // Red
+    }
+}
+
+function updateMarkerColor(marker, isStart, isBoth) {
+    if (marker) {
+        if (isBoth) {
+            marker.setIcon(purpleIcon); // Purple if both start and end
+        } else if (isStart) {
+            marker.setIcon(greenIcon); // Green for start
+        } else {
+            marker.setIcon(redIcon); // Red for end
+        }
+    }
+}
+
+function resetMarker(marker) {
+    if (marker) {
+        marker.setIcon(defaultIcon); // Reset to default
+    }
 }
