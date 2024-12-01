@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             jsonResponse = response;
             console.log(jsonResponse);
             resetDropdowns(jsonResponse.data);
+            initializeSortable();
             initMap(jsonResponse.data);
         },
         error: function(error) {
@@ -39,19 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 })
 
-$(document).on('change', '#dropdown', function() {
-    var parentGroup = $(this).closest('#dropdown-group');
-    parentGroup.find('#remove-btn').show();
-
-    if($('#dropdown-container #dropdown-group:last-child select').val() !== null) {
-        $('#dropdown-container').append(createDropdown(jsonResponse.data));
-    }
-
-    updateRoute();
-})
-
-$(document).on('click', '#remove-btn', function() {
-    $(this).closest('#dropdown-group').remove();
+$(document).on('click', '.remove-btn', function() {
+    $(this).closest('.dropdown-group').remove();
     updateRoute();
 })
 
@@ -63,6 +53,57 @@ $('#reset-btn').on('click', function() {
 $('#finish-btn').on('click', function() {
     downloadMap();
 })
+
+$(document).on('change', '.dropdown', function() {
+    var parentGroup = $(this).closest('.dropdown-group');
+    parentGroup.find('.remove-btn').show();
+    parentGroup.find('.handle').show();
+
+    if($('#dropdown-container .dropdown-group:last-child select').val() !== null) {
+        $('#dropdown-container').append(createDropdown(jsonResponse.data));
+    }
+
+    initializeSortable();
+    updateRoute();
+})
+
+$(document).on('click', '#add-point-btn', function () {
+
+    // Pobierz wartość atrybutu 'value' przycisku
+    const buttonValue = $(this).val();
+
+    // Znajdź wszystkie listy rozwijalne
+    const dropdowns = $('.form-select');
+
+    // Sprawdź, czy istnieje przynajmniej jedna lista rozwijalna
+    if (dropdowns.length > 0) {
+        // Pobierz ostatnią listę rozwijalną
+        const lastDropdown = dropdowns.last();
+
+        // Ustaw jej wartość na wartość przycisku
+        lastDropdown.val(buttonValue);
+
+        lastDropdown.trigger('change');
+
+        // Znajdź rodzica o id 'dropdown-group'
+        const parentGroup = lastDropdown.closest('.dropdown-group');
+
+        // Znajdź przycisk 'Usuń' w tej grupie i pokaż go
+        parentGroup.find('.remove-btn').show();
+
+        
+    }
+});
+
+function initializeSortable() {
+    $("#dropdown-container").sortable({
+        items: "> .dropdown-group:not(:last-child)", // Wyklucz ostatni element
+        handle: ".handle", // Tylko lista rozwijalna jako uchwyt
+        update: function (event, ui) {
+            updateRoute(); // Aktualizuj trasę po zmianie kolejności
+        }
+    }).sortable("refresh"); // Odśwież instancję
+}
 
 function downloadMap() {
     $.ajax({
@@ -197,11 +238,12 @@ function createDropdown(points) {
     points.forEach(function(point) {
         optionList += `<option value="${point.id}">${point.code} - ${point.description}</option>`
     })
-    return  `<div id="dropdown-group" class="input-group">
-                <select id="dropdown" class="form-select">`
+    return  `<div class="input-group dropdown-group">
+                <span class='input-group-text handle' role='button' style="display:none;"><i class="bi bi-chevron-bar-expand"></i></span>
+                <select class="form-select dropdown">`
                     + optionList +
                 `</select>
-                <button id="remove-btn" class="btn btn-danger" type="button" style="display:none;">Usuń</button>
+                <button class="btn btn-danger remove-btn" type="button" style="display:none;">Usuń</button>
             </div>`;
     
 }
@@ -225,7 +267,7 @@ function initMap(points) {
         let wsg84coords = transformToWSG84(epsg2180coords);
         let marker = L.marker(wsg84coords, {icon: yellowIcon});
         marker.bindPopup(point.code.concat(" - ", point.description) +
-            "</div><div class=''><button class='btn btn-primary btn-sm m-3'>Dodaj do trasy</button></div>"
+            "<p><button id='add-point-btn' value='"+ point.id +"' class='btn btn-primary btn-sm w-100'>Dodaj do trasy</button></p>"
     );
         mapMarkers.addLayer(marker);
     });

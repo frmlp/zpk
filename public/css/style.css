@@ -10,3 +10,11 @@
 p {
     text-align: justify;
 }
+
+.handle {
+    cursor: grab; /* Wskazuje możliwość przeciągania */
+}
+.handle:hover {
+    background-color: #fcfcfc; /* Delikatnie jaśniejsze tło przy najechaniu */
+    cursor: grabbing; /* Zmiana kursora przy przeciąganiu */
+}
