@@ -265,9 +265,9 @@ function initMap(points) {
     points.forEach(function(point) {
         let epsg2180coords = [point.easting, point.northing];
         let wsg84coords = transformToWSG84(epsg2180coords);
-        let marker = L.marker(wsg84coords, {icon: yellowIcon});
+        let marker = L.marker(wsg84coords);
         marker.bindPopup(point.code.concat(" - ", point.description) +
-            `<button id='add-point-btn' value='`+ point.id +`' class='btn btn-primary btn-sm m-1 w-100'>Dodaj do trasy</button>`
+            `<button id='add-point-btn' value='`+ point.id +`' class='btn btn-success btn-sm m-1 w-100'>Dodaj do trasy</button>`
     );
         mapMarkers.addLayer(marker);
     });

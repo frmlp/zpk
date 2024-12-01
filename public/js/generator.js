@@ -153,8 +153,8 @@ function highlightTableRow(id) {
     $('#routesTable > tbody > tr').each(function(){
         let row = $(this);
         row.find('button').attr('id') != id ?
-        row.removeClass("table-info"): 
-        row.addClass("table-info");
+        row.removeClass("table-success"): 
+        row.addClass("table-success");
     })
     // for(row of tableRows) {
     //     row.find('button').attr('id') != id ? 
@@ -229,8 +229,8 @@ function showPointsPreview(points, mapMarkers, map) {
         marker.bindPopup(point.code.concat(" - ", point.description + 
             `<div class="row justify-content-center">
                 <div class="col text-center">
-                    <button value='` + point.id + `' class="btn btn-primary btn-sm m-1 w-100 route-start-btn">Ustaw start trasy</button>
-                    <button value='` + point.id + `' class="btn btn-primary btn-sm m-1 w-100 route-finish-btn">Ustaw koniec trasy</button>
+                    <button value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-start-btn">Ustaw start trasy</button>
+                    <button value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-finish-btn">Ustaw koniec trasy</button>
                 </div>
             </div>`
         ));
@@ -301,7 +301,7 @@ function populateTable(tableData, table)
             route.points.length,
             calculateRouteLength(route.points),
             checkRouteType(route.points),
-            `<button id="${route.id}" class="btn btn-primary w-100">Pobierz mapę</button>`
+            `<button id="${route.id}" class="btn btn-success w-100">Pobierz mapę</button>`
         ]).draw(false);
     })
 }
