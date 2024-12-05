@@ -1,6 +1,5 @@
 #map {
-    height: 40vmax;
-    
+  height: 90vh; 
 }
 
 .content {
@@ -9,6 +8,10 @@
 
 p {
     text-align: justify;
+}
+
+table.dataTable {
+  font-size: 0.8em;
 }
 
 .form-check-input:checked {
@@ -80,7 +83,7 @@ p {
   left: 80%;
   animation-duration: 75s;
   animation-delay: -30s;
-  box-shadow: 85vmin 0 30vmin currentColor;
+  box-shadow: 85vmin 0 20vmin currentColor;
 }
 
 .background span:nth-child(4) {
