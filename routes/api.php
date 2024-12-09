@@ -14,6 +14,7 @@ use App\Models\Point;
 // w tym pliku znajdują się endpointy API, przez które pobiera się dane na frondend/mobile
 
 // ten endpoint jest generowany automatycznie, chyba niepotrzebny
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

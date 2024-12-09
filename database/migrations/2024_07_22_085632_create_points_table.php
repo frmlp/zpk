@@ -19,8 +19,8 @@ return new class extends Migration
             $table->double('easting');
             $table->double('northing');
             //ggh
-            $table->string('ID_map');   
-            $table->boolean('Virtual_point');   
+            $table->string('mapId');   
+            $table->boolean('pointVirtual');   
 
             $table->timestamps();
         });
