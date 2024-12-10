@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 // w tym pliku znajdują się ścieżki do poszczególnych stron aplikacji
 
 Route::get('/', function () {

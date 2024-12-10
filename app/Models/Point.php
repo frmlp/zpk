@@ -11,7 +11,7 @@ class Point extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'description', 'easting', 'northing', 'mapId', 'pointVirtual'];
+    protected $fillable = ['code', 'description', 'easting', 'northing', 'pointVirtual'];
 
     public function paths(): BelongsToMany
     {

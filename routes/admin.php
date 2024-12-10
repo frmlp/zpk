@@ -1,47 +1,36 @@
 <?php
 
 use App\Http\Controllers\Admin\PointController;
+use App\Http\Controllers\Admin\PointTagController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z prefixem '/admin/'
     
 
-    //Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
+    Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
 
         // endpoint '/admin/zpk' - do przeniesienia w routing views
-        
         Route::get('zpk', function() {
             return view('admin.zpk');
         })->name('admin.zpk');
         
-        Route::post('points', [PointController::class, "store"])->name("admin.points.store");
-        Route::get('points', [PointController::class, 'index'])->name('admin.points.index');
-        Route::put('points/{point}', [PointController::class, "update"])->name("admin.points.update ");
-        Route::delete('points/{point}', [PointController::class, "destroy"])->name("admin.points.destroy");
 
-    /*ggh   
+        // definicja endpointów RESTfull dla zasobu points
+        // Route::apiResource('points', PointController::class) ->scoped();     // fragment PF
+        Route::prefix('points')->controller(PointController::class)->name('admin.points')->group(function(){
+            Route::post('/', 'store')->name('store');
+            Route::delete('/{point}', 'destroy')->name('destroy');
+            Route::put('/{point}', 'update')->name('update');
+
+            Route::prefix('{point}/tags')->name('tags.')->controller(PointTagController::class)->group(function () { 
+                Route::post('/', 'store')->name('store');
+                Route::delete('/{tag}', 'destroy')->name('destroy'); 
+                Route::put('/{tag}', 'update')->name('update');
+            });
+        });
+    
         
-        Route::get('points/{mapId}', [PointController::class, "getPointsByMapId"])->name("admin.points.list");  // odpowiednik "index", usunięte z apiResource
-        
-        Route::get('points/{pointId}', [PointController::class, "show"])->name("admin.point.info"); // odpowiednik show, usunięte z apiResource
-        // ^ implementacja GET /admin/docelowa-nazwa-zasobu
-        // narazie frontend korzysta z endpointu zdefiniowanego w pliku 'api.php' co nie jest najlepszym rozwiązaniem
-        
-        
-        
-        // POST /admin/points
-        
-        Route::delete('points/{point}', [PointController::class, "destroy"])->name("admin.points.destroy");
-        //ggh 
-        // PFtodo po stronie front:
-        // @method("DELETE")
-        // DELETE /admin/points/{point}
-        
-        Route::update('points/{point}', [PointController::class, "update"])->name("admin.points.update");
-        // PUT|Patch /admin/points/{point}
-        
-    */
             
         
         // do zaimplementowania:
@@ -56,7 +45,7 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
 
         // 4. logika zmiany loginu i hasła
 
-  //  });
+    });
 });
 
 
