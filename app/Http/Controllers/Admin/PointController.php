@@ -5,50 +5,53 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Point;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 use function Laravel\Prompts\error;
 
 class PointController extends Controller
 {
-    
-    // private function validatePointData(Request $request)
-    // {
-    //     return $request->validate([
-    //         'code' => 'required|string',
-    //         'description' => 'required|string',
-    //         'easting' => 'required|numeric',
-    //         'northing' => 'required|numeric',
-    //     ]);
-    // }
-
     public function store(Request $request, Point $point)
     {   
         // logika endpointu STORE api/admin/points/{point}
-        $validatedData = $request->validate(Point::rules());
-        $point->create($validatedData); 
-
-        return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
+        try {
+            $validatedData = $request->validate(Point::rules());
+            $point = Point::create($validatedData);
+            return response()->json([
+                'message' => 'Dodano nowy punkt',
+                'point' => $point, 
+            ], 201);
+    
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Błąd walidacji',
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 
     public function index()
     {
         $points = Point::all();
-        return response()->json($points);
+        return response()->json($points, 200);
     }
 
     public function destroy(Point $point)
     {
         // logika endpointu DELETE api/admin/points/{point}
-
         try {
-            $point->findOrFail($point->id); 
+            $point->findOrFail($point->id);
             $point->delete();
-            return redirect()->route("admin.zpk")->with('success', 'Usunięto');
+            // 204 No Content: Zasób został usunięty
+            return response()->noContent(); 
+
         } catch (ModelNotFoundException $exception) {
-            return redirect()->route("admin.zpk")->with('error', 'Nie znaleziono punktu.');
+            // 404 Not Found: Nie znaleziono zasobu
+            return response()->json([
+                'message' => 'Nie znaleziono punktu.',
+            ], 404);
         }
     }
 
@@ -59,13 +62,22 @@ class PointController extends Controller
             $point->findOrFail($point->id);
             $validatedData = $request->validate(Point::rules());
             $point->update($validatedData);
-    
-            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
-        } 
-        catch (ModelNotFoundException $exception) {
-            return redirect()->route('admin.zpk')->with('error', 'Nie znaleziono punktu.');
+
+            // 200 OK: Żądanie zostało obsłużone poprawnie, 
+            // lub 204 No Content: Zasób został zaktualizowany, ale nie ma treści do zwrócenia
+            return response()->noContent(); 
+
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'message' => 'Nie znaleziono punktu.',
+            ], 404);
+        } catch (ValidationException $e) {
+            Log::error('Błędy walidacji podczas aktualizacji punktu:', $e->errors());
+
+            return response()->json([
+                'message' => 'Błąd walidacji',
+                'errors' => $e->errors(),
+            ], 422);
         }
     }
-}        
-
-
+}
