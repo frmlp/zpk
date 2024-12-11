@@ -12,6 +12,16 @@ class Point extends Model
 
     protected $fillable = ['code', 'description', 'easting', 'northing', 'pointVirtual'];
 
+    public static function rules()
+    {
+        return [
+            'code' => 'required|string',
+            'description' => 'required|string',
+            'easting' => 'required|numeric',
+            'northing' => 'required|numeric',
+        ];
+    }
+    
     public function paths(): BelongsToMany
     {
         return $this
@@ -26,4 +36,5 @@ class Point extends Model
             ->belongsToMany(PointTag::class, 'points_point_tags')
             ->withTimestamps();
     }
+
 }

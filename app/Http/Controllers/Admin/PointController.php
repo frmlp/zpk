@@ -14,20 +14,20 @@ use function Laravel\Prompts\error;
 class PointController extends Controller
 {
     
-    private function validatePointData(Request $request)
-    {
-        return $request->validate([
-            'code' => 'required|string',
-            'description' => 'required|string',
-            'easting' => 'required|numeric',
-            'northing' => 'required|numeric',
-        ]);
-    }
+    // private function validatePointData(Request $request)
+    // {
+    //     return $request->validate([
+    //         'code' => 'required|string',
+    //         'description' => 'required|string',
+    //         'easting' => 'required|numeric',
+    //         'northing' => 'required|numeric',
+    //     ]);
+    // }
 
     public function store(Request $request, Point $point)
     {   
         // logika endpointu STORE api/admin/points/{point}
-        $validatedData = $this->validatePointData($request); 
+        $validatedData = $request->validate(Point::rules());
         $point->create($validatedData); 
 
         return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
@@ -42,23 +42,30 @@ class PointController extends Controller
     public function destroy(Point $point)
     {
         // logika endpointu DELETE api/admin/points/{point}
-        $point->delete();
 
-        return redirect()->route("admin.zpk")->with('success', 'Usunieto');
+        try {
+            $point->findOrFail($point->id); 
+            $point->delete();
+            return redirect()->route("admin.zpk")->with('success', 'Usunięto');
+        } catch (ModelNotFoundException $exception) {
+            return redirect()->route("admin.zpk")->with('error', 'Nie znaleziono punktu.');
+        }
     }
 
     public function update(Request $request, Point $point)
     {
         // logika endpointu PUT api/admin/points/{point}
-        error_log("PointController::put()"); // Zmieniono update() na put()
-        error_log($point);
-
-        $validatedData = $this->validatePointData($request);
-        $point->update($validatedData);
-
-        return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano');
+        try {
+            $point->findOrFail($point->id);
+            $validatedData = $request->validate(Point::rules());
+            $point->update($validatedData);
+    
+            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
+        } 
+        catch (ModelNotFoundException $exception) {
+            return redirect()->route('admin.zpk')->with('error', 'Nie znaleziono punktu.');
+        }
     }
-
 }        
 
 
