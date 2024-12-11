@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::create('path_point', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('path_id')->constrained('paths');
             $table->foreignId('point_id')->constrained('points');
             $table->integer('position');
-
             $table->timestamps();
-
             $table->unique(['path_id', 'point_id', 'position']);
         });
     }

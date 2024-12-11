@@ -13,10 +13,7 @@ return new class extends Migration
     {
         Schema::create('point_tags', function (Blueprint $table) {
             $table->id();
-
-            //ggh
-            $table->string('tag');
-
+            $table->string('tag')->unique();
             $table->timestamps();
         });
 
@@ -24,9 +21,7 @@ return new class extends Migration
         //ggh
         Schema::create('path_tags', function(Blueprint $table){
             $table->id();
-
-            $table->string('tag');
-
+            $table->string('tag')->unique();
             $table->timestamps();
         });
     }

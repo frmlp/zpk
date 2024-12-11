@@ -16,4 +16,10 @@ class Path extends Model
             ->withPivot('position')
             ->withTimestamps();
     }
+
+    public function tags(){
+        return $this
+            ->belongsToMany(PathTag::class, 'paths_path_tags')
+            ->withTimestamps();
+    }
 }

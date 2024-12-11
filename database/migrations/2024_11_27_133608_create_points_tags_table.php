@@ -13,21 +13,15 @@ return new class extends Migration
     {
         Schema::create('points_point_tags', function (Blueprint $table) {
             $table->id();
-            
-            //ggh
             $table->foreignId('point_id')->constrained('points');
             $table->foreignId('tag_id')->constrained('point_tags');
-
             $table->timestamps();
         });
         
         Schema::create('paths_path_tags', function (Blueprint $table) {
             $table->id();
-            
-            //ggh
             $table->foreignId('path_id')->constrained('paths');
             $table->foreignId('tag_id')->constrained('path_tags');
-
             $table->timestamps();
         });
 
@@ -39,6 +33,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('points_point_tags');
-        Schema::dropIfExists('paths_paths_tags');
+        Schema::dropIfExists('paths_path_tags');
     }
 };

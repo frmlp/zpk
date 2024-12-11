@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PointTag extends Model
+class PathTag extends Model
 {
     use HasFactory;
 
     protected $fillable = ['tag'];
 
-    public function points(){
-        return $this
-            ->belongsToMany(Point::class, 'points_point_tags')
-            ->withTimestamps();
+    public function paths(){
+        return $this->belongsToMany(Path::class, 'paths_path_tags');
     }
 }
