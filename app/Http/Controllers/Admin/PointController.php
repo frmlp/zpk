@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 use function Laravel\Prompts\error;
 
@@ -18,6 +19,13 @@ class PointController extends Controller
         // logika endpointu STORE api/admin/points/{point}
         try {
             $validatedData = $request->validate(Point::rules());
+            // dodatkowa walidacja przy dodawaniu punktów
+            $request->validate([
+                'code' => [
+                    Rule::unique('points'), 
+                ],
+            ]);
+
             $point = Point::create($validatedData);
             return response()->json([
                 'message' => 'Dodano nowy punkt',
@@ -60,6 +68,12 @@ class PointController extends Controller
         // logika endpointu PUT api/admin/points/{point}
         try {
             $point->findOrFail($point->id);
+            // dodatkowa walidacja przy dodawaniu punktów
+            $request->validate([
+                'code' => [
+                    Rule::unique('points')->ignore($point->id),
+                ],
+            ]);
             $validatedData = $request->validate(Point::rules());
             $point->update($validatedData);
 

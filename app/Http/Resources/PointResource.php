@@ -24,6 +24,7 @@ class PointResource extends JsonResource
             'easting' => $this->easting,
             'northing' => $this->northing,
             'position' => $this->pivot->position
+            // ggh todo: zmiana nazwy resources na pathpointResource
         ];
     }
 }
