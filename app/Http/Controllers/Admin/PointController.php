@@ -27,14 +27,15 @@ class PointController extends Controller
             ]);
 
             $point = Point::create($validatedData);
-            return response()->json([
-                'message' => 'Dodano nowy punkt',
-                'point' => $point, 
-            ], 201);
+            return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
+            // return response()->json([
+            //     'message' => 'Dodano nowy punkt',
+            //     'point' => $point, 
+            // ], 201);
     
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Błąd walidacji',
+                'message' => 'Blad walidacji',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -46,23 +47,23 @@ class PointController extends Controller
         return response()->json($points, 200);
     }
 
-    public function destroy(Point $point)
+    public function show(Point $point)
     {
-        // logika endpointu DELETE api/admin/points/{point}
+        // logika endpointu GET api/admin/points/{point}
         try {
-            $point->findOrFail($point->id);
-            $point->delete();
-            // 204 No Content: Zasób został usunięty
-            return response()->noContent(); 
-
-        } catch (ModelNotFoundException $exception) {
-            // 404 Not Found: Nie znaleziono zasobu
+            return response()->json($point, 200); 
+    
+        } catch (\Exception $exception) {
+            // Logowanie błędu - ważne dla debugowania
+            Log::error($exception); 
+    
+            // 500 Internal Server Error: Ogólny błąd serwera
             return response()->json([
-                'message' => 'Nie znaleziono punktu.',
-            ], 404);
+                'message' => 'Wystąpił błąd serwera.', 
+            ], 500);
         }
     }
-
+    
     public function update(Request $request, Point $point)
     {
         // logika endpointu PUT api/admin/points/{point}
@@ -79,19 +80,37 @@ class PointController extends Controller
 
             // 200 OK: Żądanie zostało obsłużone poprawnie, 
             // lub 204 No Content: Zasób został zaktualizowany, ale nie ma treści do zwrócenia
-            return response()->noContent(); 
+            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
+            //return response()->noContent(); 
 
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'message' => 'Nie znaleziono punktu.',
             ], 404);
         } catch (ValidationException $e) {
-            Log::error('Błędy walidacji podczas aktualizacji punktu:', $e->errors());
+            Log::error('Bledy walidacji podczas aktualizacji punktu:', $e->errors());
 
             return response()->json([
-                'message' => 'Błąd walidacji',
+                'message' => 'Blad walidacji',
                 'errors' => $e->errors(),
             ], 422);
+        }
+    }
+
+    public function destroy(Point $point)
+    {
+        // logika endpointu DELETE api/admin/points/{point}
+        try {
+            $point->findOrFail($point->id);
+            $point->delete();
+            // 204 No Content: Zasób został usunięty
+            return response()->noContent(); 
+
+        } catch (ModelNotFoundException $exception) {
+            // 404 Not Found: Nie znaleziono zasobu
+            return response()->json([
+                'message' => 'Nie znaleziono punktu.',
+            ], 404);
         }
     }
 }

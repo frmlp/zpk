@@ -1,0 +1,80 @@
+FORMY TERENOWE
+Taras
+Nosek
+Mulda
+Skarpa
+Wyrobisko
+Wał ziemny
+Rynna
+Suchy rów
+Górka
+Kopczyk
+Siodło
+Niecka
+Mała niecka
+Dół
+Zryty, nierówny teren
+Mrowisko
+
+SKAŁY I KAMIENIE
+Ścianka skalna
+Ostaniec, wieża skalna
+Jaskinia
+Kamień, głaz
+Pole skalne
+Grupa skał
+Kamienisty teren
+Płaszczyzna skalna
+Wąskie przejście
+
+WODY I BAGNA
+Jezioro
+Staw
+Dół z wodą
+Strumień
+Rów
+Wąskie bagno
+Bagno
+Stały grunt na bagnie
+Studnia
+Źródło
+Zbiornik z wodą
+
+ROŚLINNOŚĆ
+Teren otwarty, pole
+Teren półotwarty
+Róg lasu
+Polana
+Gęstwina
+Żywopłot
+Wyraźna granica kultur
+Zagajnik, grupa drzew
+Samotne drzewo
+Pień, wykrot
+
+OBIEKTY ZBUDOWANE
+Droga
+Ścieżka
+Przecinka
+Most, kładka
+Linia energetyczna
+Słup linii energetycznej
+Tunel
+Mur kamienny
+Płot
+Przejście
+Budynek
+Obszar utwardzony
+Ruina
+Rurociąg 
+Wieża
+Ambona
+Słup graniczny, kopczyk
+Paśnik
+Wypłaszczenie/mielerz
+Pomnik
+Przejście w budynku
+Schody
+
+OBIEKTY SPECJALNE
+Obiekt specjalny
