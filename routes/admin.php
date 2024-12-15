@@ -1,54 +1,34 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\PointController;
 use Illuminate\Support\Facades\Route;
 
-// Route::middleware('guest')->group(function() {
-//     Route::get('/login', function() {
-//         return view('admin.login');
-//     })->name('login');
 
-//     Route::post('/login', [AuthController::class, 'authenticate']);
-
-// });
-
-// Route::prefix('admin')->group(function() {
-    
-//     Route::middleware('auth')->group(function() {
-//         Route::get('home', function() {
-//             return view('admin.dashboard');
-//         });
-
-//         Route::get('/zpk', function() {
-//             return view('admin.zpk');
-//         });
-//     });
-
-//     Route::get('csrf-token', function() {
-//         error_log('csrf');
-//         return response()->json(['token' => csrf_token()]);
-//     });
-
-    
-//     Route::apiResource('points', PointController::class)
-//         ->scoped()->except(['index', 'show']);
-// });
-Route::prefix('admin')->group(function() {
+Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z prefixem '/admin/'
     
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
+
+        // endpoint '/admin/zpk'
         Route::get('/zpk', function() {
             return view('admin.zpk');
         })->name('admin.zpk');
 
-        Route::apiResource('points', PointController::class)
+        // definicja endpointów RESTfull dla zasobu points
+        // utworzenie endpointów:
+        // POST /admin/points
+        // PUT|Patch /admin/points/{point}
+        // DELETE /admin/points/{point}
+        Route::apiResource('points', PointController::class) 
             ->scoped()->except(['index', 'show']);
+            // przyda się implementacja GET /admin/docelowa-nazwa-zasobu
+            // narazie frontend korzysta z endpointu zdefiniowanego w pliku 'api.php' co nie jest najlepszym rozwiązaniem
 
-        // Route::get('csrf-token', function() {
-        //     error_log('csrf');
-        //     return response()->json(['token' => csrf_token()]);
-        // });
+        
+        // do zaimplementowania:
+        // 1. utworzenie endpointów RESTfull dla zasobu punktów wirtualnych podobnie jak dla punktów kontrolnych powyżej; rozważyć zmiany nazewnictwa 'control_points' i 'virtual_points'???
+        // 2. utworzenie endpointów RESTfull dla zasobu tagów;
+        // 3. Czy implementujemy zmianę jakiś ustawień ??? czyłość punktów wirtualnych? włączanie/wyłączanie taowania???
 
     });
 });
