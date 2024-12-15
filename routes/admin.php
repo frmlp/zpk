@@ -19,34 +19,27 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         // definicja endpointów RESTfull dla zasobu points
         // Route::apiResource('points', PointController::class) ->scoped();     // fragment PF
 
+        //  POINTS
         Route::prefix('points')->controller(PointController::class)->name('admin.points')->group(function(){
-            
-            // create
+
             Route::post('/', 'store')->name('store');
-
-            // read
-            // ggh todo: przekierowanie indexu na endpoint po stronie klienta
-            Route::get('/', 'index')->name('index');
+            Route::get('/', 'index')->name('index');    // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::get('/{point}', 'show')->name('show');
-            
-            // update
             Route::put('/{point}', 'update')->name('update');
-            
-            //delete
-            Route::delete('/{point}', 'destroy')->name('destroy');
-
-
-
-            Route::prefix('{point}/tags')->name('tags.')->controller(PointTagController::class)->group(function () {
-                Route::post('/', 'store')->name('store');               // Create  // admin/point/tag
-                Route::get('/', 'index')->name('index');                // Read
-                Route::put('/{tag}', 'update')->name('update');         // Update
-                Route::delete('/{tag}', 'destroy')->name('destroy');    // Delete
-                
-            });
+            Route::delete('/{point}', 'destroy')->name('destroy');            
         });
 
+        // TAGS
+        Route::prefix('pointTags')->controller(PointTagController::class)->name('admin.pointTags')->group(function () {
+            
+            Route::post('/', 'store')->name('store');
+            Route::get('/', 'index')->name('index');
+            Route::get('/{point_tag}', 'show')->name('show');
+            Route::put('/{point_tag}', 'update')->name('update');
+            Route::delete('/{point_tag}', 'destroy')->name('destroy');
+        });
 
+        
         // obszary do wbudowania w bazę
 
 

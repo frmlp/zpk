@@ -19,6 +19,7 @@ class Point extends Model
             'description' => 'required|string',
             'easting' => 'required|numeric',
             'northing' => 'required|numeric',
+            'pointVirtual' => 'required|boolean',
         ];
     }
     

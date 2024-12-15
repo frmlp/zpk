@@ -11,6 +11,12 @@ class PointTag extends Model
 
     protected $fillable = ['tag'];
 
+    public static function rules()
+    {
+        return [
+            'tag' => 'required|string|max:255',
+        ];
+    }
     public function points(){
         return $this
             ->belongsToMany(Point::class, 'points_point_tags')

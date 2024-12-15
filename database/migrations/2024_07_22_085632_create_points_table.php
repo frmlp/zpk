@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->double('easting');
             $table->double('northing');
-            $table->boolean('pointVirtual');   
+            $table->boolean('pointVirtual')->default('true');   
             // dodatkowa tablica analogiczna do paths z obszarami
             // ggh todo: $table->string('obszar'); => wywalamy do oddzielnej tablicy
 

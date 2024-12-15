@@ -1,44 +1,44 @@
-31	467854,23	739890,04	kamień
-32	468014,71	739591,07	rozwidlenie drogi i ścieżki
-33	467802,98	739532,39	skrzyżowanie dróżki i rynny (wąwozu)
-34	467379,04	739035,28	przy małym bagienku na drodze
-35	467855,63	738727,11	kopczyk
-36	468096,38	739139,81	płn.- zach. koniec rynny
-37	468198,52	739776,22	rozwidlenie ścieżek
-38	467812,68	739983,74	płd.-wsch. zakręt rowu / mulda
-39	467449,3	739410,94	mała skarpa na zach. zboczu wzniesienia
-40	466709,7	739072,02	grupa kamieni
-41	466812,84	738724,34	mała górka
-42	467505,14	738372,26	grupa kamieni
-43	468042,27	739300,76	kamień
-44	466470,65	738324,13	małe obniżenie terenu
-45	466257,33	737505,5	obniżenie terenu / dół
-46	466892,91	737426,79	płn.-zach. brzeg bagna
-47	466817,4	737971,24	niecka
-48	468112,19	739859,98	inny obiekt ziemny na płn. zboczu noska
-49	465858,58	740189,97	kamień
-50	465985,48	740528,25	złamane drzewo
-51	464959,76	741285,96	wsch. koniec rowu
-52	466191,65	741051,18	szczyt wzniesienia (punkt widokowy)
-53	465525,29	741005,36	płn.-zach. koniec małej skarpy
-54	465695,18	740409,43	rozwidlenie ścieżek
-55	465094,06	739655,76	początek muldy (na górze)
-56	465553,48	739708,83	szczyt wzniesienia
-57	465821,39	740003,44	płn. kraniec rowu
-58	465998,22	741464,76	zakręt noska
-59	465520,14	741183,76	dół
-60	465339,68	740536,74	małe obniżenie terenu na nosku
-61	466452,75	739251,93	płd. brzeg bagienka w muldzie
-62	465995,35	739175,25	w środku muldy, na płd. od bagienka
-63	465225,08	739402,05	fajny dół przy paprotce ;)
-64	466235,43	740106,28	kamień
-65	465452,71	740213,78	małe obniżenie terenu
-66	466138,28	739591,44	na nosku
-67	465865,3	740988,64	zach. róg gęstwiny
-68	465081,61	740919,11	szczyt górki
-69	466820,12	739438,93	dół
-70	466874,43	739839,77	kamień
-71	465489,22	741470,71	mała skarpa
-72	467059,57	739181,61	kamień
-S1	468052,78	740051,41	start Grabówek
-S2	465453,75	740056,65	start Chylonia
+31	467854,23	739890,04	false	kamień
+32	468014,71	739591,07	false	rozwidlenie drogi i ścieżki
+33	467802,98	739532,39	false	skrzyżowanie dróżki i rynny (wąwozu)
+34	467379,04	739035,28	false	przy małym bagienku na drodze
+35	467855,63	738727,11	false	kopczyk
+36	468096,38	739139,81	false	płn.- zach. koniec rynny
+37	468198,52	739776,22	false	rozwidlenie ścieżek
+38	467812,68	739983,74	false	płd.-wsch. zakręt rowu / mulda
+39	467449,3	739410,94	false	mała skarpa na zach. zboczu wzniesienia
+40	466709,7	739072,02	false	grupa kamieni
+41	466812,84	738724,34	false	mała górka
+42	467505,14	738372,26	false	grupa kamieni
+43	468042,27	739300,76	false	kamień
+44	466470,65	738324,13	false	małe obniżenie terenu
+45	466257,33	737505,5	false	obniżenie terenu / dół
+46	466892,91	737426,79	false	płn.-zach. brzeg bagna
+47	466817,4	737971,24	false	niecka
+48	468112,19	739859,98	false	inny obiekt ziemny na płn. zboczu noska
+49	465858,58	740189,97	false	kamień
+50	465985,48	740528,25	false	złamane drzewo
+51	464959,76	741285,96	false	wsch. koniec rowu
+52	466191,65	741051,18	false	szczyt wzniesienia (punkt widokowy)
+53	465525,29	741005,36	false	płn.-zach. koniec małej skarpy
+54	465695,18	740409,43	false	rozwidlenie ścieżek
+55	465094,06	739655,76	false	początek muldy (na górze)
+56	465553,48	739708,83	false	szczyt wzniesienia
+57	465821,39	740003,44	false	płn. kraniec rowu
+58	465998,22	741464,76	false	zakręt noska
+59	465520,14	741183,76	false	dół
+60	465339,68	740536,74	false	małe obniżenie terenu na nosku
+61	466452,75	739251,93	false	płd. brzeg bagienka w muldzie
+62	465995,35	739175,25	false	w środku muldy, na płd. od bagienka
+63	465225,08	739402,05	false	fajny dół przy paprotce ;)
+64	466235,43	740106,28	false	kamień
+65	465452,71	740213,78	false	małe obniżenie terenu
+66	466138,28	739591,44	false	na nosku
+67	465865,3	740988,64	false	zach. róg gęstwiny
+68	465081,61	740919,11	false	szczyt górki
+69	466820,12	739438,93	false	dół
+70	466874,43	739839,77	false	kamień
+71	465489,22	741470,71	false	mała skarpa
+72	467059,57	739181,61	false	kamień
+S1	468052,78	740051,41	false	start Grabówek
+S2	465453,75	740056,65	false	start Chylonia

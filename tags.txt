@@ -1,4 +1,4 @@
-FORMY TERENOWE
+## FORMY TERENOWE
 Taras
 Nosek
 Mulda
@@ -16,7 +16,7 @@ Dół
 Zryty, nierówny teren
 Mrowisko
 
-SKAŁY I KAMIENIE
+## SKAŁY I KAMIENIE
 Ścianka skalna
 Ostaniec, wieża skalna
 Jaskinia
@@ -27,7 +27,7 @@ Kamienisty teren
 Płaszczyzna skalna
 Wąskie przejście
 
-WODY I BAGNA
+## WODY I BAGNA
 Jezioro
 Staw
 Dół z wodą
@@ -40,7 +40,7 @@ Studnia
 Źródło
 Zbiornik z wodą
 
-ROŚLINNOŚĆ
+## ROŚLINNOŚĆ
 Teren otwarty, pole
 Teren półotwarty
 Róg lasu
@@ -52,7 +52,7 @@ Zagajnik, grupa drzew
 Samotne drzewo
 Pień, wykrot
 
-OBIEKTY ZBUDOWANE
+## OBIEKTY ZBUDOWANE
 Droga
 Ścieżka
 Przecinka
@@ -76,5 +76,5 @@ Pomnik
 Przejście w budynku
 Schody
 
-OBIEKTY SPECJALNE
+## OBIEKTY SPECJALNE
 Obiekt specjalny

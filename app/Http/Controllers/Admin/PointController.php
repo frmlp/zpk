@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 
-use function Laravel\Prompts\error;
 
 class PointController extends Controller
 {
@@ -28,10 +27,12 @@ class PointController extends Controller
 
             $point = Point::create($validatedData);
             return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
-            // return response()->json([
-            //     'message' => 'Dodano nowy punkt',
-            //     'point' => $point, 
-            // ], 201);
+            /* ggh ToDelete:
+                // return response()->json([
+                //     'message' => 'Dodano nowy punkt',
+                //     'point' => $point, 
+                // ], 201);
+            */
     
         } catch (ValidationException $e) {
             return response()->json([
@@ -100,17 +101,23 @@ class PointController extends Controller
     public function destroy(Point $point)
     {
         // logika endpointu DELETE api/admin/points/{point}
-        try {
-            $point->findOrFail($point->id);
-            $point->delete();
-            // 204 No Content: Zasób został usunięty
-            return response()->noContent(); 
+        $point->delete();
+        return response()->noContent(); 
 
-        } catch (ModelNotFoundException $exception) {
-            // 404 Not Found: Nie znaleziono zasobu
-            return response()->json([
-                'message' => 'Nie znaleziono punktu.',
-            ], 404);
-        }
+        /* ggh TODEL:
+        
+            try {
+                $point->findOrFail($point->id);
+                $point->delete();
+                // 204 No Content: Zasób został usunięty
+                return response()->noContent(); 
+
+            } catch (ModelNotFoundException $exception) {
+                // 404 Not Found: Nie znaleziono zasobu
+                return response()->json([
+                    'message' => 'Nie znaleziono punktu.',
+                ], 404);
+            }
+        */
     }
 }

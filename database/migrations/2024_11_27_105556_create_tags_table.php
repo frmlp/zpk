@@ -18,15 +18,13 @@ return new class extends Migration
         });
 
 
-        //ggh
+        //AW_ASK: czy chcemy z tego korzystać?
         Schema::create('path_tags', function(Blueprint $table){
             $table->id();
             $table->string('tag')->unique();
             $table->timestamps();
         });
     }
-
-   
 
     /**
      * Reverse the migrations.
