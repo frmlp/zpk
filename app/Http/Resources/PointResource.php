@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 // klasa używana do formatowania danych w odpowiedzi API
@@ -15,7 +15,7 @@ class PointResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
@@ -23,8 +23,15 @@ class PointResource extends JsonResource
             'description' => $this->description,
             'easting' => $this->easting,
             'northing' => $this->northing,
-            'position' => $this->pivot->position
-            // ggh todo: zmiana nazwy resources na pathpointResource
+            'pointVirtual' => $this->pointVirtual,
+            'tags' => $this->pointTags->map(function ($tag) { 
+                return [
+                    'id' => $tag->id,
+                    'name' => $tag->tag, 
+                ];
+            }),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

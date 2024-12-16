@@ -31,7 +31,7 @@ class Point extends Model
             ->withTimestamps();
     }
 
-    public function tags(): BelongsToMany
+    public function pointTags(): BelongsToMany
     {
         return $this
             ->belongsToMany(PointTag::class, 'points_point_tags')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PointResource;
 use App\Models\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -27,13 +28,6 @@ class PointController extends Controller
 
             $point = Point::create($validatedData);
             return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
-            /* ggh ToDelete:
-                // return response()->json([
-                //     'message' => 'Dodano nowy punkt',
-                //     'point' => $point, 
-                // ], 201);
-            */
-    
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Blad walidacji',
@@ -44,15 +38,16 @@ class PointController extends Controller
 
     public function index()
     {
-        $points = Point::all();
-        return response()->json($points, 200);
+        $points = Point::with('pointTags')->get();
+        return PointResource::collection($points)->response()->setStatusCode(200);
     }
 
     public function show(Point $point)
     {
         // logika endpointu GET api/admin/points/{point}
         try {
-            return response()->json($point, 200); 
+            $point->load('pointTags'); 
+            return (new PointResource($point))->response()->setStatusCode(200); 
     
         } catch (\Exception $exception) {
             // Logowanie błędu - ważne dla debugowania

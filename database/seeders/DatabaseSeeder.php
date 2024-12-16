@@ -77,6 +77,8 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // ggh todo : przypisanie losowych tagów do punktów
+
         // PATHS
         $short = [43,1,2,3,4,5,6,7,43];
         $short_path = Path::create([
