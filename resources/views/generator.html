@@ -112,12 +112,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button id="generate-btn" class="btn btn-success" type="submit" >Generuj trasy</button>
+                                    <button class="btn btn-success generate-btn" type="submit" >Generuj trasy</button>
                                 </form>
                             </div>
 
                             <div id="table-wrapper" style="display: none;">
-                                <table class="table table-hover" id="routesTable" >
+                                <table class="table table-hover" id="table" >
                                     <thead>
                                         <tr>
                                             <!-- <th>Przebieg</th> -->
@@ -128,10 +128,10 @@
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tbody">
                                     </tbody>
                                 </table>
-                                <button id="regenerate-btn" class="btn btn-success">Wygeneruj nowe trasy</button>
+                                <button class="btn btn-success generate-btn">Wygeneruj nowe trasy</button>
                                 <button id="change-parameters-btn" class="btn btn-success">Zmień parametry</button>
                             </div>
                         </div>
@@ -155,6 +155,11 @@
         <!-- DATATABLES -->
         <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
         
+        <script src="js/map.js" async></script>
+        <script src="js/map-pdf.js" async></script>
+        <script src="js/helpers.js" async></script>
+        <script src="js/table.js" async></script>
+        <script src="js/data.js" async></script>
         <script src="js/generator.js"></script>
     </body>
 </html>
