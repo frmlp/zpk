@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Path;
 use App\Models\Point;
 use App\Models\PointTag;
+use App\Models\Area;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,6 +23,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // AREAS
+        Area::create(['id' => 1, 'name' => 'Grabówek']);
+        Area::create(['id' => 2, 'name' => 'Chylonia']);
+        Area::create(['id' => 3, 'name' => 'Grabówek i Chylonia']);
 
         // POINTS
         $filename = './points.txt';
@@ -41,26 +47,26 @@ class DatabaseSeeder extends Seeder
             $code = $data[0];
             $easting = (float)str_replace(",", ".", $data[1]);
             $northing = (float)str_replace(",", ".", $data[2]);
-            $pointVirtual = $data[3]; 
-            $description = $data[4];
+            $pointVirtual = $data[3];
+            $area_id = $data[4]; // to jest klucz obcy w tabeli points
+            $description = $data[5];
 
             Point::factory()->create([
                 'code' => $code,
                 'description' => $description,
                 'easting' => $easting,
                 'northing' => $northing,
-                'pointVirtual' => $pointVirtual
+                'pointVirtual' => $pointVirtual,
+                'area_id' => $area_id
             ]);
         }
 
         // TAGS
         $filename = './tags.txt';
         $f = fopen($filename, 'r');
-
         if(!$f) {
             return;
         }
-
         while(!feof($f)) {
             $line = fgets($f);
             $line = trim($line);
@@ -77,7 +83,13 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // ggh todo : przypisanie losowych tagów do punktów
+        // attach random tags to points
+        $tags = PointTag::all();
+        Point::all()->each(function ($point) use ($tags) {
+            $randomTags = $tags->random(2); 
+            $point->pointTags()->attach($randomTags); 
+        });
+
 
         // PATHS
         $short = [43,1,2,3,4,5,6,7,43];

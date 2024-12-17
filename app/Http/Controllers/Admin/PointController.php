@@ -15,19 +15,28 @@ use Illuminate\Validation\Rule;
 class PointController extends Controller
 {
     public function store(Request $request, Point $point)
-    {   
-        // logika endpointu STORE api/admin/points/{point}
+    {   // logika endpointu STORE api/admin/points/{point}
         try {
             $validatedData = $request->validate(Point::rules());
-            // dodatkowa walidacja przy dodawaniu punktów
+            // dodatkowa walidacja
             $request->validate([
                 'code' => [
                     Rule::unique('points'), 
                 ],
             ]);
 
-            $point = Point::create($validatedData);
+            // usuwanie powielonych tagów
+            $tagIds = $request->input('tag_ids');
+            $uniqueTagIds = array_unique($tagIds);            
+
+            $point = Point::create($validatedData); 
+
+            $point->area_id = $request->input('area_id');
+            $point->save();
+            $point->pointTags()->attach($uniqueTagIds);
+
             return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
+
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Blad walidacji',
@@ -37,14 +46,13 @@ class PointController extends Controller
     }
 
     public function index()
-    {
+    {   // logika endpointu GET api/admin/points
         $points = Point::with('pointTags')->get();
         return PointResource::collection($points)->response()->setStatusCode(200);
     }
 
     public function show(Point $point)
-    {
-        // logika endpointu GET api/admin/points/{point}
+    {   // logika endpointu GET api/admin/points/{point}
         try {
             $point->load('pointTags'); 
             return (new PointResource($point))->response()->setStatusCode(200); 
@@ -61,11 +69,10 @@ class PointController extends Controller
     }
     
     public function update(Request $request, Point $point)
-    {
-        // logika endpointu PUT api/admin/points/{point}
+    {   // logika endpointu PUT api/admin/points/{point}
         try {
             $point->findOrFail($point->id);
-            // dodatkowa walidacja przy dodawaniu punktów
+            // dodatkowa walidacja 
             $request->validate([
                 'code' => [
                     Rule::unique('points')->ignore($point->id),
@@ -74,10 +81,15 @@ class PointController extends Controller
             $validatedData = $request->validate(Point::rules());
             $point->update($validatedData);
 
-            // 200 OK: Żądanie zostało obsłużone poprawnie, 
-            // lub 204 No Content: Zasób został zaktualizowany, ale nie ma treści do zwrócenia
+            $point->area_id = $request->input('area_id');
+            $point->save();
+
+            $tagIds = $request->input('tag_ids');
+            $uniqueTagIds = array_unique($tagIds);
+            
+            $point->pointTags()->sync($uniqueTagIds);
+
             return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
-            //return response()->noContent(); 
 
         } catch (ModelNotFoundException $exception) {
             return response()->json([
@@ -94,25 +106,27 @@ class PointController extends Controller
     }
 
     public function destroy(Point $point)
-    {
-        // logika endpointu DELETE api/admin/points/{point}
-        $point->delete();
-        return response()->noContent(); 
-
-        /* ggh TODEL:
+    {   // logika endpointu DELETE api/admin/points/{point}
         
-            try {
-                $point->findOrFail($point->id);
-                $point->delete();
-                // 204 No Content: Zasób został usunięty
-                return response()->noContent(); 
+        // ggh todo: obsługa usuwania tagów przypisanych do punktu, tablica pośrednia
+        try {
+            $point->findOrFail($point->id);
+    
+            // Usunięcie powiązań z tagami w tabeli pośredniej
+            $point->pointTags()->detach(); 
+    
+            $point->delete();
+    
+            return response()->noContent();
+    
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'message' => 'Nie znaleziono punktu.',
+            ], 404);
+        }
+        // ggh todelete:
+        // $point->delete();
+        // return response()->noContent(); 
 
-            } catch (ModelNotFoundException $exception) {
-                // 404 Not Found: Nie znaleziono zasobu
-                return response()->json([
-                    'message' => 'Nie znaleziono punktu.',
-                ], 404);
-            }
-        */
     }
 }

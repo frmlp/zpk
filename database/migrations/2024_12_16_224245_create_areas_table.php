@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('points', function (Blueprint $table) {
+        Schema::create('areas', function (Blueprint $table) {
             $table->id();
-            $table->string('code', length: 10)->unique();
-            $table->text('description');
-            $table->double('easting');
-            $table->double('northing');
-            $table->boolean('pointVirtual');   
-            $table->string('url')->nullable();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('areas');
     }
 };

@@ -23,3 +23,5 @@ class Path extends Model
             ->withTimestamps();
     }
 }
+// ggh todo co ma się zadziać jak usunę punkt co ma się dziać z trasami które je uwzględniały
+// a trzeba utrzymać punkty przy usuwaniu tras

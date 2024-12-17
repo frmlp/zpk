@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('points_point_tags', function (Blueprint $table) {
             $table->id();
             $table->foreignId('point_id')->constrained('points');
-            $table->foreignId('tag_id')->constrained('point_tags');
+            $table->foreignId('point_tag_id')->constrained('point_tags');
+            // $table->unique(['point_id', 'point_tag_id']);
             $table->timestamps();
         });
         
         Schema::create('paths_path_tags', function (Blueprint $table) {
             $table->id();
             $table->foreignId('path_id')->constrained('paths');
-            $table->foreignId('tag_id')->constrained('path_tags');
+            $table->foreignId('path_tag_id')->constrained('path_tags');
             $table->timestamps();
         });
 

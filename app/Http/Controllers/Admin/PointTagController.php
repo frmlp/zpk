@@ -74,7 +74,28 @@ class PointTagController extends Controller
 
     public function destroy(PointTag $point_tag)
     {
-        $point_tag->delete();
+        try {
+            $point_tag->findOrFail($point_tag->id); 
+    
+            // Pobranie wszystkich punktów powiązanych z tagiem
+            $points = $point_tag->points;
+    
+            // Usunięcie powiązań z tagiem w tablicy pośredniej
+            foreach ($points as $point) {
+                $point->pointTags()->detach($point_tag->id);
+            }
+    
+            $point_tag->delete();
+    
+            return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
+    
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'message' => 'Nie znaleziono tagu.', 
+            ], 404); 
+        }
+        // $point_tag->delete();
+        // ggh todo: usunięcie rekordów z tablicy pośredniej points_pointTags
         return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
     }
     

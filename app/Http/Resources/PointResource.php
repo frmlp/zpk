@@ -21,9 +21,11 @@ class PointResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'description' => $this->description,
+            'area_id' => $this->area_id,
             'easting' => $this->easting,
             'northing' => $this->northing,
             'pointVirtual' => $this->pointVirtual,
+            'url' => $this->url,
             'tags' => $this->pointTags->map(function ($tag) { 
                 return [
                     'id' => $tag->id,
