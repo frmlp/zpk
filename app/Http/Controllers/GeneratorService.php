@@ -102,7 +102,8 @@ class GeneratorService extends Controller
         $start_point_id = $request->start_point_id;
         $end_point_id = $request->end_point_id;
         $data_set = constant($request->number_of_points_range . $request->distance_range);
-
+        
+        // ggh - zwrot z controllera
         return $this->generatePaths(Point::all(), $start_point_id, $end_point_id, $data_set, 20);
 
     }

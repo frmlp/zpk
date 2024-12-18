@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Path;
 use App\Models\Point;
+use App\Models\PointTag;
+use App\Models\Area;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,6 +24,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        // AREAS
+        Area::create(['id' => 1, 'name' => 'Grabówek']);
+        Area::create(['id' => 2, 'name' => 'Chylonia']);
+        Area::create(['id' => 3, 'name' => 'Grabówek i Chylonia']);
+
+        // POINTS
         $filename = './points.txt';
         $f = fopen($filename, 'r');
 
@@ -34,21 +42,56 @@ class DatabaseSeeder extends Seeder
             $line = trim($line);
             $data = preg_split('/\t+/', $line, -1, PREG_SPLIT_NO_EMPTY);
 
-            if(count($data) < 4) continue;
+            if(count($data) < 5) continue;
 
             $code = $data[0];
             $easting = (float)str_replace(",", ".", $data[1]);
             $northing = (float)str_replace(",", ".", $data[2]);
-            $description = $data[3];
+            $pointVirtual = $data[3];
+            $area_id = $data[4]; // to jest klucz obcy w tabeli points
+            $description = $data[5];
 
             Point::factory()->create([
                 'code' => $code,
                 'description' => $description,
                 'easting' => $easting,
-                'northing' => $northing
+                'northing' => $northing,
+                'pointVirtual' => $pointVirtual,
+                'area_id' => $area_id
             ]);
         }
 
+        // TAGS
+        $filename = './tags.txt';
+        $f = fopen($filename, 'r');
+        if(!$f) {
+            return;
+        }
+        while(!feof($f)) {
+            $line = fgets($f);
+            $line = trim($line);
+            $pattern = "/^##?\s.*/m";
+            $data = preg_split($pattern, $line, -1, PREG_SPLIT_NO_EMPTY);
+
+            if(count($data) < 1) continue;
+
+            $tag = $data[0];
+
+
+            PointTag::factory()->create([
+                'tag' => $tag
+            ]);
+        }
+
+        // attach random tags to points
+        $tags = PointTag::all();
+        Point::all()->each(function ($point) use ($tags) {
+            $randomTags = $tags->random(2); 
+            $point->pointTags()->attach($randomTags); 
+        });
+
+
+        // PATHS
         $short = [43,1,2,3,4,5,6,7,43];
         $short_path = Path::create([
             'name' => 'trasa piesza krótka'

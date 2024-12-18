@@ -3,49 +3,130 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PointResource;
 use App\Models\Point;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+
 
 class PointController extends Controller
 {
-    // logika endpointu PUT|PATCH api/admin/points/{point}
-    public function update(Request $request, Point $point)
-    {
-        error_log("PointController::update()");
-        error_log($point);
-        $point->update(
+    public function store(Request $request, Point $point)
+    {   // logika endpointu STORE api/admin/points/{point}
+        try {
+            $validatedData = $request->validate(Point::rules());
+            // dodatkowa walidacja
             $request->validate([
-                'code' => 'required|string',
-                'description' => 'required|string',
-                'easting' => 'required|numeric',
-                'northing' => 'required|numeric'
-            ])
-        );
+                'code' => [
+                    Rule::unique('points'), 
+                ],
+            ]);
 
-        return redirect('/admin/zpk')->with('success', 'Zaktualizowano');
+            // usuwanie powielonych tagów
+            $tagIds = $request->input('tag_ids');
+            $uniqueTagIds = array_unique($tagIds);            
+
+            $point = Point::create($validatedData); 
+
+            $point->area_id = $request->input('area_id');
+            $point->save();
+            $point->pointTags()->attach($uniqueTagIds);
+
+            return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Blad walidacji',
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 
-    // logika endpointu POST api/admin/points
-    public function store(Request $request)
-    {
-        // Gate::authorize('create', Point::class);
-
-        $point = Point::create([
-            ...$request->validate([
-                'code' => 'required|string',
-                'description' => 'required|string',
-                'easting' => 'required|numeric',
-                'northing' => 'required|numeric'
-            ]),
-        ]);
-
-        return redirect('/admin/zpk')->with('success', 'Dodano');
+    public function index()
+    {   // logika endpointu GET api/admin/points
+        $points = Point::with('pointTags')->get();
+        return PointResource::collection($points)->response()->setStatusCode(200);
     }
 
-    // do zaimplementowania logika endpointu DELETE api/admin/points/{point}
-    public function destroy(Request $request)
-    {
+    public function show(Point $point)
+    {   // logika endpointu GET api/admin/points/{point}
+        try {
+            $point->load('pointTags'); 
+            return (new PointResource($point))->response()->setStatusCode(200); 
+    
+        } catch (\Exception $exception) {
+            // Logowanie błędu - ważne dla debugowania
+            Log::error($exception); 
+    
+            // 500 Internal Server Error: Ogólny błąd serwera
+            return response()->json([
+                'message' => 'Wystąpił błąd serwera.', 
+            ], 500);
+        }
+    }
+    
+    public function update(Request $request, Point $point)
+    {   // logika endpointu PUT api/admin/points/{point}
+        try {
+            $point->findOrFail($point->id);
+            // dodatkowa walidacja 
+            $request->validate([
+                'code' => [
+                    Rule::unique('points')->ignore($point->id),
+                ],
+            ]);
+            $validatedData = $request->validate(Point::rules());
+            $point->update($validatedData);
+
+            $point->area_id = $request->input('area_id');
+            $point->save();
+
+            $tagIds = $request->input('tag_ids');
+            $uniqueTagIds = array_unique($tagIds);
+            
+            $point->pointTags()->sync($uniqueTagIds);
+
+            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
+
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'message' => 'Nie znaleziono punktu.',
+            ], 404);
+        } catch (ValidationException $e) {
+            Log::error('Bledy walidacji podczas aktualizacji punktu:', $e->errors());
+
+            return response()->json([
+                'message' => 'Blad walidacji',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+    }
+
+    public function destroy(Point $point)
+    {   // logika endpointu DELETE api/admin/points/{point}
         
+        // ggh todo: obsługa usuwania tagów przypisanych do punktu, tablica pośrednia
+        try {
+            $point->findOrFail($point->id);
+    
+            // Usunięcie powiązań z tagami w tabeli pośredniej
+            $point->pointTags()->detach(); 
+    
+            $point->delete();
+    
+            return response()->noContent();
+    
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'message' => 'Nie znaleziono punktu.',
+            ], 404);
+        }
+        // ggh todelete:
+        // $point->delete();
+        // return response()->noContent(); 
+
     }
 }
