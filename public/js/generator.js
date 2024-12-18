@@ -25,7 +25,7 @@ $(document).ready(function() {
                 paths = result.data;
                 $('#form-wrapper').hide();
                 $('#table-wrapper').show();
-                populateTable(paths, false);
+                populateTable(paths, "generator");
                 updateMap(null, markers, map);
                 
             }).catch((error) => console.log(error));

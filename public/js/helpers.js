@@ -93,6 +93,7 @@ function resetDropdowns(points) {
 function collectPoints(markup, points){
     return $(markup).map(function() {
         let id = $(this).val();
+        console.log("collectPoints() ->" + id)
         let point = points.find(p => p.id == id);
         return point;
     }).get();

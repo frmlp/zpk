@@ -8,7 +8,7 @@ $(document).ready(function() {
             // console.log("halo");
             paths = result.data;
             // console.log(jsonresponse);
-            populateTable(paths, true);
+            populateTable(paths, "baza-tras");
     }).catch((error) => console.log(error));
     
     $('#table tbody').on('click', 'tr', function() {

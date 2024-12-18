@@ -36,9 +36,9 @@
                         <!-- <a class="nav-link" aria-current="page" href="#"><i class="bi-person-gear"></i> Profil</a> -->
                         <a class="nav-link" href="/admin/ustawienia"><i class="bi-gear"></i> Ustawienia</a>
                         <a class="nav-link" href="/admin/baza-tras"><i class="bi-table"></i> Baza tras</a>
-                        <a class="nav-link active" href="/admin/zpk"><i class="bi-geo"></i> Punkty kontrolne</a>
+                        <a class="nav-link " href="/admin/zpk"><i class="bi-geo"></i> Punkty kontrolne</a>
                         <!-- <a class="nav-link" href="#"><i class="bi-tree"></i> Punkty wirtualne</a> -->
-                        <a class="nav-link" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
+                        <a class="nav-link active" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
                         <form id="logoutForm" method="POST" action="/logout"><button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
@@ -50,20 +50,17 @@
 
         <div class="content">
             <div class="container-md">
-                <div class="row bg-light">
-                    <div id="table-wrapper" class="col-12 col-md-7">
-                        <button id="newPointBtn" class="btn btn-success w-100">Dodaj nowy punkt kontrolny</button>
+                <div class="bg-light">
+                    <div id="table-wrapper"></div>
+                        <button id="newTagBtn" class="btn btn-success w-100">Dodaj nowy tag</button>
                         <table class="table table-hover" id="table">
                             <thead>
                                 <tr>
                                     <!-- <th>ID</th> -->
-                                    <th data-priority="3">Kod</th>
-                                    <th data-priority="6">Opis</th>
-                                    <th data-priority="7">Obszar</th>
-                                    <th data-priority="4">Easting</th>
-                                    <th data-priority="4">Northing</th>
-                                    <th data-priority="2"></th>
-                                    <th data-priority="1"></th>
+                                    
+                                    <th>Nazwa</th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,7 +68,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-5 sticky-top" id="map"></div>
                 </div>
 
             </div>
@@ -79,65 +75,21 @@
         
 
 <!-- Point Modal -->
-<div class="modal fade" id="pointModal" tabindex="-1" aria-labelledby="pointModalLabel" aria-hidden="true">
+<div class="modal fade" id="tagModal" tabindex="-1" aria-labelledby="pointModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="pointModalLabel">Punkt</h5>
+                <h5 class="modal-title" id="tagModalLabel">Tag</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="pointForm">
+                <form id="tagForm">
                     <!-- Pole Kod -->
                     <div class="mb-3">
-                        <label for="pointCode" class="form-label">Kod</label>
-                        <input type="text" class="form-control" id="pointCode" name="code">
+                        <label for="tagName" class="form-label">Nazwa</label>
+                        <input type="text" class="form-control" id="tagName" name="name">
                     </div>
-                    <!-- Pole Opis -->
-                    <div class="mb-3">
-                        <label for="pointDescription" class="form-label">Opis</label>
-                        <input type="text" class="form-control" id="pointDescription" name="description">
-                    </div>
-                    <!-- Rodzaj współrzędnych -->
-                    <div class="mb-3">
-                        <label class="form-label">Rodzaj współrzędnych</label>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="coordinateType" id="coordinateEPSG2180" value="EPSG2180" checked>
-                                    <label class="form-check-label" for="coordinateEPSG2180">EPSG:2180</label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="coordinateType" id="coordinateWSG84" value="WSG84">
-                                    <label class="form-check-label" for="coordinateWSG84">WSG:84</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- współrzędne EPSG:2180 -->
-                    <div id="epsg2180Fields" class="coordinates row mb-3">
-                        <div class="col">
-                            <label for="pointEasting" class="form-label">Easting</label>
-                            <input type="text" class="form-control" id="pointEasting" name="easting">
-                        </div>
-                        <div class="col">
-                            <label for="pointNorthing" class="form-label">Northing</label>
-                            <input type="text" class="form-control" id="pointNorthing" name="northing">
-                        </div>
-                    </div>
-                    <!-- współrzędne WSG:84 -->
-                    <div id="wsg84Fields" class="coordinates row mb-3" style="display:none;">
-                        <div class="col">
-                            <label for="pointLongitude" class="form-label">Długość</label>
-                            <input type="text" class="form-control" id="pointLongitude" name="longitude">
-                        </div>
-                        <div class="col">
-                            <label for="pointLatitude" class="form-label">Szerokość</label>
-                            <input type="text" class="form-control" id="pointLatitude" name="latitude">
-                        </div>
-                    </div>
+                   
                     <!-- Przyciski -->
                      <div class="row">
                         <div class="col">
@@ -172,7 +124,7 @@
         <script>
             $(document).ready(function() {
                 let table = initTable();
-                let map =initMap();
+                //let map =initMap();
 
                 proj4.defs([
                     [
@@ -272,15 +224,6 @@
                 });
             }
 
-            function initMap() {
-                let map = L.map('map').setView([54.52, 18.49], 13);
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 17,
-                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                }).addTo(map);
-
-                return map;
-            }
 
             function populateTable(table, points) 
             {
@@ -324,15 +267,15 @@
 
             function handleNewButtonClick()
             {
-                $('#newPointBtn').on('click', function() {
-                    $('#pointModalLabel').text('Nowy Punkt');
-                    $('#pointForm').attr('action', '/admin/points');
-                    $('#pointForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
-                    $('#pointForm').find('input[name="_method"]').remove(); 
+                $('#newTagBtn').on('click', function() {
+                    $('#tagModalLabel').text('Nowy Tag');
+                    $('#tagForm').attr('action', '/admin/tags');
+                    $('#tagForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
+                    $('#tagForm').find('input[name="_method"]').remove(); 
 
-                    $('#pointForm')[0].reset(); // Wyczyść formularz
+                    $('#tagForm')[0].reset(); // Wyczyść formularz
 
-                    $('#pointModal').modal('show');
+                    $('#tagModal').modal('show');
                 })
             }
 

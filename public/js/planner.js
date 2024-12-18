@@ -2,7 +2,7 @@ $(document).ready(function() {
     let points = [];
     const map = initMap("map");
     const markers = initMarkers();
-    let routeMarkers = initMarkers();
+    let pathMarkers = initMarkers();
     let startMarker = null;
     let endMarker = null;
 
@@ -61,7 +61,8 @@ $(document).ready(function() {
 
     function updatePath() {
         let pathPoints = collectPoints('select', points);
-    
+        console.log("updatePath() pathPoints: " );
+        console.log(pathPoints);
         if(pathPoints.length > 0) {
             let startPointId = pathPoints[0].id;
             let endPointId = pathPoints[pathPoints.length - 1].id;
@@ -70,7 +71,7 @@ $(document).ready(function() {
             endMarker = setEndPoint(endPointId, markers.getLayers(), startMarker, endMarker);
         }
     
-        drawPath(pathPoints, routeMarkers, map);
+        drawPath(pathPoints, pathMarkers, map);
     };
 
     function initializeSortable() {

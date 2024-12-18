@@ -35,8 +35,8 @@
                     <div class="navbar-nav">
                         <!-- <a class="nav-link" aria-current="page" href="#"><i class="bi-person-gear"></i> Profil</a> -->
                         <a class="nav-link" href="/admin/ustawienia"><i class="bi-gear"></i> Ustawienia</a>
-                        <a class="nav-link" href="/admin/baza-tras"><i class="bi-table"></i> Baza tras</a>
-                        <a class="nav-link active" href="/admin/zpk"><i class="bi-geo"></i> Punkty kontrolne</a>
+                        <a class="nav-link active" href="/admin/baza-tras"><i class="bi-table"></i> Baza tras</a>
+                        <a class="nav-link " href="/admin/zpk"><i class="bi-geo"></i> Punkty kontrolne</a>
                         <!-- <a class="nav-link" href="#"><i class="bi-tree"></i> Punkty wirtualne</a> -->
                         <a class="nav-link" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
@@ -48,28 +48,30 @@
             </div>
         </nav>
 
+        <!-- CONTENT -->
         <div class="content">
-            <div class="container-md">
-                <div class="row bg-light">
-                    <div id="table-wrapper" class="col-12 col-md-7">
-                        <button id="newPointBtn" class="btn btn-success w-100">Dodaj nowy punkt kontrolny</button>
-                        <table class="table table-hover" id="table">
-                            <thead>
-                                <tr>
-                                    <!-- <th>ID</th> -->
-                                    <th data-priority="3">Kod</th>
-                                    <th data-priority="6">Opis</th>
-                                    <th data-priority="7">Obszar</th>
-                                    <th data-priority="4">Easting</th>
-                                    <th data-priority="4">Northing</th>
-                                    <th data-priority="2"></th>
-                                    <th data-priority="1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-        
-                            </tbody>
-                        </table>
+            <div class="container-md bg-light">
+                <div class="row ">
+                    <div class="col-12 col-md-7">
+                        <!-- <div class=""> -->
+                            <button id="newPathBtn" class="btn btn-success w-100">Dodaj nową trasę</button>
+                            <table class="table table-hover" id="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nazwa</th>
+                                        <th>Obszar</th>
+                                        <th>Liczba punktów</th>
+                                        <th>Długość trasy</th>
+                                        <th>Typ trasy</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            
+                                </tbody>
+                            </table>
+                        <!-- </div> -->
                     </div>
                     <div class="col-12 col-md-5 sticky-top" id="map"></div>
                 </div>
@@ -78,78 +80,42 @@
         </div>
         
 
-<!-- Point Modal -->
-<div class="modal fade" id="pointModal" tabindex="-1" aria-labelledby="pointModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- Path Modal -->
+<div class="modal fade" id="pathModal" tabindex="-1" aria-labelledby="pathModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="pointModalLabel">Punkt</h5>
+                <h5 class="modal-title" id="pathModalLabel">Trasa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div id="error-message" class="text-danger m-3"></div>
             <div class="modal-body">
-                <form id="pointForm">
-                    <!-- Pole Kod -->
-                    <div class="mb-3">
-                        <label for="pointCode" class="form-label">Kod</label>
-                        <input type="text" class="form-control" id="pointCode" name="code">
-                    </div>
-                    <!-- Pole Opis -->
-                    <div class="mb-3">
-                        <label for="pointDescription" class="form-label">Opis</label>
-                        <input type="text" class="form-control" id="pointDescription" name="description">
-                    </div>
-                    <!-- Rodzaj współrzędnych -->
-                    <div class="mb-3">
-                        <label class="form-label">Rodzaj współrzędnych</label>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="coordinateType" id="coordinateEPSG2180" value="EPSG2180" checked>
-                                    <label class="form-check-label" for="coordinateEPSG2180">EPSG:2180</label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="coordinateType" id="coordinateWSG84" value="WSG84">
-                                    <label class="form-check-label" for="coordinateWSG84">WSG:84</label>
-                                </div>
+                <form id="pathForm">
+                    <div class="m-3">
+                        <!-- Nazwa -->
+                        <div class="mb-3">
+                            <label for="pathName" class="form-label">Nazwa</label>
+                            <input type="text" class="form-control" id="pathName" name="name" required>
+                        </div>
+                        <!-- Przebieg trasy -->
+                        <div class="mb-3">
+                            <label for="pathName" class="form-label">Przebieg trasy:</label>
+                            <div id="dropdown-container" class="">
                             </div>
                         </div>
+                        <!-- Mapa -->
+                        <div class="" id="map-modal"></div>
                     </div>
-                    <!-- współrzędne EPSG:2180 -->
-                    <div id="epsg2180Fields" class="coordinates row mb-3">
-                        <div class="col">
-                            <label for="pointEasting" class="form-label">Easting</label>
-                            <input type="text" class="form-control" id="pointEasting" name="easting">
-                        </div>
-                        <div class="col">
-                            <label for="pointNorthing" class="form-label">Northing</label>
-                            <input type="text" class="form-control" id="pointNorthing" name="northing">
-                        </div>
-                    </div>
-                    <!-- współrzędne WSG:84 -->
-                    <div id="wsg84Fields" class="coordinates row mb-3" style="display:none;">
-                        <div class="col">
-                            <label for="pointLongitude" class="form-label">Długość</label>
-                            <input type="text" class="form-control" id="pointLongitude" name="longitude">
-                        </div>
-                        <div class="col">
-                            <label for="pointLatitude" class="form-label">Szerokość</label>
-                            <input type="text" class="form-control" id="pointLatitude" name="latitude">
-                        </div>
-                    </div>
+
                     <!-- Przyciski -->
-                     <div class="row">
+                    <div class="row">
                         <div class="col">
                             <button type="submit" class="btn btn-primary w-100" id="saveChanges">Zapisz</button>
                         </div>
                         <div class="col">
                             <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Anuluj</button>
                         </div>
-                        
-                        
-                     </div>
-                    
+                     </div>   
                 </form>
             </div>
         </div>
@@ -161,6 +127,8 @@
 
         <!-- JQUERY -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
         <!-- BOOTSTRAP -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <!-- DATATABLES -->
@@ -168,12 +136,15 @@
         <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <!-- <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script> -->
-        
-        <script>
+        <script src="../js/map.js" async></script>
+        <script src="../js/map-pdf.js" async></script>
+        <script src="../js/helpers.js" async></script>
+        <script src="../js/table.js" async></script>
+        <script src="../js/data.js" async></script>
+        <script src="../js/admin-baza-tras.js" async></script>
+        <!-- <script src="/js/planner copy.js"></script> -->
+        <!-- <script>
             $(document).ready(function() {
-                let table = initTable();
-                let map =initMap();
-
                 proj4.defs([
                     [
                         'WSG:84',
@@ -185,6 +156,11 @@
                     ]
                 ]);
 
+                let table = initTable();
+                let map =initMap();
+
+                
+
                 getPointsData()
                     .then(function(result) {
                         console.log(result.data);
@@ -194,6 +170,7 @@
                 handleNewButtonClick();
                 handleCoordinateToggle();
                 handleCoordinateSynchonization();
+                handleModalMap()
 
                 let token = "";
                 
@@ -212,37 +189,13 @@
                         console.log("Błąd: ", error);
                     }
                 });
-
-                // $('#logout-btn').on('click', function(event){
-                //     event.preventDefault();
-                //     console.log('logout button clicked');
-                //     console.log(token);
-                //     $.ajax({
-                //         url: 'http://localhost:8000/logout',
-                //         type: 'POST',
-                //         data: {
-                //             _token: token,
-                //         },
-                //         success: function(response) {
-                //             // alert('Wylogowano');
-                //             console.log(response);
-                //         },
-                //         error: function(xhr, status, error) {
-                //             console.log('error');
-                //         }
-                //     })
-                // });
-
-                
-
-                // toggleCoordinateFields();
                 
             });
 
             function getPointsData() 
             {
                 return $.ajax({
-                    url: 'http://localhost:8000/api/points',
+                    url: 'http://localhost:8000/api/paths',
                     type: 'GET',
                     dataType: 'json',
                 })
@@ -256,9 +209,7 @@
                     language: {
                         lengthMenu: 'Wyświetl _MENU_ wpisów na stronę'
                     },
-                    // scrollCollapse: true,
-                    // scrollX: false,
-                    // scrollY: '40vmax',
+                    
                     responsive: true,
                     // columnDefs: [
                     //     {responsivePriority: 5, targets: 4},
@@ -282,13 +233,16 @@
                 return map;
             }
 
-            function populateTable(table, points) 
+            
+
+
+            function populateTable(table, paths) 
             {
                 table.on('draw', function() {
                     table.rows().every(function() {
                         var rowNode = this.node();
                         var rowData = this.data();
-                        $(rowNode).attr('id', points.find(p => p.code === rowData[0]).id);
+                        $(rowNode).attr('id', paths.find(p => p.code === rowData[0]).id);
                     });
 
                     // let height = document.getElementById('table-wrapper').offsetHeight;
@@ -297,15 +251,15 @@
 
                 });
 
-                points.forEach(function(point) {
+                paths.forEach(function(path) {
                     let row=table.row.add([
-                        point.code,
-                        point.description,
+                        path.name,
                         "Obszar",
-                        point.easting,
-                        point.northing,
-                        `<button id="${point.id}" class="edit-btn btn btn-warning w-100">Edytuj</button>`,
-                        `<button id="${point.id}" class="delete-btn btn btn-danger w-100">Usuń</button>`
+                        10,
+                        7.65,
+                        "Pętla",
+                        `<button id="${path.id}" class="edit-btn btn btn-warning w-100">Edytuj</button>`,
+                        `<button id="${path.id}" class="delete-btn btn btn-danger w-100">Usuń</button>`
                     ]);
                     
                 });
@@ -314,27 +268,41 @@
                 
             }
 
-            // function handleNewButtonClick() {
-            //     $('#newPointBtn').on('click', function() {
-            //         let editModal = new bootstrap.Modal(document.getElementById('editModal'));
-            //         editModal.show();
-            //     })
-                
-            // }
 
             function handleNewButtonClick()
             {
-                $('#newPointBtn').on('click', function() {
-                    $('#pointModalLabel').text('Nowy Punkt');
-                    $('#pointForm').attr('action', '/admin/points');
-                    $('#pointForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
-                    $('#pointForm').find('input[name="_method"]').remove(); 
+                $('#newPathBtn').on('click', function() {
+                    $('#pathModalLabel').text('Nowa trasa');
+                    $('#pathForm').attr('action', '/admin/paths');
+                    $('#pathForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
+                    $('#pathForm').find('input[name="_method"]').remove(); 
 
-                    $('#pointForm')[0].reset(); // Wyczyść formularz
+                    $('#pathForm')[0].reset(); // Wyczyść formularz
 
-                    $('#pointModal').modal('show');
-                })
+                    $('#pathModal').modal('show');
+
+                    let modalmap;
+                    // $('#newPathBtn').on('shown.bs.modal', function () {
+                        console.log("click");
+                            if (!modalmap) {
+                                modalmap = L.map('map-modal').setView([54.52, 18.49], 13);
+                                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        maxZoom: 17,
+                                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                    }).addTo(modalmap);
+                            }
+                            setTimeout(() => {
+                                modalmap.invalidateSize(); // Poprawienie rozmiaru mapy w modal
+                            }, 200);
+                        })
+                    // })
             }
+
+            function handleModalMap()
+            {}
+                
+            // }
+            
 
             function handleEditButtonClick()
             {
@@ -497,7 +465,7 @@
                 }
             }
 
-        </script>
+        </script> -->
 
 
     </body>

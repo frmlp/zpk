@@ -34,13 +34,20 @@ const purpleIcon = L.icon({
     shadowSize: [41, 41],
 });
 
+initCoordinates = [54.52, 18.49];
+initZoom = 13;
+
 function initMap(mapId) {
-    map = L.map(mapId).setView([54.52, 18.49], 13);
+    map = L.map(mapId).setView(initCoordinates, initZoom);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 17,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     return map;
+}
+
+function resetMapView(map) {
+    map.setView(initCoordinates, initZoom);
 }
 
 function initMarkers() {
@@ -58,15 +65,15 @@ function initPointsPreview(points, markers, map, view) {
             m.bindPopup(point.code.concat(" - ", point.description + 
                 `<div class="row justify-content-center">
                     <div class="col text-center">
-                        <button value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-start-btn">Ustaw start trasy</button>
-                        <button value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-finish-btn">Ustaw koniec trasy</button>
+                        <button type='button' value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-start-btn">Ustaw start trasy</button>
+                        <button type='button' value='` + point.id + `' class="btn btn-success btn-sm m-1 w-100 route-finish-btn">Ustaw koniec trasy</button>
                     </div>
                 </div>`
             ));
         }
         else if(view === "planer") {
             m.bindPopup(point.code.concat(" - ", point.description) +
-                `<button id='add-point-btn' value='`+ point.id +`' class='btn btn-success btn-sm m-1 w-100'>Dodaj do trasy</button>`
+                `<button type='button' id='add-point-btn' value='`+ point.id +`' class='btn btn-success btn-sm m-1 w-100'>Dodaj do trasy</button>`
             );
         }
         else {
