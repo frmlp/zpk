@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('path_point', function (Blueprint $table) {
+        Schema::create('areas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('path_id')->constrained('paths');
-            $table->foreignId('point_id')->constrained('points');
-            $table->integer('position');
+            $table->string('name');
             $table->timestamps();
-            $table->unique(['path_id', 'point_id', 'position']);
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('path_point');
+        Schema::dropIfExists('areas');
     }
 };
