@@ -17,13 +17,13 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
-        //AW_ASK: czy chcemy z tego korzystać?
-        Schema::create('path_tags', function(Blueprint $table){
-            $table->id();
-            $table->string('tag')->unique();
-            $table->timestamps();
-        });
+        /* ggh jeżeli będzie potrzebne tagowanie tras:
+            Schema::create('path_tags', function(Blueprint $table){
+                $table->id();
+                $table->string('tag')->unique();
+                $table->timestamps();
+            });
+        */
     }
 
     /**
@@ -32,6 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('point_tags');
-        Schema::dropIfExists('path_tags');
+        // Schema::dropIfExists('path_tags');
     }
 };

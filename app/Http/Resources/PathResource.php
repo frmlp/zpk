@@ -19,8 +19,7 @@ class PathResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'points' => PointResource::collection($this->points),
-            
+            'points' => Point4PathResource::collection($this->points),
         ];
     }
 }

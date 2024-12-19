@@ -94,8 +94,6 @@ class PointTagController extends Controller
                 'message' => 'Nie znaleziono tagu.', 
             ], 404); 
         }
-        // $point_tag->delete();
-        // ggh todo: usunięcie rekordów z tablicy pośredniej points_pointTags
         return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
     }
     
