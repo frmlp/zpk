@@ -108,12 +108,17 @@ class PointController extends Controller
         
         try {
             $point->findOrFail($point->id);
-    
-            // Usunięcie powiązań z tagami w tabeli pośredniej
+            // odpięcie z tablicy pośredniej point_tags
             $point->pointTags()->detach(); 
-    
+            
+            // odpięcie z tablicy pośredniej dla paths_points
+            $paths = $point->paths()->get();
+            foreach ($paths as $path) {
+                $path->points()->detach($point->id); 
+            }
+            
             $point->delete();
-    
+            
             return response()->noContent();
     
         } catch (ModelNotFoundException $exception) {

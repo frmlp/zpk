@@ -47,8 +47,8 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
             Route::post('/', 'store')->name('store');
             Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::get('/{path}', 'show')->name('show');    // ggh todo: przekierowanie indexu na endpoint po stronie klienta
-            // Route::put('/{point}', 'update')->name('update');
-            // Route::delete('/{point}', 'destroy')->name('destroy');            
+            Route::put('/{path}', 'update')->name('update');
+            Route::delete('/{path}', 'destroy')->name('destroy');            
         });
         
         // obszary do wbudowania w bazę

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('point_id')->constrained('points');
             $table->foreignId('point_tag_id')->constrained('point_tags');
-            // $table->unique(['point_id', 'point_tag_id']);
             $table->timestamps();
         });
         

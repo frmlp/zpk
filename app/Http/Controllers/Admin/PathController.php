@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PathResource;
 use App\Models\Path;
+use App\Models\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Rule;
+// use Illuminate\Validation\Rule;
 
 class PathController extends Controller
 {
@@ -41,7 +42,7 @@ class PathController extends Controller
     }
 
     public function show(Path $path)
-    {
+    {   // logika endpointu GET api/admin/paths/{path}
         try {
             return new PathResource($path->load('points'));
 
@@ -54,19 +55,26 @@ class PathController extends Controller
     }
 
     public function update(Request $request, Path $path)
-    {
+    {   // logika endpointu PUT api/admin/paths/{path}
         try {
             $path->findOrFail($path->id);
-
-            // ... Dodatkowa walidacja, jeśli potrzebna ...
-
             $validatedData = $request->validate(Path::rules());
             $path->update($validatedData);
-
-            // ... Aktualizacja relacji, jeśli istnieją ...
-
+    
+            $existingPoints = $path->points()->get();
+    
+            foreach ($request->input('points', []) as $index => $pointId) {
+                $point = $existingPoints->firstWhere('id', $pointId);
+    
+                if ($point) {
+                    $path->points()->updateExistingPivot($pointId, ['position' => $index + 1]);
+                } else {
+                    $path->points()->attach(Point::find($pointId), ['position' => $index + 1]);
+                }
+            }
+    
             return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano ścieżkę');
-
+    
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'message' => 'Nie znaleziono ścieżki.',
@@ -81,12 +89,10 @@ class PathController extends Controller
     }
 
     public function destroy(Path $path)
-    {
+    {   // logika endpointu DELETE api/admin/paths/{path}
         try {
             $path->findOrFail($path->id);
-
-            // ... Usunięcie relacji, jeśli istnieją ...
-
+            $path->points()->detach();
             $path->delete();
 
             return response()->noContent();

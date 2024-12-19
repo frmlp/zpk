@@ -37,7 +37,7 @@ class Point extends Model
     public function paths(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Path::class)
+            ->belongsToMany(Path::class, 'paths_points')
             ->withPivot('position')
             ->withTimestamps();
     }
