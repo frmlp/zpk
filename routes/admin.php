@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\PointController;
 use App\Http\Controllers\Admin\PointTagController;
+use App\Http\Controllers\Admin\PathController;
+use App\Http\Controllers\Admin\PathTagController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -23,8 +25,8 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         Route::prefix('points')->controller(PointController::class)->name('admin.points')->group(function(){
 
             Route::post('/', 'store')->name('store');
-            Route::get('/', 'index')->name('index');    // ggh todo: przekierowanie indexu na endpoint po stronie klienta
-            Route::get('/{point}', 'show')->name('show');
+            Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
+            Route::get('/{point}', 'show')->name('show');   // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::put('/{point}', 'update')->name('update');
             Route::delete('/{point}', 'destroy')->name('destroy');            
         });
@@ -39,11 +41,20 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
             Route::delete('/{point_tag}', 'destroy')->name('destroy');
         });
 
+        //  PATHS
+        Route::prefix('paths')->controller(PathController::class)->name('admin.paths')->group(function(){
+
+            Route::post('/', 'store')->name('store');
+            Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
+            Route::get('/{path}', 'show')->name('show');    // ggh todo: przekierowanie indexu na endpoint po stronie klienta
+            Route::put('/{path}', 'update')->name('update');
+            Route::delete('/{path}', 'destroy')->name('destroy');            
+        });
         
         // obszary do wbudowania w bazę
 
 
-        // TODO:
+        // ggh TODO:
         // 4. logika zmiany loginu i hasła
 
 

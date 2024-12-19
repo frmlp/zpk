@@ -18,18 +18,24 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-
+    
+    // USERS
+    {
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+    }
 
-        // AREAS
+    // AREAS
+    {
         Area::create(['id' => 1, 'name' => 'Grabówek']);
         Area::create(['id' => 2, 'name' => 'Chylonia']);
         Area::create(['id' => 3, 'name' => 'Grabówek i Chylonia']);
-
-        // POINTS
+    }
+        
+    // POINTS
+    {
         $filename = './points.txt';
         $f = fopen($filename, 'r');
 
@@ -49,7 +55,8 @@ class DatabaseSeeder extends Seeder
             $northing = (float)str_replace(",", ".", $data[2]);
             $pointVirtual = $data[3];
             $area_id = $data[4]; // to jest klucz obcy w tabeli points
-            $description = $data[5];
+            $url = $data[5];
+            $description = $data[6];
 
             Point::factory()->create([
                 'code' => $code,
@@ -57,11 +64,14 @@ class DatabaseSeeder extends Seeder
                 'easting' => $easting,
                 'northing' => $northing,
                 'pointVirtual' => $pointVirtual,
-                'area_id' => $area_id
+                'area_id' => $area_id,
+                'url' => $url
             ]);
         }
+    }
 
-        // TAGS
+    // POINT_TAGS
+    {    
         $filename = './tags.txt';
         $f = fopen($filename, 'r');
         if(!$f) {
@@ -89,16 +99,15 @@ class DatabaseSeeder extends Seeder
             $randomTags = $tags->random(2); 
             $point->pointTags()->attach($randomTags); 
         });
+    }
 
-
-        // PATHS
+    // PATHS
+    {
         $short = [43,1,2,3,4,5,6,7,43];
         $short_path = Path::create([
             'name' => 'trasa piesza krótka'
         ]);
-
         foreach($short as $index=>$point){
-            //error_log($index . ' / ' . $point);
             $short_path->points()->attach($point, ['position' => $index]);
         }
 
@@ -106,7 +115,6 @@ class DatabaseSeeder extends Seeder
         $medium_path = Path::create([
             'name' => 'trasa piesza średnia'
         ]);
-
         foreach($medium as $index => $point){
             $medium_path->points()->attach($point, ['position' => $index]);
         }
@@ -115,11 +123,10 @@ class DatabaseSeeder extends Seeder
         $long_path = Path::create([
             'name' => 'trasa piesza długa'
         ]);
-
         foreach($long as $index => $point){
             $long_path->points()->attach($point, ['position' => $index]);
         }
-
+    }
         
     }
 }
