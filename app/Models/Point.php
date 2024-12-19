@@ -24,8 +24,8 @@ class Point extends Model
     public static function rules()
     {
         return [
-            'code' => 'required|string',
-            'description' => 'required|string',
+            'code' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
             'easting' => 'required|numeric',
             'northing' => 'required|numeric',
             'pointVirtual' => 'required|boolean',

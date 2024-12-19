@@ -19,12 +19,14 @@ return new class extends Migration
             $table->timestamps();
         });
         
-        Schema::create('paths_path_tags', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('path_id')->constrained('paths');
-            $table->foreignId('path_tag_id')->constrained('path_tags');
-            $table->timestamps();
-        });
+        /* ggh: jeżeli będzie potrzebne tagowanie tras:
+            Schema::create('paths_path_tags', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('path_id')->constrained('paths');
+                $table->foreignId('path_tag_id')->constrained('path_tags');
+                $table->timestamps();
+            });
+        */
 
     }
 

@@ -15,7 +15,7 @@ use Illuminate\Validation\Rule;
 class PointController extends Controller
 {
     public function store(Request $request, Point $point)
-    {   // logika endpointu STORE api/admin/points/{point}
+    {   // logika endpointu POST api/admin/points/
         try {
             $validatedData = $request->validate(Point::rules());
             // dodatkowa walidacja
@@ -58,10 +58,8 @@ class PointController extends Controller
             return (new PointResource($point))->response()->setStatusCode(200); 
     
         } catch (\Exception $exception) {
-            // Logowanie błędu - ważne dla debugowania
             Log::error($exception); 
-    
-            // 500 Internal Server Error: Ogólny błąd serwera
+
             return response()->json([
                 'message' => 'Wystąpił błąd serwera.', 
             ], 500);
@@ -108,7 +106,6 @@ class PointController extends Controller
     public function destroy(Point $point)
     {   // logika endpointu DELETE api/admin/points/{point}
         
-        // ggh todo: obsługa usuwania tagów przypisanych do punktu, tablica pośrednia
         try {
             $point->findOrFail($point->id);
     
@@ -124,9 +121,5 @@ class PointController extends Controller
                 'message' => 'Nie znaleziono punktu.',
             ], 404);
         }
-        // ggh todelete:
-        // $point->delete();
-        // return response()->noContent(); 
-
     }
 }
