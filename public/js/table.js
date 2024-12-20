@@ -14,7 +14,7 @@ function populateTable(paths, tableUrl)
 {
     const table = $('#table');
     let rows;
-    let comlumnsConfig;
+    let columnsConfig;
     let columnDefsConfig;
 
     // Sprawdź, czy tabela DataTables już istnieje i zniszcz ją

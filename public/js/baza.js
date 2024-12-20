@@ -1,13 +1,13 @@
 $(document).ready(function() {
     let map = initMap("map");
     let markers = initMarkers();
-    let paths;
+    let paths = [];
     // let table = initTable(true);
     getPathData()
         .then(function(result) {
             // console.log("halo");
-            paths = result.data;
-            // console.log(jsonresponse);
+            paths = filterPathsWithPoints(result.data);
+            // console.log(paths);
             populateTable(paths, "baza-tras");
     }).catch((error) => console.log(error));
     
