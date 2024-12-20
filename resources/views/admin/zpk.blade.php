@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -11,9 +12,8 @@
         <!-- BOXIXONS -->
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
         <!-- DATATABLES -->
-        <link href='https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.min.css' rel='stylesheet'>
-        <link href='https://cdn.datatables.net/2.1.2/css/dataTables.bootstrap5.css' rel='stylesheet'>
-        <!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css' rel='stylesheet'> -->
+        <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.dataTables.min.css" rel="stylesheet">
         <!-- LEAFLET -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -34,14 +34,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-link" aria-current="page" href="#"><i class="bi-person-gear"></i> Profil</a>
-                        <a class="nav-link" href="#"><i class="bi-gear"></i> Ustawienia</a>
-                        <a class="nav-link active" href="#"><i class="bi-geo"></i> Punkty kontrolne</a>
-                        <a class="nav-link" href="#"><i class="bi-tree"></i> Punkty wirtualne</a>
-                        <a class="nav-link" href="#"><i class="bi-tags"></i> Tagi</a>
+                        <!-- <a class="nav-link" aria-current="page" href="#"><i class="bi-person-gear"></i> Profil</a> -->
+                        <a class="nav-link" href="/admin/ustawienia"><i class="bi-gear"></i> Ustawienia</a>
+                        <a class="nav-link" href="/admin/baza-tras"><i class="bi-table"></i> Baza tras</a>
+                        <a class="nav-link active" href="/admin/zpk"><i class="bi-geo"></i> Punkty kontrolne</a>
+                        <!-- <a class="nav-link" href="#"><i class="bi-tree"></i> Punkty wirtualne</a> -->
+                        <a class="nav-link" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        <form id="logoutForm" method="POST" action="/logout"><button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
+                        <form id="logoutForm" method="POST" action="/logout">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
                         
                     </div>
                 </div>
@@ -49,22 +50,21 @@
         </nav>
 
         <div class="content">
-            <div class="container-md bg-light">
-                <div class="row ">
-                    
-                    <div id="table-wrapper" class="col-12 col-md-6">
+            <div class="container-md">
+                <div class="row bg-light">
+                    <div id="table-wrapper" class="col-12 col-md-7">
                         <button id="newPointBtn" class="btn btn-success w-100">Dodaj nowy punkt kontrolny</button>
                         <table class="table table-hover" id="table">
                             <thead>
                                 <tr>
                                     <!-- <th>ID</th> -->
-                                    <th>Kod</th>
-                                    <th>Opis</th>
-                                    <th>Obszar</th>
-                                    <th>Easting</th>
-                                    <th>Northing</th>
-                                    <th></th>
-                                    <th></th>
+                                    <th data-priority="3">Kod</th>
+                                    <th data-priority="6">Opis</th>
+                                    <th data-priority="7">Obszar</th>
+                                    <th data-priority="4">Easting</th>
+                                    <th data-priority="4">Northing</th>
+                                    <th data-priority="2"></th>
+                                    <th data-priority="1"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,7 +72,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-6 sticky-top" id="map"></div>
+                    <div class="col-12 col-md-5 sticky-top" id="map"></div>
                 </div>
 
             </div>
@@ -89,11 +89,23 @@
             </div>
             <div class="modal-body">
                 <form id="pointForm">
-                    <!-- Pole Kod -->
-                    <div class="mb-3">
-                        <label for="pointCode" class="form-label">Kod</label>
-                        <input type="text" class="form-control" id="pointCode" name="code">
-                    </div>
+                    @csrf
+                     <div class="row">
+                        <!-- Pole Kod -->
+                        <div class="col mb-3">
+                            <label for="pointCode" class="form-label">Kod</label>
+                            <input type="text" class="form-control" id="pointCode" name="code">
+                        </div>
+                        <!-- Punkt wirtualny -->
+                        <div class="col mb-3 text-center">
+                            <label class="form-label d-block" for="pointVirtual">Punkt wirtualny</label>
+                            <input type="hidden" name="pointVirtual" value="0">
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" id="pointVirtual" name="pointVirtual" value="1">
+                            </div>
+                        </div>
+                     </div>
+                    
                     <!-- Pole Opis -->
                     <div class="mb-3">
                         <label for="pointDescription" class="form-label">Opis</label>
@@ -139,6 +151,23 @@
                             <input type="text" class="form-control" id="pointLatitude" name="latitude">
                         </div>
                     </div>
+                    
+                    
+                    <!-- Obszar -->
+                    <div class="mb-3">
+                        <label for="areaId" class="form-label">Obszar</label>
+                        <select class="form-select" id="areaId" name="area_id">
+                            <option value="1">Grabówek</option>
+                            <option value="2">Chylonia</option>
+                        </select>
+                    </div>
+                    <!-- Url kodu QR -->
+                    <div class="mb-3">
+                        <label for="pointUrl" class="form-label">Url kodu QR</label>
+                        <input type="text" class="form-control" id="pointUrl" name="url">
+                    </div>
+                    <!-- Tagi -->
+                    <div id="dropdown-container" class="mb-3"></div>
                     <!-- Przyciski -->
                      <div class="row">
                         <div class="col">
@@ -165,11 +194,18 @@
         <!-- BOOTSTRAP -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <!-- DATATABLES -->
-        <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
-        <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
-        
-        <script>
+        <!-- <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script> -->
+        <script src="../js/map.js" async></script>
+        <script src="../js/map-pdf.js" async></script>
+        <script src="../js/helpers.js" async></script>
+        <script src="../js/table.js" async></script>
+        <script src="../js/data.js" async></script>
+        <script src="../js/admin-zpk.js" async></script>
+
+        {{-- <script>
             $(document).ready(function() {
                 let table = initTable();
                 let map =initMap();
@@ -252,7 +288,7 @@
                 return $('#table').DataTable({
                     searching: false,
                     info: false,
-                    "lengthMenu": [5, 10, 15],
+                    lengthMenu: [5, 10, 15],
                     language: {
                         lengthMenu: 'Wyświetl _MENU_ wpisów na stronę'
                     },
@@ -260,14 +296,14 @@
                     // scrollX: false,
                     // scrollY: '40vmax',
                     responsive: true,
-                    columnDefs: [
-                        {responsivePriority: 3, targets: 0},
-                        {responsivePriority: 4, targets: 1},
-                        {responsivePriority: 6, targets: 2},
-                        {responsivePriority: 5, targets: 3},
-                        {responsivePriority: 1, targets: 4},
-                        {responsivePriority: 2, targets: 5},
-                    ]
+                    // columnDefs: [
+                    //     {responsivePriority: 5, targets: 4},
+                    //     {responsivePriority: 6, targets: 5},
+                    //     {responsivePriority: 3, targets: 2},
+                    //     {responsivePriority: 4, targets: 3},
+                    //     {responsivePriority: 1, targets: 0},
+                    //     {responsivePriority: 2, targets: 1},
+                    // ]
                     
                 });
             }
@@ -497,7 +533,7 @@
                 }
             }
 
-        </script>
+        </script> --}}
 
 
     </body>

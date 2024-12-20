@@ -63,22 +63,20 @@
         <!-- CONTENT -->
         <div class="content">
             <div class="container-md">
-                <div class="row">
+                <div class="row  border border-success border-4 rounded bg-light">
                     <div class="col-12 col-md-6">
-                        <div  id="dropdown-container">
-                            
+                        <div class="m-3">
+                            <div  id="dropdown-container" class="mb-3">
+                                
+                            </div>
+        
+                            <button id="finish-btn" class="btn btn-success ">Zakończ</button>
+                            <button id="reset-btn" class="btn btn-outline-success ">Wyczyść</button>
                         </div>
-    
-                        <button id="finish-btn" class="btn btn-success ">Zakończ</button>
-                        <button id="reset-btn" class="btn btn-outline-success ">Wyczyść</button>
                     </div>
                     
                     <div class="col-12 col-md-6" id="map"></div>
                 </div>
-                
-                
-                
-                
             </div>
         </div>
 
@@ -99,6 +97,12 @@
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
+        
+        <script src="js/map.js" async></script>
+        <script src="js/map-pdf.js" async></script>
+        <script src="js/helpers.js" async></script>
+        <script src="js/table.js" async></script>
+        <script src="js/data.js" async></script>
         <script src="js/planner.js"></script>
     </body>
 </html>

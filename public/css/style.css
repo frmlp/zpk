@@ -1,14 +1,27 @@
 #map {
-    height: 40vmax;
-    
+  height: 90vh; 
+}
+
+#map-modal {
+  height: 300px; 
+  width: 100%; 
 }
 
 .content {
     margin: 15px 0px 15px 0px;
 }
 
+.form-signin {
+  max-width: 500px;
+  padding: 1rem;
+}
+
 p {
     text-align: justify;
+}
+
+table.dataTable {
+  font-size: 0.8em;
 }
 
 .form-check-input:checked {
@@ -80,7 +93,7 @@ p {
   left: 80%;
   animation-duration: 75s;
   animation-delay: -30s;
-  box-shadow: 85vmin 0 30vmin currentColor;
+  box-shadow: 85vmin 0 20vmin currentColor;
 }
 
 .background span:nth-child(4) {
