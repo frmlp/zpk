@@ -23,7 +23,7 @@ class Point4PathResource extends JsonResource
             'easting' => $this->easting,
             'northing' => $this->northing,
             'pointVirtual' => $this->pointVirtual,
-            'tags' => $this->pointTags->map(function ($tag) { 
+            'tags' => $this->tags->map(function ($tag) { 
                 return [
                     'id' => $tag->id,
                     'name' => $tag->tag, 

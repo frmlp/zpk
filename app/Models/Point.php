@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Point extends Model
@@ -18,7 +17,7 @@ class Point extends Model
         'northing', 
         'pointVirtual', 
         'url',
-        'area_id'
+        //'area_id'
     ];
 
     public static function rules()
@@ -30,28 +29,30 @@ class Point extends Model
             'northing' => 'required|numeric',
             'pointVirtual' => 'required|boolean',
             'url' => 'nullable|url',
-            'area_id' => 'required|numeric',
+            //'area_id' => 'required|numeric',
         ];
     }
+    // ggh todo: zwrot obszaru z całym obiektem
+
     
     public function paths(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Path::class, 'paths_points')
+            ->belongsToMany(Path::class, 'path_point')
             ->withPivot('position')
             ->withTimestamps();
     }
 
-    public function pointTags(): BelongsToMany
+    public function tags(): BelongsToMany
     {
         return $this
-            ->belongsToMany(PointTag::class, 'points_point_tags')
+            ->belongsToMany(Tag::class, 'point_tag')
             ->withTimestamps();
     }
 
-    public function area(): BelongsTo
+    public function areas(): BelongsToMany
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsToMany(Area::class, 'area_point');
     }
 
 }

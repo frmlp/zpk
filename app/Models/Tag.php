@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PointTag extends Model
+class Tag extends Model
 {
     use HasFactory;
 
@@ -19,7 +19,7 @@ class PointTag extends Model
     }
     public function points(){
         return $this
-            ->belongsToMany(Point::class, 'points_point_tags')
+            ->belongsToMany(Point::class, 'point_tag')
             ->withTimestamps();
     }
 }

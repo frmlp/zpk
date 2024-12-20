@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('area_point', function (Blueprint $table) {
             $table->id();
-            $table->string('tag')->unique();
+            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->foreignId('point_id')->constrained()->onDelete('cascade');
+            $table->unique(['area_id', 'point_id']);
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('area_point');
     }
 };

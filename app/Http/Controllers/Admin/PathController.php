@@ -22,7 +22,7 @@ class PathController extends Controller
 
             $points = $request->input('points', []);
             foreach ($points as $index => $pointId) {
-                $path->points()->attach($pointId, ['position' => $index + 1]);
+                $path->points()->attach($pointId, ['position' => $index]);
             }
 
             return redirect()->route('admin.zpk')->with('success', 'Dodano nową ścieżkę');
@@ -67,9 +67,9 @@ class PathController extends Controller
                 $point = $existingPoints->firstWhere('id', $pointId);
     
                 if ($point) {
-                    $path->points()->updateExistingPivot($pointId, ['position' => $index + 1]);
+                    $path->points()->updateExistingPivot($pointId, ['position' => $index]);
                 } else {
-                    $path->points()->attach(Point::find($pointId), ['position' => $index + 1]);
+                    $path->points()->attach(Point::find($pointId), ['position' => $index]);
                 }
             }
     

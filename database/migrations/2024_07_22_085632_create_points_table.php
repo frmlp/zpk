@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code', length: 10)->unique();
             $table->text('description');
+            //$table->double('area_id');            
             $table->double('easting');
             $table->double('northing');
             $table->boolean('pointVirtual');   

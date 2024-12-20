@@ -33,7 +33,7 @@ class PointController extends Controller
 
             $point->area_id = $request->input('area_id');
             $point->save();
-            $point->pointTags()->attach($uniqueTagIds);
+            $point->tags()->attach($uniqueTagIds);
 
             return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
 
@@ -47,14 +47,14 @@ class PointController extends Controller
 
     public function index()
     {   // logika endpointu GET api/admin/points
-        $points = Point::with('pointTags')->get();
+        $points = Point::with('tags', 'areas')->get();
         return PointResource::collection($points)->response()->setStatusCode(200);
     }
 
     public function show(Point $point)
     {   // logika endpointu GET api/admin/points/{point}
         try {
-            $point->load('pointTags'); 
+            $point->load('tags'); 
             return (new PointResource($point))->response()->setStatusCode(200); 
     
         } catch (\Exception $exception) {
@@ -85,10 +85,10 @@ class PointController extends Controller
             $tagIds = $request->input('tag_ids');
             $uniqueTagIds = array_unique($tagIds);
             
-            $point->pointTags()->sync($uniqueTagIds);
+            $point->tags()->sync($uniqueTagIds);
 
             return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
-
+            // ggh todo: nie przekierowywać na widok, tylko message i kod obsługi
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'message' => 'Nie znaleziono punktu.',
@@ -109,13 +109,14 @@ class PointController extends Controller
         try {
             $point->findOrFail($point->id);
             // odpięcie z tablicy pośredniej point_tags
-            $point->pointTags()->detach(); 
+            $point->tags()->detach(); 
             
             // odpięcie z tablicy pośredniej dla paths_points
             $paths = $point->paths()->get();
             foreach ($paths as $path) {
                 $path->points()->detach($point->id); 
             }
+            // ggh todo walidacja pozycji na ścieżce
             
             $point->delete();
             
