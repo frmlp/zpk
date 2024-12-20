@@ -8,23 +8,26 @@ $(document).ready(function() {
     let endMarker = null;
     let paths = [];
     let points = [];
+
     // let table = initTable(true);
-    getPathData()
+    // addTokenToForms(['form', 'logoutForm']);
+    csrfAjaxSetup();
+
+    getAdminPathData()
         .then(function(result) {
             // console.log("halo");
-            paths = result.data;
-            // console.log(jsonresponse);
-            // console.log(window.location.pathname);
+            paths = filterPathsWithPoints(result.data);
+            console.log(paths);
             populateTable(paths, "admin/baza-tras");
     }).catch((error) => console.log(error));
 
-    getPointsData()
+    getAdminPointsData()
         .then(function(result) {
             points = result.data;
             // resetDropdowns(points);
             initializeSortable();
             // initPointsPreview(points, markers, modalMap, "planer");
-            // console.log("pobrano punkty");
+            console.log(points);
         });
     
     $('#table tbody').on('click', 'tr', function() {
@@ -94,10 +97,52 @@ $(document).ready(function() {
         }
     });
 
+    $('#table').on('click', '.delete-btn', function(event) {
+        
+        event.preventDefault();
+
+        let id = $(this).data('id');
+        const deleteUrl = `/admin/paths/${id}`; // Endpoint do usunięcia
+        const confirmMessage = 'Czy na pewno chcesz usunąć tę ścieżkę?';
+
+        // Potwierdzenie akcji użytkownika
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+
+        // Pobierz token przed wysłaniem żądania DELETE
+        // getToken().then(function(response) {
+        //     const token = response.token; // Pobierz token z odpowiedzi serwera
+
+            // Wykonaj żądanie DELETE
+            $.ajax({
+                url: deleteUrl,
+                type: 'DELETE',
+                // data: {
+                //     _token: token // Dołącz token CSRF
+                // },
+                success: function(response) {
+                    // Obsługa sukcesu (np. odświeżenie listy)
+                    alert('Usunięto pomyślnie');
+                    location.reload(); // Odśwież stronę
+                },
+                error: function(xhr) {
+                    // Obsługa błędu
+                    const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
+                    alert(errorMessage);
+                }
+            });
+        // }).catch(function() {
+        //     // Obsługa błędu pobierania tokenu
+        //     alert('Nie udało się pobrać tokenu. Spróbuj ponownie.');
+        // });
+
+    });
+
     $('#table').on('click', '.edit-btn', function() {
         let id = $(this).data('id');
         // console.log(id);
-        path = paths.find(path => path.id === id);
+        const path = paths.find(path => path.id === id);
         // console.log(path);
         $('#pathForm').attr('action', '/admin/paths/' + path.id);
         $('#pathForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
@@ -152,11 +197,13 @@ $(document).ready(function() {
         $('#pathForm input[name="points"]').remove();
 
         // Dodaj ukryte pole z tablicą 'points'
-        $('<input>').attr({
-            type: 'hidden',
-            name: 'points',
-            value: JSON.stringify(pathPoints) // Przekazujemy tablicę jako JSON
-        }).appendTo('#pathForm');
+        pathPoints.forEach(pointId => {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'points[]',
+                value: pointId
+            }).appendTo('#pathForm');
+        });
 
         const form = $(this);
         const actionUrl = form.attr('action'); // Pobierz URL akcji
@@ -166,8 +213,11 @@ $(document).ready(function() {
             url: actionUrl,
             method: form.attr('method'), // Pobierz metodę (POST lub inne)
             data: formData,
-            success: function (response) {
-                if (response.status === 200) {
+            success: function (response, status, xhr) {
+                console.log("xhr status: " + xhr.status);
+                console.log(response);
+                console.log(status);
+                if (xhr.status === 200) {
                     location.reload(); // Odśwież stronę
                 } else {
                     $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
