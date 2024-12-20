@@ -46,15 +46,14 @@ function checkRouteType(points) {
     let lastPoint;
 
     if('position' in points[0]) {
-        
-        firstPoint = Math.min(points.map(p => p.position)).id;
-        lastPoint = Math.max(points.map(p => p.position)).id;
+        points.sort((p1, p2) => {
+            return p1.position - p2.position;
+        });
     }
-    else {
-        firstPoint = points[0].id;
-        lastPoint = points[points.length - 1].id;
-    }
-    
+
+    firstPoint = points[0].id;
+    lastPoint = points[points.length - 1].id;
+
     if(firstPoint === lastPoint) {
         return "Pętla";
     } else {
@@ -72,6 +71,7 @@ function populateDropdowns(points) {
     })
 }
 
+
 function createDropdown(points) {
     let optionList = `<option selected disabled>Wybierz punkt</option>`;
     points.forEach(function(point) {
@@ -86,8 +86,25 @@ function createDropdown(points) {
             </div>`;
 }
 
+function createTagDropdown(tags) {
+    let optionList = `<option selected disabled>Wybierz tag</option>`;
+    tags.forEach(function(tag) {
+        optionList += `<option value="${tag.id}">${tag.tag}</option>`
+    })
+    return  `<div class="input-group dropdown-group">
+                <select class="form-select dropdown">`
+                    + optionList +
+                `</select>
+                <button class="btn btn-danger tag-remove-btn" type="button" style="display:none;">Usuń</button>
+            </div>`;
+}
+
 function resetDropdowns(points) {
     $('#dropdown-container').html(createDropdown(points));
+}
+
+function resetTagDropdowns(tags) {
+    $('#dropdown-container').html(createTagDropdown(tags));
 }
 
 function collectPoints(markup, points){
@@ -99,3 +116,20 @@ function collectPoints(markup, points){
     }).get();
 }
 
+function filterPathsWithPoints(paths) {
+    return paths.filter(route => Array.isArray(route.points) && route.points.length > 0);
+}
+
+function checkPathArea(points) {
+    let areas = [-1, 0, 0];
+    
+    points.forEach(point => {
+        areas[point.area_id] = 1;
+    });
+
+    if(areas[1] == 1 && areas[2] == 0) return "Grabówek";
+    if(areas[1] == 0 && areas[2] == 1) return "Chylonia";
+    return "Chylonia i Grabówek";
+
+
+}

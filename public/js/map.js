@@ -34,15 +34,30 @@ const purpleIcon = L.icon({
     shadowSize: [41, 41],
 });
 
+const yellowIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+});
+
 initCoordinates = [54.52, 18.49];
 initZoom = 13;
 
 function initMap(mapId) {
     map = L.map(mapId).setView(initCoordinates, initZoom);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 17,
+    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         maxZoom: 17,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
     }).addTo(map);
+
     return map;
 }
 
@@ -60,7 +75,8 @@ function initPointsPreview(points, markers, map, view) {
     points.forEach(function(point) {
         let epsg2180coords = [point.easting, point.northing];
         let wsg84coords = transformToWSG84(epsg2180coords);
-        let m = L.marker(wsg84coords, {pointId: point.id});
+        let m = L.marker(wsg84coords, {pointId: point.id, pointVirtual: point.pointVirtual});
+        point.pointVirtual? m.setIcon(yellowIcon) : m.setIcon(defaultIcon);
         if(view === "generator") {
             m.bindPopup(point.code.concat(" - ", point.description + 
                 `<div class="row justify-content-center">
@@ -85,6 +101,22 @@ function initPointsPreview(points, markers, map, view) {
     markers.addTo(map);
 }
 
+function initPointsPreview2(points, markers, map) {
+    console.log(markers);
+    markers.clearLayers();
+    points.forEach(function(point) {
+        let epsg2180coords = [point.easting, point.northing];
+        let wsg84coords = transformToWSG84(epsg2180coords);
+        let m = L.marker(wsg84coords, {pointId: point.id});
+        point.pointVirtual? m.setIcon(yellowIcon) : m.setIcon(defaultIcon);
+        m.bindPopup(point.popup);
+        markers.addLayer(m);
+    });
+    markers.addTo(map);
+}
+
+
+
 //planer
 function drawPath(points, markers, map) {
     markers.clearLayers(); // Czyść warstwę trasy
@@ -100,13 +132,69 @@ function drawPath(points, markers, map) {
     markers.addTo(map);
 }
 
+// function showPoint(point, markers, map) {
+//     markers.clearLayers();
+
+//     if(!point) return;
+
+//     const wsg84coords = transformToWSG84([point.easting, point.northing]);
+//     const marker = L.marker(wsg84coords);
+//     point.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
+
+// }
+
+function highlightMarker(point, oldMarker, markers, map) {
+    const factor = 1.5;
+
+    if(oldMarker) {
+        const currentIcon = oldMarker.getIcon();
+        const normalIcon = L.icon({
+            iconUrl: currentIcon.options.iconUrl, // URL obecnej ikony
+            shadowUrl: currentIcon.options.shadowUrl,
+            iconSize: currentIcon.options.iconSize.map(size => size / factor), // Powiększ rozmiar ikony
+            iconAnchor: currentIcon.options.iconAnchor.map(anchor => anchor / factor), // Dopasuj punkt kotwiczenia
+            popupAnchor: currentIcon.options.popupAnchor.map(anchor => anchor / factor), // Dopasuj punkt popup
+            shadowSize: currentIcon.options.shadowSize.map(anchor => anchor / factor)
+        });
+
+        oldMarker.setIcon(normalIcon);
+    }
+
+    let highlightedMarker = markers.find(marker => marker.options.pointId === parseInt(point.id));
+
+    const currentIcon = highlightedMarker.getIcon();
+
+    const highlightedIcon = L.icon({
+        iconUrl: currentIcon.options.iconUrl, // URL obecnej ikony
+        shadowUrl: currentIcon.options.shadowUrl,
+        iconSize: currentIcon.options.iconSize.map(size => size * factor), // Powiększ rozmiar ikony
+        iconAnchor: currentIcon.options.iconAnchor.map(anchor => anchor * factor), // Dopasuj punkt kotwiczenia
+        popupAnchor: currentIcon.options.popupAnchor.map(anchor => anchor * factor), // Dopasuj punkt popup
+        shadowSize: currentIcon.options.shadowSize.map(anchor => anchor * factor)
+    });
+
+    highlightedMarker.setIcon(highlightedIcon);
+
+    return highlightedMarker;
+    
+}
+
+function initHighlightMarker(highlightedMarker, points, markers, map) {
+    markers.forEach(marker => {
+        const pointId = marker.options.pointId;
+        const point = points.find(p => p.id === pointId);
+
+        highlightedMarker = highlightMarker(point, highlightedMarker, markers, map);
+    })
+}
+
 function updateMap(points, markers, map) {
     // console.log(markers);
     // Clear all existing layers
     markers.clearLayers();
 
     // Return early if no points are provided
-    if (!points || points.length === 0) return;
+    // if (!points || points.length === 0) return;
 
     if('position' in points[0]) {
         points.sort((p1, p2) => {
@@ -121,6 +209,7 @@ function updateMap(points, markers, map) {
     const wsg84points = points.map((point, index) => {
         const wsg84coords = transformToWSG84([point.easting, point.northing]);
         const marker = L.marker(wsg84coords);
+        // point.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
         marker.bindPopup(`${point.code} - ${point.description}`);
 
         // Set marker icon based on position
@@ -129,7 +218,8 @@ function updateMap(points, markers, map) {
             if (index === 0 || index === points.length - 1) {
                 marker.setIcon(purpleIcon);
             } else {
-                marker.setIcon(defaultIcon);
+                // marker.setIcon(defaultIcon);
+                point.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
             }
         } else {
             // For a non-loop route
@@ -138,7 +228,8 @@ function updateMap(points, markers, map) {
             } else if (index === points.length - 1) {
                 marker.setIcon(redIcon); // End point
             } else {
-                marker.setIcon(defaultIcon); // Middle points
+                // marker.setIcon(defaultIcon); // Middle points
+                point.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
             }
         }
 
@@ -174,7 +265,9 @@ function updateMap(points, markers, map) {
 // Reset a marker to its default color
 function resetMarker(marker) {
     if (marker) {
-        marker.setIcon(defaultIcon);
+        
+        marker.options.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
+        // marker.setIcon(defaultIcon);
     }
 }
 
@@ -240,6 +333,7 @@ function updateMarkerColor(marker, isStart, isBoth) {
 
 function resetMarkers(markers) {
     markers.forEach(marker => {
-        if (marker) marker.setIcon(defaultIcon);
+        // if (marker) marker.setIcon(defaultIcon);
+        if(marker) marker.options.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
     });
 }
