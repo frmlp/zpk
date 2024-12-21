@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('points', function (Blueprint $table) {
             $table->id();
             $table->string('code', length: 10)->unique();
-            $table->text('description');
-            //$table->double('area_id');            
+            $table->text('description');     
             $table->double('easting');
             $table->double('northing');
             $table->boolean('pointVirtual');   

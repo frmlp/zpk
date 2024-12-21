@@ -24,8 +24,7 @@ class PointResource extends JsonResource
             'northing' => $this->northing,
             'pointVirtual' => $this->pointVirtual,
             'url' => $this->url,
-            // 'area' => Area4PointResource::collection($this->areas),
-            'area' => $this->areas->map(function ($area) { 
+            'areas' => $this->areas->map(function ($area) { 
                 return [
                     'id' => $area->id,
                     'name' => $area->name,
@@ -34,7 +33,7 @@ class PointResource extends JsonResource
             'tags' => $this->tags->map(function ($tag) { 
                 return [
                     'id' => $tag->id,
-                    'name' => $tag->tag, 
+                    'name' => $tag->name, 
                 ];
             }),
         ];

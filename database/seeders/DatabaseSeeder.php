@@ -88,7 +88,7 @@ class DatabaseSeeder extends Seeder
             $tag = $data[0];
 
             Tag::factory()->create([
-                'tag' => $tag
+                'name' => $tag
             ]);
         }
 

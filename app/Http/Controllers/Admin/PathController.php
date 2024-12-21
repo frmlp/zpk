@@ -14,18 +14,31 @@ use Illuminate\Validation\ValidationException;
 
 class PathController extends Controller
 {
-    public function store(Request $request, Path $path)
-    {   // logika endpointu POST api/admin/points/
+    public function store(Request $request)
+    {
         try {
             $validatedData = $request->validate(Path::rules());
             $path = Path::create($validatedData);
 
             $points = $request->input('points', []);
+
+            // Walidacja
+            for ($i = 0; $i < count($points) - 1; $i++) {
+                if ($points[$i] === $points[$i + 1]) {
+                    return response()->json([
+                        'message' => 'Błąd walidacji: Ten sam punkt nie może występować na dwóch kolejnych pozycjach.',
+                    ], 422);
+                }
+            }
+
             foreach ($points as $index => $pointId) {
                 $path->points()->attach($pointId, ['position' => $index]);
             }
 
-            return redirect()->route('admin.zpk')->with('success', 'Dodano nową ścieżkę');
+            return response()->json([
+                'message' => 'Dodano nową ścieżkę',
+                'path' => new PathResource($path) // Możesz dodać dane ścieżki do odpowiedzi
+            ], 201); 
 
         } catch (ValidationException $e) {
             return response()->json([
@@ -34,6 +47,7 @@ class PathController extends Controller
             ], 422);
         }
     }
+
 
     public function index()
     {   // logika endpointu GET api/admin/paths/
@@ -55,39 +69,47 @@ class PathController extends Controller
     }
 
     public function update(Request $request, Path $path)
-    {   // logika endpointu PUT api/admin/paths/{path}
+    {
         try {
-            $path->findOrFail($path->id);
             $validatedData = $request->validate(Path::rules());
             $path->update($validatedData);
     
-            $existingPoints = $path->points()->get();
+            $points = $request->input('points', []);
     
-            foreach ($request->input('points', []) as $index => $pointId) {
-                $point = $existingPoints->firstWhere('id', $pointId);
-    
-                if ($point) {
-                    $path->points()->updateExistingPivot($pointId, ['position' => $index]);
-                } else {
-                    $path->points()->attach(Point::find($pointId), ['position' => $index]);
+            // Walidacja
+            for ($i = 0; $i < count($points) - 1; $i++) {
+                if ($points[$i] === $points[$i + 1]) {
+                    return response()->json([
+                        'message' => 'Błąd walidacji: Ten sam punkt nie może występować na dwóch kolejnych pozycjach.',
+                    ], 422);
                 }
             }
     
-            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano ścieżkę');
+            // Usunięcie istniejących powiązań
+            $path->points()->detach();
+    
+            // Dodanie nowych powiązań
+            foreach ($points as $index => $pointId) {
+                $path->points()->attach($pointId, ['position' => $index]);
+            }
+    
+            return response()->json([
+                'message' => 'Zaktualizowano ścieżkę',
+                'path' => new PathResource($path) 
+            ], 200); 
     
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'message' => 'Nie znaleziono ścieżki.',
             ], 404);
         } catch (ValidationException $e) {
-            Log::error('Błędy walidacji podczas aktualizacji ścieżki:', $e->errors());
             return response()->json([
                 'message' => 'Błąd walidacji',
                 'errors' => $e->errors(),
             ], 422);
         }
     }
-
+    
     public function destroy(Path $path)
     {   // logika endpointu DELETE api/admin/paths/{path}
         try {

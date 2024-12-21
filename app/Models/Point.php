@@ -17,7 +17,6 @@ class Point extends Model
         'northing', 
         'pointVirtual', 
         'url',
-        //'area_id'
     ];
 
     public static function rules()
@@ -29,7 +28,6 @@ class Point extends Model
             'northing' => 'required|numeric',
             'pointVirtual' => 'required|boolean',
             'url' => 'nullable|url',
-            //'area_id' => 'required|numeric',
         ];
     }
     // ggh todo: zwrot obszaru z całym obiektem
@@ -52,7 +50,8 @@ class Point extends Model
 
     public function areas(): BelongsToMany
     {
-        return $this->belongsToMany(Area::class, 'area_point');
+        return $this
+            ->belongsToMany(Area::class, 'area_point')
+            ->withTimestamps();
     }
-
 }

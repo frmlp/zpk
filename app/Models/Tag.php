@@ -9,12 +9,12 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tag'];
+    protected $fillable = ['name'];
 
     public static function rules()
     {
         return [
-            'tag' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ];
     }
     public function points(){

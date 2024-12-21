@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('area_point', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
-            $table->foreignId('point_id')->constrained()->onDelete('cascade');
+            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
+            $table->foreignId('point_id')->constrained('points')->onDelete('cascade');
             $table->unique(['area_id', 'point_id']);
             $table->timestamps();
         });

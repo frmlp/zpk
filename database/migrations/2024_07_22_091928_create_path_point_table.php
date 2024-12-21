@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('point_id')->constrained('points');
             $table->integer('position');
             $table->timestamps();
-            $table->unique(['path_id', 'point_id', 'position']);
         });
     }
 

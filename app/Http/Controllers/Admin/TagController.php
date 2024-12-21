@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,19 +14,19 @@ use Illuminate\Validation\Rule;
 class TagController extends Controller
 {
 
-    public function store(Request $request, Tag $tag)
-    {
+    public function store(Request $request)
+    {   // logika endpointu POST api/admin/tags/
         try{
             $validatedData = $request->validate(Tag::rules());
             // dodatkowa walidacja
             $request->validate([
-                'tag' => [
-                    Rule::unique('point_tags'), 
+                'name' => [
+                    Rule::unique('tags'), 
                 ],
             ]);
 
-            $tag = Tag::create($validatedData);
-            return redirect()->route('admin.zpk')->with('success', 'Dodano nowy tag do punktu');
+            Tag::create($validatedData);
+            return response()->json(['message' => 'Dodano nowy punkt'], 201);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Blad walidacji',
@@ -36,30 +37,33 @@ class TagController extends Controller
     
     public function index()
     {
-        $points = Tag::all();
-        return response()->json($points, 200);
+        $tags = Tag::all();
+        return TagResource::collection($tags);
     }
 
-    public function show(Tag $point_tag)
+    public function show(Tag $tag)
     {
-        return response()->json($point_tag, 200); 
+        return new TagResource($tag); 
     }
 
-    public function update(Request $request, Tag $point_tag)
+    public function update(Request $request, Tag $tag)
     {
         // logika endpointu PUT api/admin/tags/{point_tag}
         try {
-            $point_tag->findOrFail($point_tag->id);
+            $tag->findOrFail($tag->id);
             // dodatkowa walidacja przy dodawaniu tagów
             $request->validate([
-                'tag' => [
-                    Rule::unique('point_tags')->ignore($point_tag->id),
+                'name' => [
+                    Rule::unique('tags')->ignore($tag->id),
                 ],
             ]);
             $validatedData = $request->validate(Tag::rules());
-            $point_tag->update($validatedData);
+            $tag->update($validatedData);
 
-            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano tag');
+            return response()->json([
+                'message' => 'Zaktualizowano tag',
+                'tag' => new TagResource($tag), 
+            ], 200); 
 
         }  catch (ValidationException $e) {
             Log::error('Blad walidacji podczas aktualizacji tagu:', $e->errors());
@@ -71,29 +75,22 @@ class TagController extends Controller
         }
     }
 
-    public function destroy(Tag $point_tag)
+    public function destroy(Tag $tag)
     {
         try {
-            $point_tag->findOrFail($point_tag->id); 
-    
-            // Pobranie wszystkich punktów powiązanych z tagiem
-            $points = $point_tag->points;
-    
-            // Usunięcie powiązań z tagiem w tablicy pośredniej
-            foreach ($points as $point) {
-                $point->tags()->detach($point_tag->id);
-            }
-    
-            $point_tag->delete();
-    
-            return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
-    
+            // Usunięcie powiązań z tagiem w tablicy pośredniej (można uprościć)
+            $tag->points()->detach();
+
+            $tag->delete();
+
+            return response()->json([
+                'message' => 'Usunięto tag'
+            ], 200);
+
         } catch (ModelNotFoundException $exception) {
             return response()->json([
-                'message' => 'Nie znaleziono tagu.', 
-            ], 404); 
+                'message' => 'Nie znaleziono tagu.',
+            ], 404);
         }
-        return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
-    }
-    
+    } 
 }
