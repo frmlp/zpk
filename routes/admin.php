@@ -41,14 +41,15 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         });
 
         // AREAS
-        // obszary do wbudowania w bazę
         Route::prefix('areas')->controller(AreaController::class)->name('admin.areas')->group(function () {
     
             Route::post('/', 'store')->name('store');
             Route::get('/', 'index')->name('index');
             Route::get('/{area}', 'show')->name('show');
-            // Route::put('/{area}', 'update')->name('update');
+            Route::put('/{area}', 'update')->name('update');
             Route::delete('/{area}', 'destroy')->name('destroy');  // do poprawy
+                // ggh ask: czy nazwy muszą być unikatowe? jeżeli do danego obszaru będziemy mieli różne podkłady?
+
         });
 
         //  PATHS

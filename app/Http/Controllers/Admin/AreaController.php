@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AreaResource;
 use App\Models\Area;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,10 +18,17 @@ class AreaController extends Controller
     {
         try {
             $validatedData = $request->validate(Area::rules());
-            $area = Area::create($validatedData);
-            
-            return redirect()->route('admin.zpk')->with('success', 'Dodano nowy obszar'); 
-
+    
+           $area = Area::create($validatedData);
+    
+            return response()->json([
+                'message' => 'Dodano nowy obszar',
+                'area' => new AreaResource($area) 
+            ], 201);
+            // return response()->json([
+            //     'message' => 'Dodano nowy obszar'
+            // ], 201);
+    
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Błąd walidacji',
@@ -31,38 +39,50 @@ class AreaController extends Controller
 
     public function index()
     {
-        $points = Area::all();
-        return response()->json($points, 200);
+        $areas = Area::all();
+        return AreaResource::collection($areas);
     }
 
     public function show(Area $area)
     {
-        return response()->json($area, 200); 
+        return new AreaResource($area);
+        
+    }
+
+    public function update(Request $request, Area $area)
+    {
+        try {
+            $validatedData = $request->validate(Area::rules());
+            $area->update($validatedData);
+
+            return response()->json([
+                'message' => 'Zaktualizowano obszar',
+                'area' => new AreaResource($area)
+            ], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Błąd walidacji',
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 
     public function destroy(Area $area)
     {
         try {
-            $area->findOrFail($area->id); 
-    
-            // Pobranie wszystkich punktów powiązanych z obszarem
-            $points = $area->points;
-    
-            // Usunięcie powiązań z obszarem w tablicy pośredniej
-            foreach ($points as $point) {
-                $point->areas()->detach($area->id);
-            }
-    
+            // Usunięcie powiązań z obszarem w tablicy pośredniej area_point
+            $area->points()->detach(); 
             $area->delete();
-    
-            return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
-    
+
+            return response()->json([
+                'message' => 'Obszar został usunięty' 
+            ], 200);
+
         } catch (ModelNotFoundException $exception) {
             return response()->json([
-                'message' => 'Nie znaleziono tagu.', 
-            ], 404); 
+                'message' => 'Nie znaleziono obszaru.',
+            ], 404);
         }
-        return redirect()->route("admin.zpk")->with('success', 'Usunięto tag');
     }
-
 }

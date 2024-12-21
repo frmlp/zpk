@@ -38,7 +38,10 @@ class PointController extends Controller
             $areaIds = $request->input('area_ids', []);
             $point->areas()->attach($areaIds); 
 
-            return response()->json(['message' => 'Dodano nowy punkt'], 201); 
+            return response()->json([
+                'message' => 'Dodano nowy punkt',
+                'point' => new PointResource($point) 
+            ], 201); 
 
         } catch (ValidationException $e) {
             return response()->json([
@@ -89,8 +92,8 @@ class PointController extends Controller
 
             return response()->json([
                 'message' => 'Zaktualizowano punkt',
-                'point' => $point, 
-            ], 200); 
+                'point' => new PointResource($point) 
+            ], 200);
 
         } catch (ValidationException $e) {
             Log::error('Bledy walidacji podczas aktualizacji punktu:', $e->errors());
@@ -108,6 +111,7 @@ class PointController extends Controller
         try {
             $point->tags()->detach(); 
             $point->paths()->detach(); 
+            $point->areas()->detach(); 
        
             $point->delete();
 

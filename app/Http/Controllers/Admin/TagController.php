@@ -25,8 +25,12 @@ class TagController extends Controller
                 ],
             ]);
 
-            Tag::create($validatedData);
-            return response()->json(['message' => 'Dodano nowy tag'], 201);
+            $tag = Tag::create($validatedData);
+            
+            return response()->json([
+                'message' => 'Dodano nowy tag',
+                'tag' => new TagResource($tag) 
+            ], 201);
             
         } catch (ValidationException $e) {
             return response()->json([
@@ -52,7 +56,6 @@ class TagController extends Controller
         // logika endpointu PUT api/admin/tags/{point_tag}
         try {
             $tag->findOrFail($tag->id);
-            // dodatkowa walidacja przy dodawaniu tagów
             $request->validate([
                 'name' => [
                     Rule::unique('tags')->ignore($tag->id),
