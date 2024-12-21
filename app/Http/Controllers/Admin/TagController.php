@@ -26,7 +26,8 @@ class TagController extends Controller
             ]);
 
             Tag::create($validatedData);
-            return response()->json(['message' => 'Dodano nowy punkt'], 201);
+            return response()->json(['message' => 'Dodano nowy tag'], 201);
+            
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Blad walidacji',

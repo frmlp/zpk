@@ -23,7 +23,10 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
             Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::get('/{point}', 'show')->name('show');   // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::put('/{point}', 'update')->name('update');
-            Route::delete('/{point}', 'destroy')->name('destroy');            
+            Route::delete('/{point}', 'destroy')->name('destroy');
+                // ggh todo: post, put: obsługa dubli area_id i nieistniejącego area_id, 
+                // ggh todo: delete : aktualizacja position w path_point
+                // ggh ask: czy punkt ma się wstawić w przypadku błędnej walidacji tagów czy area?
         });
 
         // TAGS
@@ -34,9 +37,11 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
             Route::get('/{tag}', 'show')->name('show');
             Route::put('/{tag}', 'update')->name('update');
             Route::delete('/{tag}', 'destroy')->name('destroy');
+                // ggh todo: store: zwrot dodanego tagu w json
         });
 
         // AREAS
+        // obszary do wbudowania w bazę
         Route::prefix('areas')->controller(AreaController::class)->name('admin.areas')->group(function () {
     
             Route::post('/', 'store')->name('store');
@@ -53,10 +58,14 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
             Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::get('/{path}', 'show')->name('show');    // ggh todo: przekierowanie indexu na endpoint po stronie klienta
             Route::put('/{path}', 'update')->name('update');
-            Route::delete('/{path}', 'destroy')->name('destroy');            
+            Route::delete('/{path}', 'destroy')->name('destroy');      
+                // ggh todo: store, update: weryfikacja istnienia dodawanych punktów
+                // ggh todo: update: odpina path_id z path_point w przypadku braku point
+                // ggh ask: czy path ma się utworzyć przy błędnej walidacji points? 
+                // ggh ask: czy mamy zwracać tworzoną lub aktualizowaną ścieżkę w json?  
         });
         
-        // obszary do wbudowania w bazę
+        
 
 
         // ggh TODO:
@@ -65,7 +74,6 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
 
     {   // do zaimplementowania:
         // 3. Czy implementujemy zmianę jakiś ustawień ??? czyłość punktów wirtualnych ???
-            // na razie bym to olał
 
     }
 

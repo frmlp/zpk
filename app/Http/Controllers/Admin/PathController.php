@@ -22,7 +22,7 @@ class PathController extends Controller
 
             $points = $request->input('points', []);
 
-            // Walidacja
+            // Walidacja sąsiednich punktów
             for ($i = 0; $i < count($points) - 1; $i++) {
                 if ($points[$i] === $points[$i + 1]) {
                     return response()->json([
@@ -37,7 +37,7 @@ class PathController extends Controller
 
             return response()->json([
                 'message' => 'Dodano nową ścieżkę',
-                'path' => new PathResource($path) // Możesz dodać dane ścieżki do odpowiedzi
+                'path' => new PathResource($path)
             ], 201); 
 
         } catch (ValidationException $e) {
