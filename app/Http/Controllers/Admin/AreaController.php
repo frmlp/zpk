@@ -19,7 +19,7 @@ class AreaController extends Controller
         try {
             $validatedData = $request->validate(Area::rules());
     
-           $area = Area::create($validatedData);
+            $area = Area::create($validatedData);
     
             return response()->json([
                 'message' => 'Dodano nowy obszar',
