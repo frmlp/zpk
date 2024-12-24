@@ -25,17 +25,23 @@ class PointController extends Controller
                 ],
             ]);
 
-            // usuwanie powielonych tagów
-            $tagIds = $request->input('tag_ids');
-            $uniqueTagIds = array_unique($tagIds);            
-
-            $point = Point::create($validatedData); 
-
-            $point->area_id = $request->input('area_id');
+            // Tworzenie punktu
+            $point = new Point($validatedData); 
             $point->save();
-            $point->pointTags()->attach($uniqueTagIds);
 
-            return redirect()->route('admin.zpk')->with('success', 'Dodano nowy punkt');
+            // Przypisywanie tagów
+            $tagIds = $request->input('tag_ids', []);
+            $uniqueTagIds = array_unique($tagIds);
+            $point->tags()->attach($uniqueTagIds);
+
+            // Przypisywanie obszarów
+            $areaIds = $request->input('area_ids', []);
+            $point->areas()->attach($areaIds); 
+
+            return response()->json([
+                'message' => 'Dodano nowy punkt',
+                'point' => new PointResource($point) 
+            ], 201); 
 
         } catch (ValidationException $e) {
             return response()->json([
@@ -47,14 +53,14 @@ class PointController extends Controller
 
     public function index()
     {   // logika endpointu GET api/admin/points
-        $points = Point::with('pointTags')->get();
+        $points = Point::with('tags', 'areas')->get();
         return PointResource::collection($points)->response()->setStatusCode(200);
     }
 
     public function show(Point $point)
     {   // logika endpointu GET api/admin/points/{point}
         try {
-            $point->load('pointTags'); 
+            $point->load('tags'); 
             return (new PointResource($point))->response()->setStatusCode(200); 
     
         } catch (\Exception $exception) {
@@ -69,30 +75,26 @@ class PointController extends Controller
     public function update(Request $request, Point $point)
     {   // logika endpointu PUT api/admin/points/{point}
         try {
-            $point->findOrFail($point->id);
-            // dodatkowa walidacja 
+            $validatedData = $request->validate(Point::rules());
             $request->validate([
                 'code' => [
                     Rule::unique('points')->ignore($point->id),
                 ],
             ]);
-            $validatedData = $request->validate(Point::rules());
             $point->update($validatedData);
 
-            $point->area_id = $request->input('area_id');
-            $point->save();
+            $areaId = $request->input('area_id');
+            $point->areas()->sync($areaId);
 
-            $tagIds = $request->input('tag_ids');
+            $tagIds = $request->input('tag_ids', []); 
             $uniqueTagIds = array_unique($tagIds);
-            
-            $point->pointTags()->sync($uniqueTagIds);
+            $point->tags()->sync($uniqueTagIds);
 
-            return redirect()->route('admin.zpk')->with('success', 'Zaktualizowano punkt');
-
-        } catch (ModelNotFoundException $exception) {
             return response()->json([
-                'message' => 'Nie znaleziono punktu.',
-            ], 404);
+                'message' => 'Zaktualizowano punkt',
+                'point' => new PointResource($point) 
+            ], 200);
+
         } catch (ValidationException $e) {
             Log::error('Bledy walidacji podczas aktualizacji punktu:', $e->errors());
 
@@ -107,23 +109,19 @@ class PointController extends Controller
     {   // logika endpointu DELETE api/admin/points/{point}
         
         try {
-            $point->findOrFail($point->id);
-            // odpięcie z tablicy pośredniej point_tags
-            $point->pointTags()->detach(); 
-            
-            // odpięcie z tablicy pośredniej dla paths_points
-            $paths = $point->paths()->get();
-            foreach ($paths as $path) {
-                $path->points()->detach($point->id); 
-            }
-            
+            $point->tags()->detach(); 
+            $point->paths()->detach(); 
+            $point->areas()->detach(); 
+       
             $point->delete();
-            
-            return response()->noContent();
-    
-        } catch (ModelNotFoundException $exception) {
+
             return response()->json([
-                'message' => 'Nie znaleziono punktu.',
+                'message' => 'Punkt został usunięty.'
+              ], 200);   
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Nie znaleziono ścieżki',
             ], 404);
         }
     }

@@ -1,81 +1,91 @@
 <?php
 
 use App\Http\Controllers\Admin\PointController;
-use App\Http\Controllers\Admin\PointTagController;
+use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\PathController;
-use App\Http\Controllers\Admin\PathTagController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z prefixem '/admin/'
 
+    // PUBLIC routes:
+    Route::get('/points', [PointController::class, 'index'])->name('admin.points.index');
+    Route::get('/points/{point}', [PointController::class, 'show'])->name('admin.points.show');
+    Route::get('/paths', [PathController::class, 'index'])->name('admin.paths.index');
+    Route::get('/paths/{path}', [PathController::class, 'show'])->name('admin.paths.show');
+    
+    
 
-//     Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
+    // PRIVATE routes:
+    Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
 
         // endpoint '/admin/zpk' - do przeniesienia w routing views
         Route::get('zpk', function() {
             return view('admin.zpk');
         })->name('admin.zpk');
 
-
-        // definicja endpointów RESTfull dla zasobu points
-        // Route::apiResource('points', PointController::class) ->scoped();     // fragment PF
-
         //  POINTS
         Route::prefix('points')->controller(PointController::class)->name('admin.points')->group(function(){
 
             Route::post('/', 'store')->name('store');
-            Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
-            Route::get('/{point}', 'show')->name('show');   // ggh todo: przekierowanie indexu na endpoint po stronie klienta
+            // Route::get('/', 'index')->name('index');        // przeniesione do strefy public routes
+            // Route::get('/{point}', 'show')->name('show');   // przeniesione do strefy public routes
             Route::put('/{point}', 'update')->name('update');
-            Route::delete('/{point}', 'destroy')->name('destroy');            
-        });
-
-        // TAGS
-        Route::prefix('pointTags')->controller(PointTagController::class)->name('admin.pointTags')->group(function () {
-            
-            Route::post('/', 'store')->name('store');
-            Route::get('/', 'index')->name('index');
-            Route::get('/{point_tag}', 'show')->name('show');
-            Route::put('/{point_tag}', 'update')->name('update');
-            Route::delete('/{point_tag}', 'destroy')->name('destroy');
+            Route::delete('/{point}', 'destroy')->name('destroy');
+                // ggh todo: post, put: obsługa dubli area_id i nieistniejącego area_id, 
+                // ggh todo: delete : aktualizacja position w path_point
+                // ggh ask: czy punkt ma się wstawić w przypadku błędnej walidacji tagów czy area?
         });
 
         //  PATHS
         Route::prefix('paths')->controller(PathController::class)->name('admin.paths')->group(function(){
 
             Route::post('/', 'store')->name('store');
-            Route::get('/', 'index')->name('index');        // ggh todo: przekierowanie indexu na endpoint po stronie klienta
-            Route::get('/{path}', 'show')->name('show');    // ggh todo: przekierowanie indexu na endpoint po stronie klienta
+            // Route::get('/', 'index')->name('index');        // przeniesione do strefy public routes
+            // Route::get('/{path}', 'show')->name('show');    // przeniesione do strefy public routes
             Route::put('/{path}', 'update')->name('update');
-            Route::delete('/{path}', 'destroy')->name('destroy');            
+            Route::delete('/{path}', 'destroy')->name('destroy');      
+                // ggh todo: store, update: weryfikacja istnienia dodawanych punktów
+                // ggh todo: update: odpina path_id z path_point w przypadku braku point
+                // ggh ask: czy path ma się utworzyć przy błędnej walidacji points? 
+                // ggh ask: czy mamy zwracać tworzoną lub aktualizowaną ścieżkę w json?  
         });
-        
-        // obszary do wbudowania w bazę
+
+        // TAGS
+        Route::prefix('tags')->controller(tagController::class)->name('admin.tags')->group(function () {
+            
+            Route::post('/', 'store')->name('store');
+            Route::get('/', 'index')->name('index');
+            Route::get('/{tag}', 'show')->name('show');
+            Route::put('/{tag}', 'update')->name('update');
+            Route::delete('/{tag}', 'destroy')->name('destroy');
+                // ggh todo: store: zwrot dodanego tagu w json
+        });
+
+        // AREAS
+        Route::prefix('areas')->controller(AreaController::class)->name('admin.areas')->group(function () {
+    
+            Route::post('/', 'store')->name('store');
+            Route::get('/', 'index')->name('index');
+            Route::get('/{area}', 'show')->name('show');
+            Route::put('/{area}', 'update')->name('update');
+            Route::delete('/{area}', 'destroy')->name('destroy');  // do poprawy
+                // ggh ask: czy nazwy muszą być unikatowe? jeżeli do danego obszaru będziemy mieli różne podkłady?
+
+        });
 
 
         // ggh TODO:
         // 4. logika zmiany loginu i hasła
 
 
-
-
-
     {   // do zaimplementowania:
-
-        // 1. utworzenie endpointów RESTfull dla zasobu punktów wirtualnych podobnie jak dla punktów kontrolnych powyżej; rozważyć zmiany nazewnictwa 'control_points' i 'virtual_points'???
-            // stan Virtual_point zaszyty jest w tabeli Points, podobnie jak ID_map ("Obszar" w admin/zpk)
-
-        // 2. utworzenie endpointów RESTfull dla zasobu tagów i tras;
-            // jak ma to dokładnie wyglądać? to ma być zamknięta lista którą i tak sam admin tworzy?
-
         // 3. Czy implementujemy zmianę jakiś ustawień ??? czyłość punktów wirtualnych ???
-            // na razie bym to olał
 
-        // 4. logika zmiany loginu i hasła
     }
 
-//    });
+   });
 });
 
 

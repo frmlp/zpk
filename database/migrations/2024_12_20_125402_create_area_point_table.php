@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paths_points', function (Blueprint $table) {
+        Schema::create('area_point', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('path_id')->constrained('paths');
-            $table->foreignId('point_id')->constrained('points');
-            $table->integer('position');
+            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
+            $table->foreignId('point_id')->constrained('points')->onDelete('cascade');
+            $table->unique(['area_id', 'point_id']);
             $table->timestamps();
-            $table->unique(['path_id', 'point_id', 'position']);
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paths_points');
+        Schema::dropIfExists('area_point');
     }
 };

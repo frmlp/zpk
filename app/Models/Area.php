@@ -4,14 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Area extends Model
 {
     use HasFactory;
 
-    public function points(): HasMany
+    protected $fillable = ['name'];
+
+    public static function rules()
     {
-        return $this->hasMany(Point::class);
+        return [
+            'name' => 'required|string|max:255',
+        ];
+    }
+
+    public function points(): BelongsToMany
+    {
+        return $this->belongsToMany(Point::class, 'area_point');
     }
 }
