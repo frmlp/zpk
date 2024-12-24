@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -64,6 +65,7 @@
                         
 
                         <form id="usernameForm" action="/username" method="POST">
+                            @csrf
                             <div class="mb-3">
                                 <label for="currentUsername" class="form-label">Podaj obecną nazwę użytkownika</label>
                                 <input type="text" class="form-control" id="currentUsername" name="currentUsername" required>
@@ -90,6 +92,7 @@
                         <div id="passwordSuccessMessage" class="text-success m3">Hasło zostało zmienione</div>
 
                         <form id="passwordForm" action="/password" method="POST">
+                            @csrf
                             <div class="mb-3">
                                 <label for="currentPassword" class="form-label">Podaj obecne hasło</label>
                                 <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>

@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -41,7 +42,7 @@
                         <a class="nav-link" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        <form id="logoutForm" method="POST" action="/logout"><button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
+                        <form id="logoutForm" method="POST" action="/logout">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
                         
                     </div>
                 </div>
@@ -88,11 +89,23 @@
             </div>
             <div class="modal-body">
                 <form id="pointForm">
-                    <!-- Pole Kod -->
-                    <div class="mb-3">
-                        <label for="pointCode" class="form-label">Kod</label>
-                        <input type="text" class="form-control" id="pointCode" name="code">
-                    </div>
+                    @csrf
+                     <div class="row">
+                        <!-- Pole Kod -->
+                        <div class="col mb-3">
+                            <label for="pointCode" class="form-label">Kod</label>
+                            <input type="text" class="form-control" id="pointCode" name="code">
+                        </div>
+                        <!-- Punkt wirtualny -->
+                        <div class="col mb-3 text-center">
+                            <label class="form-label d-block" for="pointVirtual">Punkt wirtualny</label>
+                            <input type="hidden" name="pointVirtual" value="0">
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" id="pointVirtual" name="pointVirtual" value="1">
+                            </div>
+                        </div>
+                     </div>
+                    
                     <!-- Pole Opis -->
                     <div class="mb-3">
                         <label for="pointDescription" class="form-label">Opis</label>
@@ -138,6 +151,23 @@
                             <input type="text" class="form-control" id="pointLatitude" name="latitude">
                         </div>
                     </div>
+                    
+                    
+                    <!-- Obszar -->
+                    <div class="mb-3">
+                        <label for="areaId" class="form-label">Obszar</label>
+                        <select class="form-select" id="areaId" name="area_id">
+                            <option value="1">Grabówek</option>
+                            <option value="2">Chylonia</option>
+                        </select>
+                    </div>
+                    <!-- Url kodu QR -->
+                    <div class="mb-3">
+                        <label for="pointUrl" class="form-label">Url kodu QR</label>
+                        <input type="text" class="form-control" id="pointUrl" name="url">
+                    </div>
+                    <!-- Tagi -->
+                    <div id="dropdown-container" class="mb-3"></div>
                     <!-- Przyciski -->
                      <div class="row">
                         <div class="col">
@@ -168,8 +198,14 @@
         <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <!-- <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script> -->
-        
-        <script>
+        <script src="../js/map.js" async></script>
+        <script src="../js/map-pdf.js" async></script>
+        <script src="../js/helpers.js" async></script>
+        <script src="../js/table.js" async></script>
+        <script src="../js/data.js" async></script>
+        <script src="../js/admin-zpk.js" async></script>
+
+        {{-- <script>
             $(document).ready(function() {
                 let table = initTable();
                 let map =initMap();
@@ -497,7 +533,7 @@
                 }
             }
 
-        </script>
+        </script> --}}
 
 
     </body>

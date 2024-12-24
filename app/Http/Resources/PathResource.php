@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+// klasa używana do formatowania danych w odpowiedzi API
+// klasa trasy pobranej z bazy danych i przekazanej na front do Bazy Tras
 class PathResource extends JsonResource
 {
     /**
@@ -17,8 +19,7 @@ class PathResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'points' => PointResource::collection($this->points),
-            
+            'points' => Point4PathResource::collection($this->points),
         ];
     }
 }

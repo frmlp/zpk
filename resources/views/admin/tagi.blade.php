@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -41,7 +42,7 @@
                         <a class="nav-link active" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        <form id="logoutForm" method="POST" action="/logout"><button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
+                        <form id="logoutForm" method="POST" action="/logout">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
                         
                     </div>
                 </div>
@@ -86,8 +87,8 @@
                 <form id="tagForm">
                     <!-- Pole Kod -->
                     <div class="mb-3">
-                        <label for="tagName" class="form-label">Nazwa</label>
-                        <input type="text" class="form-control" id="tagName" name="name">
+                        <label for="tag" class="form-label">Nazwa</label>
+                        <input type="text" class="form-control" id="tag" name="tag">
                     </div>
                    
                     <!-- Przyciski -->
@@ -120,8 +121,14 @@
         <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <!-- <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script> -->
-        
-        <script>
+        <script src="../js/map.js" async></script>
+        <script src="../js/map-pdf.js" async></script>
+        <script src="../js/helpers.js" async></script>
+        <script src="../js/table.js" async></script>
+        <script src="../js/data.js" async></script>
+        <script src="../js/admin-tagi.js" async></script>
+
+        <!-- <script>
             $(document).ready(function() {
                 let table = initTable();
                 //let map =initMap();
@@ -440,7 +447,7 @@
                 }
             }
 
-        </script>
+        </script> -->
 
 
     </body>

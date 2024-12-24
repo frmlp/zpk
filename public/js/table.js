@@ -14,7 +14,7 @@ function populateTable(paths, tableUrl)
 {
     const table = $('#table');
     let rows;
-    let comlumnsConfig;
+    let columnsConfig;
     let columnDefsConfig;
 
     // Sprawdź, czy tabela DataTables już istnieje i zniszcz ją
@@ -29,7 +29,7 @@ function populateTable(paths, tableUrl)
         rows = paths.map(path => `
             <tr class="" data-id="${path.id}" id="${path.id}">
                 <td>${path.name}</td>
-                <td>Obszar</td>
+                <td>${checkPathArea(path.points)}</td>
                 <td>${path.points.length}</td>
                 <td>${calculateRouteLength(path.points)}</td>
                 <td>${checkRouteType(path.points)}</td>
@@ -63,7 +63,7 @@ function populateTable(paths, tableUrl)
         rows = paths.map(path => `
             <tr class="" data-id="${path.id}" id="${path.id}">
                 <td>${path.name}</td>
-                <td>Obszar</td>
+                <td>${checkPathArea(path.points)}</td>
                 <td>${path.points.length}</td>
                 <td>${calculateRouteLength(path.points)}</td>
                 <td>${checkRouteType(path.points)}</td>
@@ -93,7 +93,7 @@ function populateTable(paths, tableUrl)
         rows = paths.map(path => `
             <tr class="" data-id="${path.id}" id="${path.id}">
                 
-                <td>Obszar</td>
+                <td>${checkPathArea(path.points)}</td>
                 <td>${path.points.length}</td>
                 <td>${calculateRouteLength(path.points)}</td>
                 <td>${checkRouteType(path.points)}</td>
@@ -132,4 +132,31 @@ function populateTable(paths, tableUrl)
         columnDefs: columnDefsConfig
     });
     
+    
+}
+
+function populateTable2(rows, columnsConfig, columnDefsConfig)
+{
+    console.log("populateTable2()");
+    const table = $('#table');
+
+    if ($.fn.DataTable.isDataTable(table)) {
+        table.DataTable().clear().destroy();
+    }
+
+    table.find('tbody').empty();
+
+    $('#table tbody').html(rows);
+
+    table.DataTable({
+        searching: false,
+        info: false,
+        lengthMenu: [5, 10, 25],
+        language: {
+            lengthMenu: 'Wyświetl _MENU_ wpisów na stronę'
+        },
+        responsive: true,
+        columns: columnsConfig,
+        columnDefs: columnDefsConfig
+    });
 }

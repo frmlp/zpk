@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -22,16 +23,7 @@
         <!-- PROJ4JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.min.js"></script>
         <link rel="stylesheet" href="css/style.css"/>
-        <style>
-            /* html,
-            body {
-                height: 100%;
-            } */
-            .form-signin {
-                max-width: 500px;
-                padding: 1rem;
-            }
-        </style>
+        
         
     </head>
     <body>
@@ -51,6 +43,7 @@
             <div class="form-signin m-auto bg-light">
                 <!-- <main class="form-signin w-100 m-auto"> -->
                     <form method="POST" action="/login">
+                        @csrf
                         <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
                         <h1 class="mb-3">Zaloguj się:</h1>
                         <div class="form-floating mb-1">
@@ -97,22 +90,22 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
         <script>
-            $(document).ready(function() {
-                $.ajax({
-                    url: 'token',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        console.log(response.token);
+            // $(document).ready(function() {
+            //     $.ajax({
+            //         url: 'token',
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         success: function(response) {
+            //             console.log(response.token);
 
-                        $('form').append('<input type="hidden" name="_token" value="' + response.token + '">');
-                    },
-                    error: function(error){
-                        console.log("Błąd: ", error);
-                    }
-                })
+            //             $('form').append('<input type="hidden" name="_token" value="' + response.token + '">');
+            //         },
+            //         error: function(error){
+            //             console.log("Błąd: ", error);
+            //         }
+            //     })
 
-            })
+            // })
         </script>
     </body>
 </html>

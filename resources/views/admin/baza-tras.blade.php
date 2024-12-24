@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -41,7 +42,7 @@
                         <a class="nav-link" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        <form id="logoutForm" method="POST" action="/logout"><button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
+                        <form id="logoutForm" method="POST" action="/logout">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
                         
                     </div>
                 </div>
@@ -91,6 +92,7 @@
             <div id="error-message" class="text-danger m-3"></div>
             <div class="modal-body">
                 <form id="pathForm">
+                    @csrf
                     <div class="m-3">
                         <!-- Nazwa -->
                         <div class="mb-3">

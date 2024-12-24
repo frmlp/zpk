@@ -11,6 +11,11 @@
     margin: 15px 0px 15px 0px;
 }
 
+.form-signin {
+  max-width: 500px;
+  padding: 1rem;
+}
+
 p {
     text-align: justify;
 }
