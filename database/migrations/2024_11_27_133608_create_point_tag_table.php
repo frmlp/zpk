@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('points', function (Blueprint $table) {
+        Schema::create('point_tag', function (Blueprint $table) {
             $table->id();
-            $table->string('code', length: 10)->unique();
-            $table->text('description');     
-            $table->double('easting');
-            $table->double('northing');
-            $table->boolean('pointVirtual');   
-            $table->string('url')->nullable();
+            $table->foreignId('point_id')->constrained('points');
+            $table->foreignId('tag_id')->constrained('tags');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('point_tag');
     }
 };

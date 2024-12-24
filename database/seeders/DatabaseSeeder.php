@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Area;
 use App\Models\Path;
 use App\Models\Point;
-use App\Models\PointTag;
-use App\Models\Area;
+use App\Models\Tag;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -54,19 +53,20 @@ class DatabaseSeeder extends Seeder
             $easting = (float)str_replace(",", ".", $data[1]);
             $northing = (float)str_replace(",", ".", $data[2]);
             $pointVirtual = $data[3];
-            $area_id = $data[4]; // to jest klucz obcy w tabeli points
+            $area_id = $data[4];
             $url = $data[5];
             $description = $data[6];
 
-            Point::factory()->create([
+            $point = Point::factory()->create([
                 'code' => $code,
                 'description' => $description,
                 'easting' => $easting,
                 'northing' => $northing,
                 'pointVirtual' => $pointVirtual,
-                'area_id' => $area_id,
                 'url' => $url
             ]);
+            $area = Area::find($area_id);
+            $area->points()->attach($point->id); 
         }
     }
 
@@ -87,17 +87,16 @@ class DatabaseSeeder extends Seeder
 
             $tag = $data[0];
 
-
-            PointTag::factory()->create([
-                'tag' => $tag
+            Tag::factory()->create([
+                'name' => $tag
             ]);
         }
 
         // attach random tags to points
-        $tags = PointTag::all();
+        $tags = Tag::all();
         Point::all()->each(function ($point) use ($tags) {
             $randomTags = $tags->random(2); 
-            $point->pointTags()->attach($randomTags); 
+            $point->tags()->attach($randomTags); 
         });
     }
 
