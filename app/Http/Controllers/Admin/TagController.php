@@ -78,6 +78,15 @@ class TagController extends Controller
                 ],
             ]);
             $validatedData = $request->validate(Tag::rules());
+            
+            // Aktualizacja tagu który jest już w użyciu (posiada kolekcje punktów)
+            if ($tag->points()->exists()) {
+                return response()->json([
+                    'message' => 'Nie można zaktualizować tagu, ponieważ jest on w użyciu.',
+                    'points' => $tag->points->pluck('code')->all(),
+                ], 400);
+            }
+
             $tag->update($validatedData);
 
             return response()->json([
