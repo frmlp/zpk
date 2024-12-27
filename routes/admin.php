@@ -13,9 +13,7 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
     Route::get('/points', [PointController::class, 'index'])->name('admin.points.index');
     Route::get('/points/{point}', [PointController::class, 'show'])->name('admin.points.show');
     Route::get('/paths', [PathController::class, 'index'])->name('admin.paths.index');
-    // ggh todo: endpoint wyrzucający ścieżki bez punktów wirutalnych dla MOBILE, kopia endpointu powyżej 
     Route::get('/paths/non-virtual', [PathController::class, 'nonVirtualPaths'])->name('admin.nonVirtualPaths');
-
     Route::get('/paths/{path}', [PathController::class, 'show'])->name('admin.paths.show');
     
 
@@ -31,8 +29,6 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         Route::prefix('points')->controller(PointController::class)->name('admin.points')->group(function(){
 
             Route::post('/', 'store')->name('store');
-            // Route::get('/', 'index')->name('index');        // przeniesione do strefy public routes
-            // Route::get('/{point}', 'show')->name('show');   // przeniesione do strefy public routes
             Route::put('/{point}', 'update')->name('update');
             Route::delete('/{point}', 'destroy')->name('destroy');
                 // ggh todo: post, put: obsługa dubli i nieistniejącego 'area_id', 
@@ -44,8 +40,6 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         Route::prefix('paths')->controller(PathController::class)->name('admin.paths')->group(function(){
 
             Route::post('/', 'store')->name('store');
-            // Route::get('/', 'index')->name('index');        // przeniesione do strefy public routes
-            // Route::get('/{path}', 'show')->name('show');    // przeniesione do strefy public routes
             Route::put('/{path}', 'update')->name('update');
             Route::delete('/{path}', 'destroy')->name('destroy');      
                 // ggh todo: store, update: weryfikacja istnienia dodawanych punktów
