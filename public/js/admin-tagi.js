@@ -17,7 +17,7 @@ $(document).ready(function() {
 
     getTagData()
         .then(function(result){
-            tags = result.data
+            tags = result.tags
 
             let rows = tags.map(tag => `
                 <tr class="" data-id="${tag.id}" id="${tag.id}">

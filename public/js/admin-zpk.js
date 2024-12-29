@@ -76,7 +76,8 @@ $(document).ready(function() {
     
     getAdminTagsData()
         .then(function(result){
-            tags = result.data;
+            tags = result.tags;
+            console.log('getAdminTagsData()');
             console.log(tags);
         })
     
