@@ -32,7 +32,7 @@ function getAdminPointsData() {
 
 function getAdminTagsData() {
     return $.ajax({
-        url: 'http://localhost:8000/admin/pointTags',
+        url: 'http://localhost:8000/admin/tags',
         type: 'GET',
         dataType: 'json',
     })
@@ -58,7 +58,7 @@ function getGeneratorData(startPoint, endPoint, distance_range, points_range) {
 
 function getTagData(){
     return $.ajax({
-        url: 'http://localhost:8000/admin/pointTags',
+        url: 'http://localhost:8000/admin/tags',
         type: 'GET',
         dataType: 'json'
     })

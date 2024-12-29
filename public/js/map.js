@@ -194,7 +194,7 @@ function updateMap(points, markers, map) {
     markers.clearLayers();
 
     // Return early if no points are provided
-    // if (!points || points.length === 0) return;
+    if (!points || points.length === 0) return;
 
     if('position' in points[0]) {
         points.sort((p1, p2) => {

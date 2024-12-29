@@ -17,11 +17,11 @@ $(document).ready(function() {
 
     getTagData()
         .then(function(result){
-            tags = result
+            tags = result.data
 
             let rows = tags.map(tag => `
                 <tr class="" data-id="${tag.id}" id="${tag.id}">
-                    <td>${tag.tag}</td>
+                    <td>${tag.name}</td>
                     <td><button data-id="${tag.id}" class="btn btn-warning btn-sm w-100 edit-btn">Edytuj</button></td>
                     <td><button data-id="${tag.id}" class="btn btn-danger btn-sm w-100 delete-btn">Usuń</button></td>
                 </tr>
@@ -32,7 +32,7 @@ $(document).ready(function() {
 
     $('#newTagBtn').on('click', function() {
         $('#tagModalLabel').text('Nowy Tag');
-        $('#tagForm').attr('action', '/admin/pointTags');
+        $('#tagForm').attr('action', '/admin/tags');
         $('#tagForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
         $('#tagForm').find('input[name="_method"]').remove(); 
 
@@ -53,7 +53,7 @@ $(document).ready(function() {
             method: form.attr('method'),
             data:formData,
             success: function(response, status, xhr) {
-                if (xhr.status === 200) {
+                if (xhr.status === 200 || xhr.status === 201) {
                     location.reload(); // Odśwież stronę
                 } else {
                     $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
@@ -72,12 +72,12 @@ $(document).ready(function() {
 
         const tag = tags.find(tag => tag.id === id);
 
-        $('#tagForm').attr('action', '/admin/pointTags/' + tag.id);
+        $('#tagForm').attr('action', '/admin/tags/' + tag.id);
         $('#tagForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
         $('#tagForm').append('<input type="hidden" name="_method" value="PUT">');
 
         $('#tagModalLabel').text('Edytuj Tag');
-        $('#tag').val(tag.tag);
+        $('#tag').val(tag.name);
 
         $('#tagModal').modal('show');
     });
@@ -87,7 +87,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         let id = $(this).data('id');
-        const deleteUrl = `/admin/pointTags/${id}`; // Endpoint do usunięcia
+        const deleteUrl = `/admin/tags/${id}`; // Endpoint do usunięcia
         const confirmMessage = 'Czy na pewno chcesz usunąć tę ścieżkę?';
 
         // Potwierdzenie akcji użytkownika
