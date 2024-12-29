@@ -217,7 +217,7 @@ $(document).ready(function() {
                 console.log("xhr status: " + xhr.status);
                 console.log(response);
                 console.log(status);
-                if (xhr.status === 200) {
+                if (xhr.status === 200 || xhr.status === 201) {
                     location.reload(); // Odśwież stronę
                 } else {
                     $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
