@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('points', function (Blueprint $table) {
+        Schema::create('path_point', function (Blueprint $table) {
             $table->id();
-            $table->string('code', length: 10)->unique();
-            $table->text('description');     
-            $table->double('easting');
-            $table->double('northing');
-            $table->boolean('pointVirtual');   
-            $table->string('url')->nullable();
+            $table->foreignId('path_id')->constrained('paths');
+            $table->foreignId('point_id')->constrained('points');
+            $table->integer('position');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('path_point');
     }
 };

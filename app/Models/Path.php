@@ -23,19 +23,9 @@ class Path extends Model
 
     public function points(): BelongsToMany{
         return $this
-            ->belongsToMany(Point::class, 'paths_points')
+            ->belongsToMany(Point::class, 'path_point')
             ->withPivot('position')
-            ->orderBy('paths_points.position')
+            ->orderBy('path_point.position')
             ->withTimestamps();
     }
-
-    /* ggh: jeżeli będzie potrzebne tagowanie tras:
-        public function tags(){
-            return $this
-                ->belongsToMany(PathTag::class, 'paths_path_tags')
-                ->withTimestamps();
-        }
-    */
 }
-// ggh todo: co ma się zadziać jak usunę punkt co ma się dziać z trasami które je uwzględniały
-// a trzeba utrzymać punkty przy usuwaniu tras

@@ -11,19 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('point_tags', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->string('tag')->unique();
+            $table->string('name')->unique();
             $table->timestamps();
         });
-
-        /* ggh jeżeli będzie potrzebne tagowanie tras:
-            Schema::create('path_tags', function(Blueprint $table){
-                $table->id();
-                $table->string('tag')->unique();
-                $table->timestamps();
-            });
-        */
     }
 
     /**
@@ -31,7 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('point_tags');
-        // Schema::dropIfExists('path_tags');
+        Schema::dropIfExists('tags');
     }
 };

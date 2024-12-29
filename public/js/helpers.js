@@ -87,9 +87,11 @@ function createDropdown(points) {
 }
 
 function createTagDropdown(tags) {
+    console.log("createTagDropdown()");
+    console.log(tags);
     let optionList = `<option selected disabled>Wybierz tag</option>`;
     tags.forEach(function(tag) {
-        optionList += `<option value="${tag.id}">${tag.tag}</option>`
+        optionList += `<option value="${tag.id}">${tag.name}</option>`
     })
     return  `<div class="input-group dropdown-group">
                 <select class="form-select dropdown">`
@@ -132,4 +134,26 @@ function checkPathArea(points) {
     return "Chylonia i Grabówek";
 
 
+}
+
+function getAreaNames(areas) {
+    const areasSet = new Set();
+
+    areas.forEach(area => {
+        areasSet.add(area.name);
+    });
+
+    return Array.from(areasSet).sort().join(" ");
+}
+
+function getPathAreaNames(points) {
+    const areasSet = new Set();
+
+    points.forEach(point => {
+        point.areas.forEach(area => {
+            areasSet.add(area.name);
+        });
+    });
+
+    return Array.from(areasSet).sort().join(" ");
 }

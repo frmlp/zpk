@@ -5,21 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PointTag extends Model
+class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tag'];
+    protected $fillable = ['name'];
 
     public static function rules()
     {
         return [
-            'tag' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ];
     }
     public function points(){
         return $this
-            ->belongsToMany(Point::class, 'points_point_tags')
+            ->belongsToMany(Point::class, 'point_tag')
             ->withTimestamps();
     }
 }

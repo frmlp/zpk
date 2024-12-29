@@ -29,7 +29,7 @@ function populateTable(paths, tableUrl)
         rows = paths.map(path => `
             <tr class="" data-id="${path.id}" id="${path.id}">
                 <td>${path.name}</td>
-                <td>${checkPathArea(path.points)}</td>
+                <td>${getPathAreaNames(path.points)}</td>
                 <td>${path.points.length}</td>
                 <td>${calculateRouteLength(path.points)}</td>
                 <td>${checkRouteType(path.points)}</td>
@@ -63,7 +63,7 @@ function populateTable(paths, tableUrl)
         rows = paths.map(path => `
             <tr class="" data-id="${path.id}" id="${path.id}">
                 <td>${path.name}</td>
-                <td>${checkPathArea(path.points)}</td>
+                <td>${getPathAreaNames(path.points)}</td>
                 <td>${path.points.length}</td>
                 <td>${calculateRouteLength(path.points)}</td>
                 <td>${checkRouteType(path.points)}</td>

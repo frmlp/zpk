@@ -87,8 +87,8 @@
                 <form id="tagForm">
                     <!-- Pole Kod -->
                     <div class="mb-3">
-                        <label for="tag" class="form-label">Nazwa</label>
-                        <input type="text" class="form-control" id="tag" name="tag">
+                        <label for="name" class="form-label">Nazwa</label>
+                        <input type="text" class="form-control" id="name" name="name">
                     </div>
                    
                     <!-- Przyciski -->
