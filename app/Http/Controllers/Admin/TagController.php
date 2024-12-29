@@ -41,19 +41,35 @@ class TagController extends Controller
     }
     
     public function index()
-    {
-        $tags = Tag::all();
-        return TagResource::collection($tags);
+    {   // logika endpointu GET api/admin/tags/
+        $tags = Tag::with('points')->get();
+
+        return response()->json([
+            'tags' => $tags->map(function ($tag) {
+                return [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'points' => $tag->points->pluck('code')->all(),
+                ];
+            }),
+        ]);
+
     }
 
     public function show(Tag $tag)
-    {
-        return new TagResource($tag); 
+    {   // logika endpointu POST api/admin/tags/{tag}
+        $tag->load('points'); 
+
+        return response()->json([
+            'id' => $tag->id,
+            'name' => $tag->name,
+            'points' => $tag->points->pluck('code')->all(),
+        ]);
     }
 
     public function update(Request $request, Tag $tag)
-    {
-        // logika endpointu PUT api/admin/tags/{point_tag}
+    {   // logika endpointu PUT api/admin/tags/{tag}
+        
         try {
             $tag->findOrFail($tag->id);
             $request->validate([
@@ -62,6 +78,15 @@ class TagController extends Controller
                 ],
             ]);
             $validatedData = $request->validate(Tag::rules());
+            
+            // Aktualizacja tagu który jest już w użyciu (posiada kolekcje punktów)
+            if ($tag->points()->exists()) {
+                return response()->json([
+                    'message' => 'Nie można zaktualizować tagu, ponieważ jest on w użyciu.',
+                    'points' => $tag->points->pluck('code')->all(),
+                ], 400);
+            }
+
             $tag->update($validatedData);
 
             return response()->json([

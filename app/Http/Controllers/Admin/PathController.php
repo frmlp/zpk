@@ -55,6 +55,18 @@ class PathController extends Controller
         return PathResource::collection($paths)->response()->setStatusCode(200);
     }
 
+    public function nonVirtualPaths() 
+    {   // logika endpointu GET api/admin/paths/non-virtual , która zwraca ścieżki bez punktów wirtualnych
+        $paths = Path::whereDoesntHave('points', function ($query) {
+            $query->where('pointVirtual', true);
+        })->get();
+    
+        return response()->json([
+            'message' => 'Ścieżki bez punktów wirtualnych',
+            'paths' => PathResource::collection($paths) 
+        ], 200); 
+    }
+
     public function show(Path $path)
     {   // logika endpointu GET api/admin/paths/{path}
         try {
