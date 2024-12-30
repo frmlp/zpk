@@ -136,6 +136,8 @@
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+    
+
     // let southWest = L.latLng(54.50913, 18.43547);
     // let northEast = L.latLng(54.54956, 18.49717);
     // let bounds = L.latLngBounds(southWest, northEast);
@@ -243,6 +245,7 @@
       var element = createInfoHotspotElement(hotspot);
       scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
+
 
     
     return {

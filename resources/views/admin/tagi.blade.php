@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{csrf_token()}}">
 
         <title>ZPK</title>
 
@@ -11,9 +12,8 @@
         <!-- BOXIXONS -->
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
         <!-- DATATABLES -->
-        <link href='https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.min.css' rel='stylesheet'>
-        <link href='https://cdn.datatables.net/2.1.2/css/dataTables.bootstrap5.css' rel='stylesheet'>
-        <!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css' rel='stylesheet'> -->
+        <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.dataTables.min.css" rel="stylesheet">
         <!-- LEAFLET -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -34,14 +34,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-link" aria-current="page" href="#"><i class="bi-person-gear"></i> Profil</a>
-                        <a class="nav-link" href="#"><i class="bi-gear"></i> Ustawienia</a>
-                        <a class="nav-link active" href="#"><i class="bi-geo"></i> Punkty kontrolne</a>
-                        <a class="nav-link" href="#"><i class="bi-tree"></i> Punkty wirtualne</a>
-                        <a class="nav-link" href="#"><i class="bi-tags"></i> Tagi</a>
+                        <!-- <a class="nav-link" aria-current="page" href="#"><i class="bi-person-gear"></i> Profil</a> -->
+                        <a class="nav-link" href="/admin/ustawienia"><i class="bi-gear"></i> Ustawienia</a>
+                        <a class="nav-link" href="/admin/baza-tras"><i class="bi-table"></i> Baza tras</a>
+                        <a class="nav-link " href="/admin/zpk"><i class="bi-geo"></i> Punkty kontrolne</a>
+                        <!-- <a class="nav-link" href="#"><i class="bi-tree"></i> Punkty wirtualne</a> -->
+                        <a class="nav-link active" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        <form id="logoutForm" method="POST" action="/logout"><button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
+                        <form id="logoutForm" method="POST" action="/logout">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
                         
                     </div>
                 </div>
@@ -49,20 +50,16 @@
         </nav>
 
         <div class="content">
-            <div class="container-md bg-light">
-                <div class="row ">
-                    
-                    <div id="table-wrapper" class="col-12 col-md-6">
-                        <button id="newPointBtn" class="btn btn-success w-100">Dodaj nowy punkt kontrolny</button>
+            <div class="container-md">
+                <div class="bg-light">
+                    <div id="table-wrapper"></div>
+                        <button id="newTagBtn" class="btn btn-success w-100">Dodaj nowy tag</button>
                         <table class="table table-hover" id="table">
                             <thead>
                                 <tr>
                                     <!-- <th>ID</th> -->
-                                    <th>Kod</th>
-                                    <th>Opis</th>
-                                    <th>Obszar</th>
-                                    <th>Easting</th>
-                                    <th>Northing</th>
+                                    
+                                    <th>Nazwa</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -72,7 +69,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-6 sticky-top" id="map"></div>
                 </div>
 
             </div>
@@ -80,65 +76,21 @@
         
 
 <!-- Point Modal -->
-<div class="modal fade" id="pointModal" tabindex="-1" aria-labelledby="pointModalLabel" aria-hidden="true">
+<div class="modal fade" id="tagModal" tabindex="-1" aria-labelledby="pointModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="pointModalLabel">Punkt</h5>
+                <h5 class="modal-title" id="tagModalLabel">Tag</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="pointForm">
+                <form id="tagForm">
                     <!-- Pole Kod -->
                     <div class="mb-3">
-                        <label for="pointCode" class="form-label">Kod</label>
-                        <input type="text" class="form-control" id="pointCode" name="code">
+                        <label for="name" class="form-label">Nazwa</label>
+                        <input type="text" class="form-control" id="name" name="name">
                     </div>
-                    <!-- Pole Opis -->
-                    <div class="mb-3">
-                        <label for="pointDescription" class="form-label">Opis</label>
-                        <input type="text" class="form-control" id="pointDescription" name="description">
-                    </div>
-                    <!-- Rodzaj współrzędnych -->
-                    <div class="mb-3">
-                        <label class="form-label">Rodzaj współrzędnych</label>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="coordinateType" id="coordinateEPSG2180" value="EPSG2180" checked>
-                                    <label class="form-check-label" for="coordinateEPSG2180">EPSG:2180</label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="coordinateType" id="coordinateWSG84" value="WSG84">
-                                    <label class="form-check-label" for="coordinateWSG84">WSG:84</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- współrzędne EPSG:2180 -->
-                    <div id="epsg2180Fields" class="coordinates row mb-3">
-                        <div class="col">
-                            <label for="pointEasting" class="form-label">Easting</label>
-                            <input type="text" class="form-control" id="pointEasting" name="easting">
-                        </div>
-                        <div class="col">
-                            <label for="pointNorthing" class="form-label">Northing</label>
-                            <input type="text" class="form-control" id="pointNorthing" name="northing">
-                        </div>
-                    </div>
-                    <!-- współrzędne WSG:84 -->
-                    <div id="wsg84Fields" class="coordinates row mb-3" style="display:none;">
-                        <div class="col">
-                            <label for="pointLongitude" class="form-label">Długość</label>
-                            <input type="text" class="form-control" id="pointLongitude" name="longitude">
-                        </div>
-                        <div class="col">
-                            <label for="pointLatitude" class="form-label">Szerokość</label>
-                            <input type="text" class="form-control" id="pointLatitude" name="latitude">
-                        </div>
-                    </div>
+                   
                     <!-- Przyciski -->
                      <div class="row">
                         <div class="col">
@@ -165,14 +117,21 @@
         <!-- BOOTSTRAP -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <!-- DATATABLES -->
-        <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
-        <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
-        
-        <script>
+        <!-- <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script> -->
+        <script src="../js/map.js" async></script>
+        <script src="../js/map-pdf.js" async></script>
+        <script src="../js/helpers.js" async></script>
+        <script src="../js/table.js" async></script>
+        <script src="../js/data.js" async></script>
+        <script src="../js/admin-tagi.js" async></script>
+
+        <!-- <script>
             $(document).ready(function() {
                 let table = initTable();
-                let map =initMap();
+                //let map =initMap();
 
                 proj4.defs([
                     [
@@ -252,7 +211,7 @@
                 return $('#table').DataTable({
                     searching: false,
                     info: false,
-                    "lengthMenu": [5, 10, 15],
+                    lengthMenu: [5, 10, 15],
                     language: {
                         lengthMenu: 'Wyświetl _MENU_ wpisów na stronę'
                     },
@@ -260,27 +219,18 @@
                     // scrollX: false,
                     // scrollY: '40vmax',
                     responsive: true,
-                    columnDefs: [
-                        {responsivePriority: 3, targets: 0},
-                        {responsivePriority: 4, targets: 1},
-                        {responsivePriority: 6, targets: 2},
-                        {responsivePriority: 5, targets: 3},
-                        {responsivePriority: 1, targets: 4},
-                        {responsivePriority: 2, targets: 5},
-                    ]
+                    // columnDefs: [
+                    //     {responsivePriority: 5, targets: 4},
+                    //     {responsivePriority: 6, targets: 5},
+                    //     {responsivePriority: 3, targets: 2},
+                    //     {responsivePriority: 4, targets: 3},
+                    //     {responsivePriority: 1, targets: 0},
+                    //     {responsivePriority: 2, targets: 1},
+                    // ]
                     
                 });
             }
 
-            function initMap() {
-                let map = L.map('map').setView([54.52, 18.49], 13);
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 17,
-                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                }).addTo(map);
-
-                return map;
-            }
 
             function populateTable(table, points) 
             {
@@ -324,15 +274,15 @@
 
             function handleNewButtonClick()
             {
-                $('#newPointBtn').on('click', function() {
-                    $('#pointModalLabel').text('Nowy Punkt');
-                    $('#pointForm').attr('action', '/admin/points');
-                    $('#pointForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
-                    $('#pointForm').find('input[name="_method"]').remove(); 
+                $('#newTagBtn').on('click', function() {
+                    $('#tagModalLabel').text('Nowy Tag');
+                    $('#tagForm').attr('action', '/admin/tags');
+                    $('#tagForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
+                    $('#tagForm').find('input[name="_method"]').remove(); 
 
-                    $('#pointForm')[0].reset(); // Wyczyść formularz
+                    $('#tagForm')[0].reset(); // Wyczyść formularz
 
-                    $('#pointModal').modal('show');
+                    $('#tagModal').modal('show');
                 })
             }
 
@@ -497,7 +447,7 @@
                 }
             }
 
-        </script>
+        </script> -->
 
 
     </body>

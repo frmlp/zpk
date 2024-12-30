@@ -26,8 +26,19 @@
 
     </head>
     <body>
+        <div class="background">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
         <!-- NAVBAR -->
-        <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+        <nav class="navbar navbar-expand-md bg-success-subtle">
             <div class="container-fluid">
                 <span class="navbar-brand" style="font-size: 1.5rem;"><i class="bi-compass" ></i> ZPK</span>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,23 +62,21 @@
 
         <!-- CONTENT -->
         <div class="content">
-            <div class="container-md bg-light">
-                <div class="row">
+            <div class="container-md">
+                <div class="row  border border-success border-4 rounded bg-light">
                     <div class="col-12 col-md-6">
-                        <div  id="dropdown-container">
-                            
+                        <div class="m-3">
+                            <div  id="dropdown-container" class="mb-3">
+                                
+                            </div>
+        
+                            <button id="finish-btn" class="btn btn-success ">Zakończ</button>
+                            <button id="reset-btn" class="btn btn-outline-success ">Wyczyść</button>
                         </div>
-    
-                        <button id="finish-btn" class="btn btn-primary ">Zakończ</button>
-                        <button id="reset-btn" class="btn btn-outline-primary ">Wyczyść</button>
                     </div>
                     
                     <div class="col-12 col-md-6" id="map"></div>
                 </div>
-                
-                
-                
-                
             </div>
         </div>
 
@@ -80,12 +89,20 @@
 
         <!-- JQUERY -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
         <!-- BOOTSTRAP -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <!-- DATATABLES -->
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
+        
+        <script src="js/map.js" async></script>
+        <script src="js/map-pdf.js" async></script>
+        <script src="js/helpers.js" async></script>
+        <script src="js/table.js" async></script>
+        <script src="js/data.js" async></script>
         <script src="js/planner.js"></script>
     </body>
 </html>

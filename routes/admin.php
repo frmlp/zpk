@@ -19,11 +19,23 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
 
     // PRIVATE routes:
     Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
+        Route::get('baza-tras', function() {
+            return view('admin.baza-tras');
+        })->name('admin.baza-tras');
 
         // endpoint '/admin/zpk' - do przeniesienia w routing views
         Route::get('zpk', function() {
             return view('admin.zpk');
         })->name('admin.zpk');
+
+        Route::get('tagi', function() {
+            return view('admin.tagi');
+        })->name('admin.tagi');
+
+        Route::get('ustawienia', function() {
+            return view('admin.ustawienia');
+        })->name('admin.ustawienia');
+
 
         //  POINTS
         Route::prefix('points')->controller(PointController::class)->name('admin.points')->group(function(){
