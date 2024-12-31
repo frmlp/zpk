@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -22,9 +23,19 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:users',
+            'name' => 'required|string|max:255',
             'password' => 'required|string|min:8',
             // 'password' => 'required|string|min:8|confirmed',
         ];
     }
+
+    public function validateName()
+    {
+        $this->validate([
+            'name' => [
+                Rule::unique('users')->ignore($this->user()), 
+            ],
+        ]);
+    }
+
 }

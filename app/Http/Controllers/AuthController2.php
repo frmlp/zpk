@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -43,17 +44,26 @@ class AuthController2 extends Controller
     public function registerPost(RegisterRequest $request)
     {   // rejestracja użytkownika
 
-        $user = User::create([
-            'name' => $request->name,
-            'password' => Hash::make($request->password),
-            'name_verified_at' => now(),
-        ]);
+        try {
+            $request->validateName();
+            $user = User::create([
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+                'name_verified_at' => now(),
+            ]);
 
-        return response()->json([
-            'message' => 'Użytkownik został poprawnie zarejestrowany.',
-            'user.name' => $user->name,
-        ], 200);
-    }
+            return response()->json([
+                'message' => 'Użytkownik został poprawnie zarejestrowany.',
+                'user.name' => $user->name,
+            ], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Błąd walidacji.',
+                'errors' => $e->errors(), 
+            ], 422);
+        }    
+    }    
 
     public function profile()
     {   // przekierowanie na strone edycji użytkownika
