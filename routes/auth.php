@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'guest'], function() { // endpointy dla niezalogowanych użytkowników
     
     Route::get('/login', [AuthController2::class, 'login'])->name('login'); // przekierowanie na stronę logowania
-    Route::post('/login', [AuthController2::class, 'loginPost'])->name('login'); // wysłanie podanych danych logowania na serwer w celu autoryzacji
-    // ggh todo: zmiana nazewnictwa name()
-
+    Route::post('/login', [AuthController2::class, 'loginPost'])->name('login'); // wysłanie podanych danych logowania na serwer w celu autoryzacji    
+    
+    // do zaimplementowania zmiana loginu i hasła do konta admina:
+    
     // rejestracja nowych użytkowników
-    Route::get('/register', [AuthController2::class, 'register'])->name('register');
+    // Route::get('/register', [AuthController2::class, 'register'])->name('register');
     Route::post('/register', [AuthController2::class, 'registerPost'])->name('register.post');
 
     // edycja istniejących użytkowników
@@ -33,6 +34,6 @@ Route::group(['middleware' => 'auth'], function () { // endpointy dla zalogowany
     
     Route::post('/logout', [AuthController2::class, 'logout'])->name('logout'); // wylogowanie z konta
 
-    // do zaimplementowania zmiana loginu i hasła do konta admina
+   
 
 });

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 //kontroler odpowiedzialny zazarządzanie procesami logowaniai wylogowania admina
 class AuthController2 extends Controller
@@ -17,53 +18,41 @@ class AuthController2 extends Controller
         return view('admin.login');
     }
     
-    public function loginPost(LoginRequest $request): RedirectResponse
+    public function loginPost(LoginRequest $request)
     {   // uwierzytelnianie użytkownika
-        $request->authenticate();
 
+        $request->authenticate();
         $request->session()->regenerate();
 
-        // przekierowanie na stronę /api/admin/zpk
-        return redirect()->intended(route('admin.zpk', absolute: false));
+        return response()->json(['message' => 'Użytkownik został poprawnie zalogowany.'], 200);
     }
     
-    public function logout(Request $request): RedirectResponse
+    public function logout(Request $request)
     {   // wylogowanie użytkownika
+        
         error_log('logout()');
 
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        // przekierowanie na stronę logowania api/login
-        return redirect('/login')->with('success', 'wylogowano');
+        return response()->json(['message' => 'Użytkownik został pomyślnie wylogowany.'], 200);
     }
 
-
-    // GGH TODO:
- 
-    public function register()
-    {   // przekierowanie na stronę rejestracji użytkownika
-        return view('admin.register'); // PF todo: widok formularza rejestracji
-    }
-
-    public function registerPost(Request $request)
+    public function registerPost(RegisterRequest $request)
     {   // rejestracja użytkownika
 
-        // Tworzenie nowego użytkownika
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
+            'name_verified_at' => now(),
         ]);
 
-        // Logowanie użytkownika
-        // Auth::login($user);
-
-        // ggh ask: Przekierowanie na stronę? 
-        // return redirect()->route('admin.zpk'); 
+        return response()->json([
+            'message' => 'Użytkownik został poprawnie zarejestrowany.',
+            'user.name' => $user->name,
+        ], 200);
     }
 
     public function profile()
