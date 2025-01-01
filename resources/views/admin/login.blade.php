@@ -47,8 +47,8 @@
                         <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
                         <h1 class="mb-3">Zaloguj się:</h1>
                         <div class="form-floating mb-1">
-                            <input class="form-control" type="text" id="name" name="name">
-                            <label for="name">Adres email1</label>
+                            <input class="form-control" type="email" id="email" name="email">
+                            <label for="email">Adres email</label>
                         </div>
                         <div class="form-floating mb-1">
                             <input class="form-control" type="password" id="password" name="password">
