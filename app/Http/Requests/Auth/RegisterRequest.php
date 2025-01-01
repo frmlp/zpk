@@ -23,19 +23,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
-            // 'password' => 'required|string|min:8|confirmed',
+            'name' => 'required|string|max:255|unique:users,name',
+            'password' => 'required|string|min:8|confirmed',
         ];
-    }
-
-    public function validateName()
-    {
-        $this->validate([
-            'name' => [
-                Rule::unique('users')->ignore($this->user()), 
-            ],
-        ]);
     }
 
 }

@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+
 
 //kontroler odpowiedzialny zazarządzanie procesami logowaniai wylogowania admina
 class AuthController2 extends Controller
@@ -41,11 +43,16 @@ class AuthController2 extends Controller
         return response()->json(['message' => 'Użytkownik został pomyślnie wylogowany.'], 200);
     }
 
-    public function registerPost(RegisterRequest $request)
+    public function registerPost(Request $request)
     {   // rejestracja użytkownika
 
         try {
-            $request->validateName();
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+        
+            $validator->validate();
             $user = User::create([
                 'name' => $request->name,
                 'password' => Hash::make($request->password),
@@ -58,38 +65,50 @@ class AuthController2 extends Controller
             ], 200);
 
         } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Błąd walidacji.',
-                'errors' => $e->errors(), 
-            ], 422);
+            $errors = $e->errors();
+            if (isset($errors['name'])) {
+                return response()->json([
+                    'message' => 'Błąd walidacji nazwy użytkownika.',
+                    'errors' => $errors['name'],
+                ], 422);
+            }
+
+            if (isset($errors['password'])) {
+                return response()->json([
+                    'message' => 'Błąd walidacji hasła.',
+                    'errors' => $errors['password'],
+                ], 422);
+            }
         }    
-    }    
-
-    public function profile()
-    {   // przekierowanie na strone edycji użytkownika
-        return view('admin.profile'); // // PF todo: widok formularza edycji
     }
+
+    public function destroy(User $user)
+    {   // usuwanie użytkownika
+
+        if ($user->id === Auth::id()) {
+            return response()->json([
+                'message' => 'Nie możesz usunąć swojego własnego konta.',
+            ], 403); 
+        }
+
+        $user->delete();
     
-    // public function profileUpdate(Request $request)
-    // {   // edycja użytkownika
+        return response()->json(['message' => 'Użytkownik został usunięty.'], 200); 
+    }
 
-    //     // Walidacja danych 
-    //     $validatedData = $request->validate([
-    //         'name' => 'required|string|max:255', 
-    //         'password' => 'required|string|min:8',
-    //     ]);
+    public function updatePassword(Request $request)
+    {   // zmiana hasła
+        
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8', 'string'],
+        ]);
 
-    //     // Pobierz aktualnie zalogowanego użytkownika
-    //     $user = Auth::user();
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
 
-    //     // Zaktualizuj dane użytkownika
-    //     $user->update([
-    //         // ... dane użytkownika ...
-    //     ]);
-
-    //     // ggh ask: czy mam zwracać widok czy tylko status zapytania?
-    //     // Zwróć odpowiedź 
-    //     return redirect()->route('profile')->with('success', 'Profil zaktualizowany!'); 
-    // }
+        return response()->json(['message' => 'Hasło zostało zaktualizowane.'], 200);
+    }
 
 }
