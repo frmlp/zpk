@@ -4,6 +4,11 @@ var APP_DATA = {
       "id": "0-s2",
       "name": "Punkt startowy S2 - Chylonia",
       "northYaw": -2.54818,
+      "coordinates": {
+          "latitude": 54.52322,
+          "longitude": 18.46609,
+        
+      },
       "levels": [
         {
           "tileSize": 256,
@@ -49,6 +54,11 @@ var APP_DATA = {
       "id": "1-65",
       "name": "Punkt kontrolny #65",
       "northYaw": -0.41887,
+      "coordinates": 
+        {
+          "latitude": 54.52464,
+          "longitude": 18.46606,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -94,6 +104,11 @@ var APP_DATA = {
       "id": "2-60",
       "name": "Punkt kontrolny #60",
       "northYaw": 1.01229,
+      "coordinates": 
+        {
+          "latitude": 54.52753,
+          "longitude": 18.46427,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -139,6 +154,11 @@ var APP_DATA = {
       "id": "3-68",
       "name": "Punkt kontrolny #68",
       "northYaw": 1.57079,
+      "coordinates": 
+        {
+          "latitude": 54.53095,
+          "longitude": 18.46024,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -184,6 +204,11 @@ var APP_DATA = {
       "id": "4-51",
       "name": "Punkt kontrolny #51",
       "northYaw": 0.52359,
+      "coordinates": 
+        {
+          "latitude": 54.53424,
+          "longitude": 18.45831,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -229,6 +254,11 @@ var APP_DATA = {
       "id": "5-71",
       "name": "Punkt kontrolny #71",
       "northYaw": -1.57079,
+      "coordinates": 
+        {
+          "latitude": 54.53594,
+          "longitude": 18.46647,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -274,6 +304,11 @@ var APP_DATA = {
       "id": "6-59",
       "name": "Punkt kontrolny #59",
       "northYaw": 1.71042,
+      "coordinates": 
+        {
+          "latitude": 54.53336,
+          "longitude": 18.46699,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -319,6 +354,11 @@ var APP_DATA = {
       "id": "7-53",
       "name": "Punkt kontrolny #53",
       "northYaw": -2.51327,
+      "coordinates": 
+        {
+          "latitude": 54.53176,
+          "longitude": 18.46709,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -364,6 +404,11 @@ var APP_DATA = {
       "id": "8-67",
       "name": "Punkt kontrolny #67",
       "northYaw": 1.60570,
+      "coordinates": 
+        {
+          "latitude": 54.53163,
+          "longitude": 18.47234,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -409,6 +454,11 @@ var APP_DATA = {
       "id": "9-50",
       "name": "Punkt kontrolny #50",
       "northYaw": -1.71042,
+      "coordinates": 
+        {
+          "latitude": 54.52750,
+          "longitude": 18.47425,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -454,6 +504,11 @@ var APP_DATA = {
       "id": "10-49",
       "name": "Punkt kontrolny #49",
       "northYaw": 0.01745,
+      "coordinates": 
+        {
+          "latitude": 54.52445,
+          "longitude": 18.47233,
+        },
       "levels": [
         {
           "tileSize": 256,
@@ -499,6 +554,11 @@ var APP_DATA = {
       "id": "11-57",
       "name": "Punkt kontrolny #57",
       "northYaw": 1.62315,
+      "coordinates": 
+        {
+          "latitude": 54.52277,
+          "longitude": 18.47178,
+        },
       "levels": [
         {
           "tileSize": 256,

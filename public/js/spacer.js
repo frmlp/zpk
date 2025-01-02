@@ -15,6 +15,8 @@
  */
 'use strict';
 
+
+
 (function() {
   var Marzipano = window.Marzipano;
   var bowser = window.bowser;
@@ -71,15 +73,15 @@
   var viewer = new Marzipano.Viewer(panoElement, viewerOpts);
 
   // Create scenes.
-  var scenes = data.scenes.map(function(data) {
+  var scenes = data.scenes.map(function(sceneData) {
     var urlPrefix = "tiles";
     var source = Marzipano.ImageUrlSource.fromString(
-      urlPrefix + "/" + data.id + "/{z}/{f}/{y}/{x}.jpg",
-      { cubeMapPreviewUrl: urlPrefix + "/" + data.id + "/preview.jpg" });
-    var geometry = new Marzipano.CubeGeometry(data.levels);
+      urlPrefix + "/" + sceneData.id + "/{z}/{f}/{y}/{x}.jpg",
+      { cubeMapPreviewUrl: urlPrefix + "/" + sceneData.id + "/preview.jpg" });
+    var geometry = new Marzipano.CubeGeometry(sceneData.levels);
 
-    var limiter = Marzipano.RectilinearView.limit.traditional(data.faceSize, 100*Math.PI/180, 120*Math.PI/180);
-    var view = new Marzipano.RectilinearView(data.initialViewParameters, limiter);
+    var limiter = Marzipano.RectilinearView.limit.traditional(sceneData.faceSize, 100*Math.PI/180, 120*Math.PI/180);
+    var view = new Marzipano.RectilinearView(sceneData.initialViewParameters, limiter);
 
     var scene = viewer.createScene({
       source: source,
@@ -91,40 +93,15 @@
     // Get the hotspot container for scene.
     var container = scene.hotspotContainer();
 
-    /****************************** */
-    console.log("Data:");
-    console.log(data);
+    /*** dodanie mapy do każdej sceny ***/
 
-    
-
-    let frameID = data.id + "_frame";
-    let mapID = data.id + "_map";
-
+    let mapID = sceneData.id;
     var mapsContainer = document.getElementById("mapsContainer");
-    // var iframe = document.createElement('iframe');
-    // iframe.id = frameID;
-
     var div = document.createElement('div');
-    // console.log(div1);
+
     div.id = mapID;
     div.className = "frame"
-
-    // var div2 = document.createElement('div');
-    // div2.className = "message";
-    
-    // console.log(data.name);
-    // div2.textContent = data.name;
-
-    // div1.appendChild(div2);
-    // iframe.appendChild(div);
     mapsContainer.appendChild(div);
-    // console.log(iframe);
-
-    // let map = L.map(mapID).setView([54.52935, 18.46631], 16);
-    //   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     maxZoom: 20,
-    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // }).addTo(map);
 
     let map = L.map(mapID, {
       center: [54.52935, 18.46631],
@@ -132,124 +109,32 @@
       dragging: false
     });
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
     }).addTo(map);
 
-    
+    // Wywołanie funkcji, aby dodać punkty i trasę do mapy
+    addPointsAndPolyline(sceneData, map, data);
 
-    // let southWest = L.latLng(54.50913, 18.43547);
-    // let northEast = L.latLng(54.54956, 18.49717);
-    // let bounds = L.latLngBounds(southWest, northEast);
-    // map.setMaxBounds(bounds);
-
-    // map.on('drag', function() {
-    //   map.panInsideBounds(bounds, { animate: false})
-    // })
-
-    // // function blockMarzipanoEvents(div) {
-    //   div.addEventListener('mouseover', function() {
-    //     viewer.controls().disable();
-    //   });
-
-    //   div.addEventListener('mouseout', function() {
-    //     viewer.controls().enable();
-    //   });
-
-      let pointsData = new Map([
-        ["0-s2", [54.52322, 18.46609]],
-        ["1-65", [54.52464, 18.46606]],
-        ["2-60", [54.52753, 18.46427]],
-        ["3-68", [54.53095, 18.46024]],
-        ["4-51", [54.53424, 18.45831]],
-        ["5-71", [54.53594, 18.46647]],
-        ["6-59", [54.53336, 18.46699]],
-        ["7-53", [54.53176, 18.46709]],
-        ["8-67", [54.53163, 18.47234]],
-        ["9-50", [54.52750, 18.47425]],
-        ["10-49", [54.52445, 18.47233]],
-        ["11-57", [54.52277, 18.47178]]
-    ]);
-    // Niestandardowa ikona o większym rozmiarze (dwukrotność domyślnego)
-    let customIcon = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png', // Domyślny obrazek ikony Leaflet
-      iconSize: [50, 82], // Rozmiar ikony (dwukrotny w stosunku do domyślnego)
-      iconAnchor: [25, 82], // Punkt, gdzie ikona będzie przypięta (odpowiednio dostosowany)
-      popupAnchor: [0, -76] // Pozycja okienka dialogowego względem ikony
-  });
-
-    
-      let yellowIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-        // shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [50, 82],
-        iconAnchor: [25, 82],
-        popupAnchor: [0, -76],
-        // shadowSize: [33, 33]
-    })
-    
-
-    
-  
-    function addPointsAndPolyline(map, pointsData) {
-        let latlngs = [];
-  
-        // Iterowanie po punktach, dodawanie markerów i zbieranie współrzędnych
-        pointsData.forEach((coords, label) => {
-          let icon = customIcon;
-            // Dodanie markera dla każdego punktu
-            if(data.id === label) {
-              icon = yellowIcon;
-            }
-
-            
-            L.marker(coords, {icon: icon}).bindPopup(label).addTo(map);
-            
-            // Zbieranie współrzędnych dla polyline
-            latlngs.push(coords);
-        });
-  
-        // Dodanie ostatniego punktu "S2" na koniec, aby zamknąć pętlę
-        latlngs.push(pointsData.get("0-s2"));
-  
-        // Narysowanie czerwonej linii polyline (zamknięta pętla)
-        L.polyline(latlngs, {color: 'red', weight: 5}).addTo(map);
-      }
-  
-      // Wywołanie funkcji, aby dodać punkty i polyline do mapy
-      addPointsAndPolyline(map, pointsData);
-    // }
-
-    // Zatrzymanie propagacji zdarzeń, aby nie przenosiły się do wirtualnego spaceru
-    // L.DomEvent.on(div.getContainer(), 'mousewheel', L.DomEvent.stopPropagation);
-    // L.DomEvent.on(div.getContainer(), 'mousedown', L.DomEvent.stopPropagation);
-    // L.DomEvent.on(div.getContainer(), 'touchstart', L.DomEvent.stopPropagation);
-    // L.DomEvent.on(div.getContainer(), 'dblclick', L.DomEvent.stopPropagation);
-
-
-    // Create hotspot with different sources.
-    container.createHotspot(document.getElementById(mapID), { yaw: data.northYaw, pitch: 90*Math.PI/180 },
+    container.createHotspot(document.getElementById(mapID), { yaw: sceneData.northYaw, pitch: 90*Math.PI/180 },
       { perspective: { radius: 1230 }});
-    // container.createHotspot(document.getElementById('iframeselect'), { yaw: -0.35, pitch: -0.239 });
 
     /*************************************** */
    
     // Create link hotspots.
-    data.linkHotspots.forEach(function(hotspot) {
+    sceneData.linkHotspots.forEach(function(hotspot) {
       var element = createLinkHotspotElement(hotspot);
       scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
 
     // Create info hotspots.
-    data.infoHotspots.forEach(function(hotspot) {
+    sceneData.infoHotspots.forEach(function(hotspot) {
       var element = createInfoHotspotElement(hotspot);
       scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
 
-
-    
     return {
-      data: data,
+      data: sceneData,
       scene: scene,
       view: view
     };
@@ -343,9 +228,6 @@
     startAutorotate();
     updateSceneName(scene);
     updateSceneList(scene);
-
-
-    
 
   }
 
@@ -544,8 +426,56 @@
     return null;
   }
 
+  function addPointsAndPolyline(sceneData, map, data) {
+    // Hotspot map icons
+    const defaultIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+      iconSize: [50, 82],
+      iconAnchor: [25, 82],
+      popupAnchor: [0, -76],
+    });
+  
+  
+    const orangeIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+      iconSize: [50, 82],
+      iconAnchor: [25, 82],
+      popupAnchor: [0, -76],
+
+  });
+
+    let latlngs = [];
+  
+    data.scenes.forEach(scene => {
+      let icon = defaultIcon;
+  
+      if(scene.id === sceneData.id) {
+        icon = orangeIcon;
+      }
+  
+      let coords = [scene.coordinates.latitude, scene.coordinates.longitude];
+      console.log(scene);
+      L.marker(coords, {icon: icon}).bindPopup(scene.id).addTo(map);
+        
+        // Zbieranie współrzędnych dla polyline
+        latlngs.push(coords);
+    });
+  
+    // Dodanie ostatniego punktu "S2" na koniec, aby zamknąć pętlę
+    const lastScene = data.scenes.find(scene => scene.id === "0-s2");
+  
+    latlngs.push([lastScene.coordinates.latitude, lastScene.coordinates.longitude]);
+  
+    // Narysowanie linii polyline (zamknięta pętla)
+    L.polyline(latlngs, {color: 'magenta', weight: 5}).addTo(map);
+  }
+
   // Display the initial scene.
   switchScene(scenes[0]);
 
 
 })();
+
+
+
+
