@@ -91,6 +91,19 @@ function addTokenToForms(attributeArray) {
     });
 }
 
+function getMapUIData() {
+    return $.ajax({
+        url: 'http://localhost:8000/api/map/ui-data',
+        type: 'GET',
+        dataType: 'json',
+    })
+}
+
+
+
+
+
+
 function getToken() {
     return $.ajax({
         url: 'http://localhost:8000/token',

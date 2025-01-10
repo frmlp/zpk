@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Point configurations
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options determine the point parameters
+    |
+    */
+
+    'sector_range' => 100,  // [m] 
+
 ];

@@ -157,3 +157,24 @@ function getPathAreaNames(points) {
 
     return Array.from(areasSet).sort().join(" ");
 }
+
+function prepareHtmlForMapChoiceModal(maps, pathId) {
+    // Wygenerowanie listy map w modalu
+    let listHtml = `<div id="modalContainer" class="row gx-3 gy-3 justify-content-center" data-id="${pathId}">`;
+
+    maps.forEach((map) => {
+        listHtml += `
+            <div class="col-12 col-lg-6">
+                <input type="radio" class="btn-check" name="mapRadio" id="map-${map.id}" data-id="${map.id}" autocomplete="off">
+                <label class="btn btn-outline-success d-flex align-items-center w-100" for="map-${map.id}">
+                    <img src="${map.icon_path}" alt="${map.name}" class="icon-img">
+                    <span class="m-2 text-center flex-grow-1">${map.name}<span>
+                </label>
+            </div>
+        `;
+    });
+
+    listHtml += '</div>';
+
+    return listHtml;
+}

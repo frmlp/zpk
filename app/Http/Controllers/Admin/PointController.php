@@ -37,9 +37,15 @@ class PointController extends Controller
             // Przypisywanie obszarów
             $areaIds = $request->input('area_ids', []);
             $point->areas()->attach($areaIds); 
+            
+            // Sprawdzenie okolicy (sector)
+            $sectorMessage = $this->isPointInSameSector($point, $request)
+            ? 'Uwaga: W okolicy znajduje się już inny punkt.'
+            : 'W okolicy nie znajdował się jeszcze żaden punkt.';
 
             return response()->json([
                 'message' => 'Dodano nowy punkt',
+                'sector_message' => $sectorMessage,
                 'point' => new PointResource($point) 
             ], 201); 
 
@@ -90,10 +96,16 @@ class PointController extends Controller
             $uniqueTagIds = array_unique($tagIds);
             $point->tags()->sync($uniqueTagIds);
 
+            // Sprawdzenie okolicy (sector)
+            $sectorMessage = $this->isPointInSameSector($point, $request)
+            ? 'Uwaga: W okolicy znajduje się już inny punkt.'
+            : 'W okolicy nie znajdował się jeszcze żaden punkt.';
+
             return response()->json([
                 'message' => 'Zaktualizowano punkt',
+                'sector_message' => $sectorMessage,
                 'point' => new PointResource($point) 
-            ], 200);
+            ], 201); 
 
         } catch (ValidationException $e) {
             Log::error('Bledy walidacji podczas aktualizacji punktu:', $e->errors());
@@ -125,4 +137,21 @@ class PointController extends Controller
             ], 404);
         }
     }
+
+   
+    // METODY POMOCNICZE:
+    private function isPointInSameSector(Point $point)
+    {
+        $minDistance = config('app.sector_range', 100);
+
+        $easting = $point->easting;
+        $northing = $point->northing;
+
+        // Sprawdź sektor dla istniejących punktów, z wyłączeniem aktualizowanego punktu
+        return Point::where('id', '!=', $point->id)
+                    ->whereBetween('easting', [$easting - $minDistance, $easting + $minDistance])
+                    ->whereBetween('northing', [$northing - $minDistance, $northing + $minDistance])
+                    ->exists();
+    }
+
 }
