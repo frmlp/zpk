@@ -113,8 +113,7 @@
       attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
     }).addTo(map);
 
-    // Wywołanie funkcji, aby dodać punkty i trasę do mapy
-    addPointsAndPolyline(sceneData, map, data);
+    addMarkersAndPolyline(sceneData, map, data);
 
     container.createHotspot(document.getElementById(mapID), { yaw: sceneData.northYaw, pitch: 90*Math.PI/180 },
       { perspective: { radius: 1230 }});
@@ -426,7 +425,7 @@
     return null;
   }
 
-  function addPointsAndPolyline(sceneData, map, data) {
+  function addMarkersAndPolyline(sceneData, map, data) {
     // Hotspot map icons
     const defaultIcon = L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
