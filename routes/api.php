@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GeneratorService;
 use App\Http\Controllers\MapDownloadController;
+use App\Http\Controllers\MapFileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ Route::get('/paths/{path}', function ($path) {
     return redirect()->route('admin.paths.show', ['path' => $path]);
 });
 
+Route::get('/map/ui-data', [MapFileController::class, 'getMapUIData']);
+
+Route::get('/map/{map}', [MapFileController::class, 'getMapFileWithDetails']);
+
 // endpoint przez który wysyła się zapytanie z parametrami do generatora
 // jako odpowiedź zwrotna dostaje się wygenerowane trasy
 Route::get('/generator', GeneratorService::class);
@@ -42,4 +47,4 @@ Route::get('/generator', GeneratorService::class);
 
 // MAPS
 // endpoint przez który pobiera się czystą mapę podkładową 'api/map-download'
-Route::get('/map-download', MapDownloadController::class);
+// Route::get('/map-download', MapDownloadController::class);

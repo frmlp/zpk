@@ -2,6 +2,7 @@ $(document).ready(function() {
     let map = initMap("map");
     let markers = initMarkers();
     let paths = [];
+    let maps = [];
     // let table = initTable(true);
     getPathData()
         .then(function(result) {
@@ -10,6 +11,12 @@ $(document).ready(function() {
             // console.log(paths);
             populateTable(paths, "baza-tras");
     }).catch((error) => console.log(error));
+
+    getMapUIData()
+        .then(function(result) {
+            maps = result;
+            console.log(maps);
+        }).catch((error) => console.log(error));
     
     $('#table tbody').on('click', 'tr', function() {
         let id = $(this).data('id');
@@ -20,8 +27,32 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '.download-btn', function() {
-        let id = $(this).data('id');
-        let points = paths.find(r => r.id == id).points;
-        downloadMap(points);
-    })
+
+        const pathId = $(this).data('id'); // Pobranie ID mapy z przycisku
+
+        $('#mapList').html(prepareHtmlForMapChoiceModal(maps, pathId)); // Wstawienie wygenerowanej listy do modala
+
+        $('#mapModal').modal('show'); // Wyświetlenie modala
+    });
+
+    // Obsługa kliknięcia przycisku "Pobierz"
+    $('#download-file').on('click', function () {
+        const selectedMapId = $('input[name="mapRadio"]:checked').data('id');
+        
+        if (!selectedMapId) {
+            alert('Wybierz mapę podkładową przed pobraniem.');
+            return;
+        }
+
+        const pathId = $('#modalContainer').data('id');
+        const points = paths.find(p => p.id == pathId).points;
+
+        // Wysłanie żądania GET do API w celu pobrania pliku mapy
+        downloadMap(selectedMapId, points);
+    });
+
+   
+
+
+
 });
