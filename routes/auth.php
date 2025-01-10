@@ -24,5 +24,6 @@ Route::group(['middleware' => 'auth'], function () { // endpointy dla zalogowany
     Route::post('/register', [AuthController2::class, 'registerPost'])->name('register.post');
     Route::delete('/users/{user}', [AuthController2::class, 'destroy'])->name('users.destroy');
     Route::put('/password/change', [AuthController2::class, 'updatePassword'])->name('password.update');
+    Route::put('/login/change', [AuthController2::class, 'updateLogin'])->name('profile.update');
     
 });

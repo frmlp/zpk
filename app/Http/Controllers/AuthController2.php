@@ -27,7 +27,7 @@ class AuthController2 extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        return response()->json(['message' => 'Użytkownik został poprawnie zalogowany.'], 200);
+        return response()->json(['message' => 'Uzytkownik zostal poprawnie zalogowany.'], 200);
     }
     
     public function logout(Request $request)
@@ -40,7 +40,7 @@ class AuthController2 extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Użytkownik został pomyślnie wylogowany.'], 200);
+        return response()->json(['message' => 'Uzytkownik zostal pomyslnie wylogowany.'], 200);
     }
 
     public function registerPost(Request $request)
@@ -60,7 +60,7 @@ class AuthController2 extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Użytkownik został poprawnie zarejestrowany.',
+                'message' => 'Uzytkownik zostal poprawnie zarejestrowany.',
                 'user.name' => $user->name,
             ], 200);
 
@@ -68,14 +68,14 @@ class AuthController2 extends Controller
             $errors = $e->errors();
             if (isset($errors['name'])) {
                 return response()->json([
-                    'message' => 'Błąd walidacji nazwy użytkownika.',
+                    'message' => 'Bląd walidacji nazwy uzytkownika.',
                     'errors' => $errors['name'],
                 ], 422);
             }
 
             if (isset($errors['password'])) {
                 return response()->json([
-                    'message' => 'Błąd walidacji hasła.',
+                    'message' => 'Blad walidacji hasla.',
                     'errors' => $errors['password'],
                 ], 422);
             }
@@ -87,13 +87,13 @@ class AuthController2 extends Controller
 
         if ($user->id === Auth::id()) {
             return response()->json([
-                'message' => 'Nie możesz usunąć swojego własnego konta.',
+                'message' => 'Nie mozesz usunac swojego wlasnego konta.',
             ], 403); 
         }
 
         $user->delete();
     
-        return response()->json(['message' => 'Użytkownik został usunięty.'], 200); 
+        return response()->json(['message' => 'Uzytkownik zostal usuniety.'], 200); 
     }
 
     public function updatePassword(Request $request)
@@ -108,7 +108,23 @@ class AuthController2 extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'Hasło zostało zaktualizowane.'], 200);
+        return response()->json(['message' => 'Haslo zostalo zaktualizowane.'], 200);
     }
 
+    public function updateLogin(Request $request)
+    {   // zmiana loginu
+        $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:users,name,' . Auth::id()],
+        ]);
+    
+        if ($request->name === Auth::user()->name) {
+            return response()->json(['message' => 'Nowa nazwa użytkownika musi być inna niż obecna.'], 422);
+        }
+    
+        $request->user()->update([
+            'name' => $request->name,
+        ]);
+    
+        return response()->json(['message' => 'Nazwa użytkownika została zaktualizowana.'], 200);
+    }
 }
