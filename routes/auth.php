@@ -12,13 +12,18 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'guest'], function() { // endpointy dla niezalogowanych użytkowników
     
     Route::get('/login', [AuthController2::class, 'login'])->name('login'); // przekierowanie na stronę logowania
-    Route::post('/login', [AuthController2::class, 'loginPost'])->name('login'); // wysłanie podanych danych logowania na serwer w celu autoryzacji
+    Route::post('/login', [AuthController2::class, 'loginPost'])->name('login'); // wysłanie podanych danych logowania na serwer w celu autoryzacji    
+
 });
 
 Route::group(['middleware' => 'auth'], function () { // endpointy dla zalogowanych użytkowników
     
     Route::post('/logout', [AuthController2::class, 'logout'])->name('logout'); // wylogowanie z konta
-
-    // do zaimplementowania zmiana loginu i hasła do konta admina
-
+    
+    // Zarządzanie kontem:
+    Route::post('/register', [AuthController2::class, 'registerPost'])->name('register.post');
+    Route::delete('/users/{user}', [AuthController2::class, 'destroy'])->name('users.destroy');
+    Route::put('/password/change', [AuthController2::class, 'updatePassword'])->name('password.update');
+    Route::put('/login/change', [AuthController2::class, 'updateLogin'])->name('profile.update');
+    
 });
