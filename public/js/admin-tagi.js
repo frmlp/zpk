@@ -38,7 +38,11 @@ $(document).ready(function() {
 
         $('#tagForm')[0].reset(); // Wyczyść formularz
 
+        $('#pointsContainer').empty();
+        $('#pointsContainerWrapper').hide();
+
         $('#tagModal').modal('show');
+        
     });
 
     $('#tagForm').on('submit', function(event) {
@@ -69,8 +73,8 @@ $(document).ready(function() {
 
     $('#table').on('click', '.edit-btn', function() {
         const id = $(this).data('id');
-
         const tag = tags.find(tag => tag.id === id);
+        
 
         $('#tagForm').attr('action', '/admin/tags/' + tag.id);
         $('#tagForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
@@ -78,6 +82,15 @@ $(document).ready(function() {
 
         $('#tagModalLabel').text('Edytuj Tag');
         $('#name').val(tag.name);
+
+        $('#pointsContainerWrapper').show();
+        const pointsContainer = $('#pointsContainer');
+        pointsContainer.empty();
+
+      // Dodanie każdego punktu jako osobny element w kolumnie
+        tag.points.forEach(point => {
+            pointsContainer.append(`<div class="card bg-success-subtle m-1"><div class="card-body">${point}</div></div>`);
+        });
 
         $('#tagModal').modal('show');
     });

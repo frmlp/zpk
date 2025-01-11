@@ -13,7 +13,13 @@
                         <label for="name" class="form-label">Nazwa</label>
                         <input type="text" class="form-control" id="name" name="name">
                     </div>
-                   
+
+                    <!-- Kody przypisanych punktów -->
+                    <div class="mb-3" id="pointsContainerWrapper">
+                        <label class="form-label">Kody przypisanych punktów</label>
+                        <div id="pointsContainer" class="d-flex flex-wrap justify-content-start"></div>
+                    </div>
+
                     <!-- Przyciski -->
                      <div class="row">
                         <div class="col">
