@@ -9,6 +9,7 @@
 
 .content {
     margin: 15px 0px 15px 0px;
+    position: relative;
 }
 
 .form-signin {
@@ -36,10 +37,6 @@ table.dataTable {
     background-color: #fcfcfc; /* Delikatnie jaśniejsze tło przy najechaniu */
     cursor: grabbing; /* Zmiana kursora przy przeciąganiu */
 }
-
-.content {
-    position: relative;
-  }
 
 /* background */
 @keyframes move {
