@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Route;
 // w tym pliku znajdują się ścieżki do poszczególnych stron aplikacji
 
 Route::get('/', function () {
-    return view('index');
+    return view('pages.client.index');
 });
 
 Route::get('/baza', function () { 
-    return view('baza-tras'); 
+    return view('pages.client.baza-tras'); 
 })->name("baza-tras");
 
 Route::get('/generator', function () {
-    return view('generator');
+    return view('pages.client.generator');
 })->name("generator");
 
 Route::get('/planner', function () {
-    return view('planner-tras');
+    return view('pages.client.planer');
 })->name("planer");
 
 Route::get('/spacer', function () {
-    return view('spacer');
+    return view('pages.client.spacer-vr');
 })->name("spacer");
 
 // ten endpoint niedługo nie będzie potrzebny, rozwiązanie tymczasowe
