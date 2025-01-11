@@ -16,9 +16,15 @@ use Illuminate\Validation\ValidationException;
 //kontroler odpowiedzialny zazarządzanie procesami logowaniai wylogowania admina
 class AuthController2 extends Controller
 {
+
     public function login()
-    {   // przekierowanie na stronę logowania
-        return view('admin.login');
+    {  
+        // przekieruj do panelu admina jeśli użytkownik już zalogowany
+        if(Auth::check()) {
+            return redirect('/admin/baza-tras');
+        }
+        // przekierowanie na stronę logowania
+        return view('pages.admin.login');
     }
     
     public function loginPost(LoginRequest $request)
