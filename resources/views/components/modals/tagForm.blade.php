@@ -11,7 +11,7 @@
                     <!-- Pole Kod -->
                     <div class="mb-3">
                         <label for="name" class="form-label">Nazwa</label>
-                        <input type="text" class="form-control" id="name" name="name">
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
 
                     <!-- Kody przypisanych punktów -->
