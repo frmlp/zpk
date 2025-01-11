@@ -13,7 +13,7 @@
                         <!-- Pole Kod -->
                         <div class="col mb-3">
                             <label for="pointCode" class="form-label">Kod</label>
-                            <input type="text" class="form-control" id="pointCode" name="code">
+                            <input type="text" class="form-control" id="pointCode" name="code" required>
                         </div>
                         <!-- Punkt wirtualny -->
                         <div class="col mb-3 text-center">
@@ -28,7 +28,7 @@
                     <!-- Pole Opis -->
                     <div class="mb-3">
                         <label for="pointDescription" class="form-label">Opis</label>
-                        <input type="text" class="form-control" id="pointDescription" name="description">
+                        <input type="text" class="form-control" id="pointDescription" name="description" required>
                     </div>
                     <!-- Rodzaj współrzędnych -->
                     <div class="mb-3">
@@ -52,34 +52,34 @@
                     <div id="epsg2180Fields" class="coordinates row mb-3">
                         <div class="col">
                             <label for="pointEasting" class="form-label">Easting</label>
-                            <input type="text" class="form-control" id="pointEasting" name="easting">
+                            <input type="text" class="form-control" id="pointEasting" name="easting" required>
                         </div>
                         <div class="col">
                             <label for="pointNorthing" class="form-label">Northing</label>
-                            <input type="text" class="form-control" id="pointNorthing" name="northing">
+                            <input type="text" class="form-control" id="pointNorthing" name="northing" required>
                         </div>
                     </div>
                     <!-- współrzędne WSG:84 -->
                     <div id="wsg84Fields" class="coordinates row mb-3" style="display:none;">
                         <div class="col">
                             <label for="pointLongitude" class="form-label">Długość</label>
-                            <input type="text" class="form-control" id="pointLongitude" name="longitude">
+                            <input type="text" class="form-control" id="pointLongitude" name="longitude" required>
                         </div>
                         <div class="col">
                             <label for="pointLatitude" class="form-label">Szerokość</label>
-                            <input type="text" class="form-control" id="pointLatitude" name="latitude">
+                            <input type="text" class="form-control" id="pointLatitude" name="latitude" required>
                         </div>
                     </div>
                     
                     
                     <!-- Obszar -->
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="areaId" class="form-label">Obszar</label>
                         <select class="form-select" id="areaId" name="area_id">
                             <option value="1">Grabówek</option>
                             <option value="2">Chylonia</option>
                         </select>
-                    </div>
+                    </div> --}}
                     <!-- Url kodu QR -->
                     <div class="mb-3">
                         <label class="form-label">Url kodu QR</label>
