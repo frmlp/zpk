@@ -77,7 +77,7 @@ $(document).ready(function() {
         $('#tagForm').append('<input type="hidden" name="_method" value="PUT">');
 
         $('#tagModalLabel').text('Edytuj Tag');
-        $('#tag').val(tag.name);
+        $('#name').val(tag.name);
 
         $('#tagModal').modal('show');
     });
