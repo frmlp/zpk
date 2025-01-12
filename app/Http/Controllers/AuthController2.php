@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +17,15 @@ use Illuminate\Validation\ValidationException;
 //kontroler odpowiedzialny zazarządzanie procesami logowaniai wylogowania admina
 class AuthController2 extends Controller
 {
+
     public function login()
-    {   // przekierowanie na stronę logowania
-        return view('admin.login');
+    {  
+        // przekieruj do panelu admina jeśli użytkownik już zalogowany
+        if(Auth::check()) {
+            return redirect('/admin/baza-tras');
+        }
+        // przekierowanie na stronę logowania
+        return view('pages.admin.login');
     }
     
     public function loginPost(LoginRequest $request)
@@ -60,7 +67,7 @@ class AuthController2 extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Uzytkownik zostal poprawnie zarejestrowany.',
+                'message' => 'Użytkownik zostal poprawnie zarejestrowany.',
                 'user.name' => $user->name,
             ], 200);
 
@@ -98,33 +105,65 @@ class AuthController2 extends Controller
 
     public function updatePassword(Request $request)
     {   // zmiana hasła
+        try {
+            $request->validate([
+                'current_password' => ['required', 'current_password'],
+                'password' => ['required', 'confirmed', 'min:8', 'string'],
+            ]);
+    
+            $request->user()->update([
+                'password' => Hash::make($request->password),
+            ]);
+    
+            return response()->json(['message' => 'Hasło zostało zaktualizowane.'], 200);
+
+        } catch (ValidationException $e){
+            // Błąd walidacji
+            return response()->json([
+                'message' => 'Błąd walidacji danych.',
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch(Exception $error) {
+            // Pozostałe błędy
+            return response()->json([
+                'message' => 'Wystąpił błąd przy próbie zmiany hasła.'
+            ], 500);
+        }
+    
         
-        $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', 'min:8', 'string'],
-        ]);
-
-        $request->user()->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json(['message' => 'Haslo zostalo zaktualizowane.'], 200);
     }
 
     public function updateLogin(Request $request)
     {   // zmiana loginu
-        $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:users,name,' . Auth::id()],
-        ]);
-    
-        if ($request->name === Auth::user()->name) {
-            return response()->json(['message' => 'Nowa nazwa użytkownika musi być inna niż obecna.'], 422);
+        try {
+            $request->validate([
+                'current_name' => ['required', 'string', function ($attribute, $value, $fail) {
+                    if ($value !== Auth::user()->name) {
+                        $fail('Podana obecna nazwa użytkownika jest nieprawidłowa.');
+                    }
+                }],
+                'name' => ['required', 'confirmed', 'string', 'max:255', 'different:current_name', 'unique:users,name,' . Auth::id()],
+            ]);
+        
+            $request->user()->update([
+                'name' => $request->name,
+            ]);
+        
+            return response()->json(['message' => 'Nazwa użytkownika została zaktualizowana.'], 200);
+        }  catch (ValidationException $e){
+            // Błąd walidacji
+            return response()->json([
+                'message' => 'Błąd walidacji danych.',
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch(Exception $error) {
+            // Pozostałe błędy
+            return response()->json([
+                'message' => 'Wystąpił błąd przy próbie zmiany nazwy użytkownika.'
+            ], 500);
         }
-    
-        $request->user()->update([
-            'name' => $request->name,
-        ]);
-    
-        return response()->json(['message' => 'Nazwa użytkownika została zaktualizowana.'], 200);
+        
     }
 }

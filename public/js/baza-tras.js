@@ -3,13 +3,43 @@ $(document).ready(function() {
     let markers = initMarkers();
     let paths = [];
     let maps = [];
-    // let table = initTable(true);
+    
+    const columnsConfig = [
+        { width: '28%' }, 
+        { width: '15%' }, 
+        { width: '8%' }, 
+        { width: '8%' }, 
+        { width: '13%' },  
+        null
+    ];
+
+    const columnDefsConfig = [
+        { responsivePriority: 1, targets: 0 }, 
+        { responsivePriority: 4, targets: 1 },
+        { responsivePriority: 3, targets: 2 },
+        { responsivePriority: 2, targets: 3 },
+        { responsivePriority: 5, targets: 4 }, 
+        { responsivePriority: 1, targets: 5 },
+        { orderable: false, targets: 5}
+    ];
+
     getPathData()
         .then(function(result) {
-            // console.log("halo");
+
             paths = filterPathsWithPoints(result.data);
-            // console.log(paths);
-            populateTable(paths, "baza-tras");
+
+            const rows = paths.map(path => `
+                <tr class="" data-id="${path.id}" id="${path.id}">
+                    <td>${path.name}</td>
+                    <td>${getPathAreaNames(path.points)}</td>
+                    <td>${path.points.length}</td>
+                    <td>${calculateRouteLength(path.points)}</td>
+                    <td>${checkRouteType(path.points)}</td>
+                    <td><button data-id="${path.id}" class="btn btn-success btn-sm w-100 download-btn">Pobierz mapę</button></td>
+                </tr>
+            `).join('');
+
+            populateTable(rows, columnsConfig, columnDefsConfig);
     }).catch((error) => console.log(error));
 
     getMapUIData()

@@ -9,16 +9,47 @@ $(document).ready(function() {
     let paths = [];
     let points = [];
 
-    // let table = initTable(true);
-    // addTokenToForms(['form', 'logoutForm']);
+    const columnsConfig = [
+        { width: '25%' },
+        { width: '20%' },
+        { width: '10%' },
+        { width: '10%' },
+        { width: '15%' }, 
+        null,
+        null
+    ];
+
+    const columnDefsConfig =[
+        { responsivePriority: 1, targets: 0 },
+        { responsivePriority: 4, targets: 1 },
+        { responsivePriority: 3, targets: 2 },
+        { responsivePriority: 2, targets: 3 },
+        { responsivePriority: 5, targets: 4 },
+        { responsivePriority: 1, targets: 5 },
+        { responsivePriority: 1, targets: 6 },
+        { orderable: false, targets: [5, 6]}
+    ];
+    
     csrfAjaxSetup();
 
     getAdminPathData()
         .then(function(result) {
             // console.log("halo");
             paths = filterPathsWithPoints(result.data);
-            console.log(paths);
-            populateTable(paths, "admin/baza-tras");
+            
+            const rows = paths.map(path => `
+                <tr class="" data-id="${path.id}" id="${path.id}">
+                    <td>${path.name}</td>
+                    <td>${getPathAreaNames(path.points)}</td>
+                    <td>${path.points.length}</td>
+                    <td>${calculateRouteLength(path.points)}</td>
+                    <td>${checkRouteType(path.points)}</td>
+                    <td><button data-id="${path.id}" class="btn btn-warning btn-sm w-100 edit-btn">Edytuj</button></td>
+                    <td><button data-id="${path.id}" class="btn btn-danger btn-sm w-100 delete-btn">Usuń</button></td>
+                </tr>
+            `).join('');
+
+            populateTable(rows, columnsConfig, columnDefsConfig);
     }).catch((error) => console.log(error));
 
     getAdminPointsData()
