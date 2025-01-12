@@ -11,8 +11,8 @@
             <h2 class="card-title">Zmiana nazwy użytkownika</h2>
             
             <div id="messageWrapper" class="m-3">
-                <div id="usernameAlertMessage" class="text-danger"></div>
-                <div id="usernameSuccessMessage" class="text-success">Nazwa użytkownika została zmieniona</div>
+                <div id="usernameAlertMessage" class="alert alert-danger"></div>
+                <div id="usernameSuccessMessage" class="alert alert-success">Nazwa użytkownika została zmieniona</div>
             </div>
             
 
@@ -40,22 +40,23 @@
         <div class="card-body">
             <h2 class="card-title">Zmiana hasła</h2>
 
-            <div id="passwordAlertMessage" class="text-danger m-3"></div>
-            <div id="passwordSuccessMessage" class="text-success m3">Hasło zostało zmienione</div>
+            <div id="passwordAlertMessage" class="alert alert-danger"></div>
+            <div id="passwordSuccessMessage" class="alert alert-success">Hasło zostało zmienione</div>
 
-            <form id="passwordForm" action="/password" method="POST">
+            <form id="passwordForm" action="/password/change" method="POST">
                 @csrf
+                {{-- <input type="hidden" name="_method" value="PUT"> --}}
                 <div class="mb-3">
                     <label for="currentPassword" class="form-label">Podaj obecne hasło</label>
-                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    <input type="password" class="form-control" id="currentPassword" name="current_password" required>
                 </div>
                 <div class="mb-3">
                     <label for="newPassword" class="form-label">Wprowadź nowe hasło</label>
-                    <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    <input type="password" class="form-control" id="newPassword" name="password" required>
                 </div>
                 <div class="mb-3">
                     <label for="confirmPassword" class="form-label">Potwierdź nowe hasło</label>
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Zmień hasło</button>
             </form>

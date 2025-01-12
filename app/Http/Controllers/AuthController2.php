@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,7 +67,7 @@ class AuthController2 extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Uzytkownik zostal poprawnie zarejestrowany.',
+                'message' => 'Użytkownik zostal poprawnie zarejestrowany.',
                 'user.name' => $user->name,
             ], 200);
 
@@ -104,17 +105,33 @@ class AuthController2 extends Controller
 
     public function updatePassword(Request $request)
     {   // zmiana hasła
+        try {
+            $request->validate([
+                'current_password' => ['required', 'current_password'],
+                'password' => ['required', 'confirmed', 'min:8', 'string'],
+            ]);
+    
+            $request->user()->update([
+                'password' => Hash::make($request->password),
+            ]);
+    
+            return response()->json(['message' => 'Hasło zostało zaktualizowane.'], 200);
+
+        } catch (ValidationException $e){
+            // Błąd walidacji
+            return response()->json([
+                'message' => 'Błąd walidacji danych.',
+                'errors' => $e->errors(),
+            ], 422);
+            
+        } catch(Exception $error) {
+            // Pozostałe błędy
+            return response()->json([
+                'message' => 'Wystąpił błąd przy próbie zmiany hasła.'
+            ], 500);
+        }
+    
         
-        $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', 'min:8', 'string'],
-        ]);
-
-        $request->user()->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json(['message' => 'Haslo zostalo zaktualizowane.'], 200);
     }
 
     public function updateLogin(Request $request)
