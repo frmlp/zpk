@@ -49,7 +49,7 @@ $(document).ready(function() {
                 </tr>
             `).join('');
 
-            populateTable2(rows, columnsConfig, columnDefsConfig);
+            populateTable(rows, columnsConfig, columnDefsConfig);
     }).catch((error) => console.log(error));
 
     getAdminPointsData()

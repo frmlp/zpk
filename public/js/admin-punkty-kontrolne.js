@@ -46,7 +46,7 @@ $(document).ready(function() {
                 </tr>
             `).join('');
 
-            populateTable2(rows, columnsConfig, columnDefsConfig);
+            populateTable(rows, columnsConfig, columnDefsConfig);
 
             points.forEach(point => {
                 point.popup = point.code.concat(" - ", point.description + 
