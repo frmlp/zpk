@@ -31,7 +31,6 @@ class Point extends Model
             'url' => 'nullable|url',
         ];
     }
-    // ggh todo: zwrot obszaru z całym obiektem
 
     
     public function paths(): BelongsToMany
@@ -54,6 +53,21 @@ class Point extends Model
         return $this
             ->belongsToMany(Area::class, 'area_point')
             ->withTimestamps();
+    }
+
+    public function assignAreas()
+    {
+        $areas = Area::all(); 
+
+        foreach ($areas as $area) {
+            if ($this->easting >= $area->min_easting && 
+                $this->easting <= $area->max_easting && 
+                $this->northing >= $area->min_northing && 
+                $this->northing <= $area->max_northing) {
+                
+                $this->areas()->attach($area->id); 
+            }
+        }
     }
 
 }

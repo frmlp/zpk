@@ -14,39 +14,6 @@ class AreaSeeder extends Seeder
     public function run(): void
     {
         // AREAS
-        
-        // {
-        //     Area::create([
-        //         //'id' => 1, 
-        //         'name' => 'Grabówek',
-        //         'min_easting' => 466219.914,
-        //         'max_easting' => 468238.538,
-        //         'min_northing' => 737244.690,
-        //         'max_northing' => 740132.717
-        //     ]);
-
-        //     Area::create([
-        //         //'id' => 2, 
-        //         'name' => 'Chylonia',
-        //         'min_easting' => 464746.877,
-        //         'max_easting' => 466765.501,
-        //         'min_northing' => 738854.585,
-        //         'max_northing' => 741742.612
-        //     ]);
-
-        //     Area::create([
-        //         //'id' => 3, 
-        //         'name' => 'Grabówek i Chylonia',
-        //         'min_easting' => 464746.877,
-        //         'max_easting' => 468238.538,
-        //         'min_northing' => 737244.690,
-        //         'max_northing' => 741742.612
-        //     ]);
-        // }
-        
-       
-       
-       
         {
             $filename = './areas.txt';
             $f = fopen($filename, 'r');
@@ -67,7 +34,6 @@ class AreaSeeder extends Seeder
                 $max_northing = (float)str_replace(",", ".", $data[5]);
 
                 Area::create([
-                    // 'id' => $id,
                     'name' => $name,
                     'min_easting' => $min_easting,
                     'min_northing' => $min_northing,

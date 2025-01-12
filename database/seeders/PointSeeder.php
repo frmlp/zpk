@@ -46,8 +46,9 @@ class PointSeeder extends Seeder
                     'pointVirtual' => $pointVirtual,
                     'url' => $url
                 ]);
-                $area = Area::find($area_id);
-                $area->points()->attach($point->id); 
+                $point->assignAreas(); 
+                //$area = Area::find($area_id);
+                //$area->points()->attach($point->id); 
             }
         }
     }
