@@ -1,8 +1,8 @@
 $(document).ready(function () {
     $('#passwordAlertMessage').hide();
     $('#passwordSuccessMessage').hide();
-    $('#usernameAlertMessage').hide();
-    $('#usernameSuccessMessage').hide();
+    $('#loginAlertMessage').hide();
+    $('#loginSuccessMessage').hide();
 
     $('#passwordForm').on('submit', function (event) {
         event.preventDefault();
@@ -33,16 +33,14 @@ $(document).ready(function () {
 
         // Wysłanie żądania AJAX
         $.ajax({
-            url: '/password/change',     // Adres endpointu
-            method: 'PUT',               // Metoda żądania
+            url: '/password/change',
+            method: 'PUT',
             data: formData,
             success: function (response) {
-                // Jeśli odpowiedź ma status 200
                 passwordChangeSuccess(response.message);
                 
             },
             error: function (xhr) {
-                // Jeśli odpowiedź ma inny status niż 200
                 let message = xhr.responseJSON?.message || 'Wystąpił błąd';
                 passwordChangeFailure(message);
                 
@@ -50,24 +48,42 @@ $(document).ready(function () {
         });
     });
 
-    $('#usernameForm').on('submit', function (e) {
-        const currentUsername = $('#currentUsername').val();
-        const newUsername = $('#newUsername').val();
-        const confirmUsername = $('#confirmUsername').val();
+    $('#loginForm').on('submit', function (event) {
+        event.preventDefault();
+        const currentLogin = $('#currentLogin').val();
+        const newLogin = $('#newLogin').val();
+        const confirmLogin = $('#confirmLogin').val();
 
-        if (newUsername === currentUsername) {
-            e.preventDefault();
-            $('#usernameAlertMessage').text('Nowa nazwa użytkownika nie może być taka sama jak poprzednia!');
-            $('#usernameAlertMessage').show();
-            // alert('Nowa nazwa użytkownika nie może być taka sama jak poprzednia');
+        if (newLogin === currentLogin) {
+            let message = 'Nowa nazwa użytkownika nie może być taka sama jak poprzednia!';
+            loginChangeFailure(message);
+            return;
         }
 
-        if (newUsername !== confirmUsername) {
-            $('#usernameAlertMessage').text('Nowa nazwa użytkownika i potwierdzenie nazwy użytkownika muszą być takie same!');
-            $('#usernameAlertMessage').show();
-            e.preventDefault();
-            // alert('Nowa nazwa użytkownika i potwierdzenie nazwy użytkownika muszą być takie same!');
+        if (newLogin !== confirmLogin) {
+            let message = 'Nowa nazwa użytkownika i potwierdzenie nazwy użytkownika muszą być takie same!';
+            loginChangeFailure(message);
+            return;
         }
+
+        // Pobranie danych z formularza
+        let formData = $(this).serialize();
+
+        // Wysłanie żądania AJAX
+        $.ajax({
+            url: '/login/change',
+            method: 'PUT',
+            data: formData,
+            success: function (response) {
+                loginChangeSuccess(response.message);
+                
+            },
+            error: function (xhr) {
+                let message = xhr.responseJSON?.message || 'Wystąpił błąd';
+                loginChangeFailure(message);
+                
+            }
+        });
     });
 
 
@@ -76,8 +92,8 @@ $(document).ready(function () {
 function passwordChangeSuccess(message){
     $('#passwordSuccessMessage').text(message).show();
     $('#passwordAlertMessage').hide();
-    $('#usernameAlertMessage').hide();
-    $('#usernameSuccessMessage').hide();
+    $('#loginAlertMessage').hide();
+    $('#loginSuccessMessage').hide();
     // Wyczyść formularz
     $('#passwordForm')[0].reset();
     
@@ -85,15 +101,25 @@ function passwordChangeSuccess(message){
 function passwordChangeFailure(message){
     $('#passwordAlertMessage').text(message).show();
     $('#passwordSuccessMessage').hide();
-    $('#usernameAlertMessage').hide();
-    $('#usernameSuccessMessage').hide();
+    $('#loginAlertMessage').hide();
+    $('#loginSuccessMessage').hide();
     // Wyczyść formularz
     $('#passwordForm')[0].reset();
 }
-function usernameChangeSuccess(message){
-
+function loginChangeSuccess(message){
+    $('#loginSuccessMessage').text(message).show();
+    $('#loginAlertMessage').hide();
+    $('#passwordSuccessMessage').hide();
+    $('#passwordAlertMessage').hide();
+    // Wyczyść formularz
+    $('#loginForm')[0].reset();
 }
-function usernameChangefailure(message){
-    
+function loginChangeFailure(message){
+    $('#loginAlertMessage').text(message).show();
+    $('#loginSuccessMessage').hide();
+    $('#passwordSuccessMessage').hide();
+    $('#passwordAlertMessage').hide();
+    // Wyczyść formularz
+    $('#loginForm')[0].reset();
 }
 

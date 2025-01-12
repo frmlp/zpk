@@ -10,25 +10,25 @@
         <div class="card-body">
             <h2 class="card-title">Zmiana nazwy użytkownika</h2>
             
-            <div id="messageWrapper" class="m-3">
-                <div id="usernameAlertMessage" class="alert alert-danger"></div>
-                <div id="usernameSuccessMessage" class="alert alert-success">Nazwa użytkownika została zmieniona</div>
-            </div>
+            {{-- <div id="messageWrapper" class="m-3"> --}}
+                <div id="loginAlertMessage" class="alert alert-danger"></div>
+                <div id="loginSuccessMessage" class="alert alert-success"></div>
+            {{-- </div> --}}
             
 
-            <form id="usernameForm" action="/username" method="POST">
+            <form id="loginForm">
                 @csrf
                 <div class="mb-3">
-                    <label for="currentUsername" class="form-label">Podaj obecną nazwę użytkownika</label>
-                    <input type="text" class="form-control" id="currentUsername" name="currentUsername" required>
+                    <label for="currentLogin" class="form-label">Podaj obecną nazwę użytkownika</label>
+                    <input type="text" class="form-control" id="currentLogin" name="current_name" required>
                 </div>
                 <div class="mb-3">
-                    <label for="newUsername" class="form-label">Wprowadź nową nazwę użytkownika</label>
-                    <input type="text" class="form-control" id="newUsername" name="newUsername" required>
+                    <label for="newLogin" class="form-label">Wprowadź nową nazwę użytkownika</label>
+                    <input type="text" class="form-control" id="newLogin" name="name" required>
                 </div>
                 <div class="mb-3">
-                    <label for="confirmUsername" class="form-label">Potwierdź nową nazwę użytkownika</label>
-                    <input type="text" class="form-control" id="confirmUsername" name="confirmUsername" required>
+                    <label for="confirmLogin" class="form-label">Potwierdź nową nazwę użytkownika</label>
+                    <input type="text" class="form-control" id="confirmLogin" name="name_confirmation" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Zmień nazwę użytkownika</button>
             </form>
@@ -41,7 +41,7 @@
             <h2 class="card-title">Zmiana hasła</h2>
 
             <div id="passwordAlertMessage" class="alert alert-danger"></div>
-            <div id="passwordSuccessMessage" class="alert alert-success">Hasło zostało zmienione</div>
+            <div id="passwordSuccessMessage" class="alert alert-success"></div>
 
             <form id="passwordForm" action="/password/change" method="POST">
                 @csrf
