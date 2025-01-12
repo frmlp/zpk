@@ -66,7 +66,7 @@
                                 <th>Obszar</th>
                                 <th>Liczba punktów</th>
                                 <th>Długość trasy</th>
-                                <th>Typ trasy</th>
+                                {{-- <th>Typ trasy</th> --}}
                                 <th></th>
                             </tr>
                         </thead>
