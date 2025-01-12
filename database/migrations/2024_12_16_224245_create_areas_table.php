@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->double('min_easting');
+            $table->double('max_easting');
+            $table->double('min_northing');
+            $table->double('max_northing');
             $table->timestamps();
         });
     }

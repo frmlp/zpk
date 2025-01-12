@@ -18,7 +18,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    
+        // wymuszenie kolejności wypełniania tabel
+        $this->call([
+            AreaSeeder::class, 
+            PointSeeder::class, 
+        ]);
+
         // USERS
         {
             User::factory()->create([
@@ -26,49 +31,73 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // AREAS
-        {
-            Area::create(['id' => 1, 'name' => 'Grabówek']);
-            Area::create(['id' => 2, 'name' => 'Chylonia']);
-            Area::create(['id' => 3, 'name' => 'Grabówek i Chylonia']);
-        }
+        // // AREAS
+        // {
+        //     $filename = './areas.txt';
+        //     $f = fopen($filename, 'r');
+
+        //     while (!feof($f)) {
+        //         $line = fgets($f);
+        //         $line = trim($line);
+        //         $data = preg_split('/\t+/', $line, -1, PREG_SPLIT_NO_EMPTY);
+
+        //         if (count($data) < 6) continue; // Pomijamy linie z niepełnymi danymi
+
+        //         $id = (int)$data[0];
+        //         $name = $data[1];
+        //         $min_easting = (float)str_replace(",", ".", $data[2]);
+        //         $min_northing = (float)str_replace(",", ".", $data[3]);
+        //         $max_easting = (float)str_replace(",", ".", $data[4]);
+        //         $max_northing = (float)str_replace(",", ".", $data[5]);
+
+        //         Area::create([
+        //             'id' => $id,
+        //             'name' => $name,
+        //             'min_easting' => $min_easting,
+        //             'min_northing' => $min_northing,
+        //             'max_easting' => $max_easting,
+        //             'max_northing' => $max_northing,
+        //         ]);
+        //     }
+        //     fclose($f);
+        // }
             
-        // POINTS
-        {
-            $filename = './points.txt';
-            $f = fopen($filename, 'r');
+        // // POINTS
+        // {
+        //     $filename = './points.txt';
+        //     $f = fopen($filename, 'r');
 
-            if(!$f) {
-                return;
-            }
+        //     if(!$f) {
+        //         return;
+        //     }
 
-            while(!feof($f)) {
-                $line = fgets($f);
-                $line = trim($line);
-                $data = preg_split('/\t+/', $line, -1, PREG_SPLIT_NO_EMPTY);
+        //     while(!feof($f)) {
+        //         $line = fgets($f);
+        //         $line = trim($line);
+        //         $data = preg_split('/\t+/', $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                if(count($data) < 5) continue;
+        //         if(count($data) < 5) continue;
 
-                $code = $data[0];
-                $easting = (float)str_replace(",", ".", $data[1]);
-                $northing = (float)str_replace(",", ".", $data[2]);
-                $pointVirtual = $data[3];
-                $area_id = $data[4];
-                $url = $data[5];
-                $description = $data[6];
+        //         $code = $data[0];
+        //         $easting = (float)str_replace(",", ".", $data[1]);
+        //         $northing = (float)str_replace(",", ".", $data[2]);
+        //         $pointVirtual = $data[3];
+        //         $area_id = $data[4];
+        //         $url = $data[5];
+        //         $description = $data[6];
 
-                $point = Point::factory()->create([
-                    'code' => $code,
-                    'description' => $description,
-                    'easting' => $easting,
-                    'northing' => $northing,
-                    'pointVirtual' => $pointVirtual,
-                    'url' => $url
-                ]);
-                $area = Area::find($area_id);
-                $area->points()->attach($point->id); 
-            }
-        }
+        //         $point = Point::factory()->create([
+        //             'code' => $code,
+        //             'description' => $description,
+        //             'easting' => $easting,
+        //             'northing' => $northing,
+        //             'pointVirtual' => $pointVirtual,
+        //             'url' => $url
+        //         ]);
+        //         $area = Area::find($area_id);
+        //         $area->points()->attach($point->id); 
+        //     }
+        // }
 
         // POINT_TAGS
         {    
