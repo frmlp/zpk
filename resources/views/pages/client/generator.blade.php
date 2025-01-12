@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row border border-success border-4 rounded bg-light">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-lg-6">
             <div class="m-3">
                 <div id="form-wrapper">
                     <form id="generator-form">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 sticky-top" id="map"></div>
+        <div class="col-12 col-lg-6 sticky-top" id="map"></div>
     </div>
 
     {{-- Modal wyboru mapu podkładowej --}}

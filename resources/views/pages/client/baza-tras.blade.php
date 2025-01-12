@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row  border border-success border-4 rounded bg-light">
-        <div class="col-12 col-md-7 ">
+        <div class="col-12 col-lg-7 ">
             <div class="mt-3 mb-3">
                 <table class="table table-hover" id="table">
                     <thead>
@@ -23,7 +23,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-12 col-md-5 sticky-top" id="map"></div>
+        <div class="col-12 col-lg-5 sticky-top" id="map"></div>
     </div>
 
     {{-- Modal wyboru mapu podkładowej --}}
