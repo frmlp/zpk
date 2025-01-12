@@ -16,13 +16,14 @@ $(document).ready(function() {
     ];
 
     const columnDefsConfig =[
-        { responsivePriority: 5, targets: 0 },
-        { responsivePriority: 3, targets: 1 },
-        { responsivePriority: 2, targets: 2 },
+        { responsivePriority: 1, targets: 0 },
+        { responsivePriority: 5, targets: 1 },
+        { responsivePriority: 6, targets: 2 },
         { responsivePriority: 2, targets: 3 },
-        { responsivePriority: 4, targets: 4 },
+        { responsivePriority: 2, targets: 4 },
         { responsivePriority: 1, targets: 5 },
-        { responsivePriority: 1, targets: 6 }
+        { responsivePriority: 1, targets: 6 },
+        { orderable: false, targets: [5, 6]}
     ];
 
     csrfAjaxSetup();

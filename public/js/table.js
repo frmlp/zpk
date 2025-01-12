@@ -56,7 +56,7 @@ function populateTable(paths, tableUrl)
             { responsivePriority: 4, targets: 4 },
             { responsivePriority: 1, targets: 5 },
             { responsivePriority: 1, targets: 6 }
-        ]
+        ];
         
     }
     else if (tableUrl == "baza-tras") {

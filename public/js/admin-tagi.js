@@ -3,14 +3,12 @@ $(document).ready(function() {
 
     let columnsConfig = [
         {width: '50%'},
-        {width: '25%'},
+        null,
         null
     ]
 
     let columnDefsConfig = [
-        { responsivePriority: 3, targets: 0 }, // Priorytet dla kolumny 1 (indeks 1 w tabeli)
-        { responsivePriority: 3, targets: 1 },
-        { responsivePriority: 3, targets: 2 }
+        { orderable: false, targets: [1, 2]}
     ];
 
     csrfAjaxSetup();

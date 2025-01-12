@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row ">
-        <div class="col-12 col-md-7">
+        <div class="col-12 col-lg-7">
             <!-- <div class=""> -->
                 <button id="newPathBtn" class="btn btn-success w-100">Dodaj nową trasę</button>
                 <table class="table table-hover" id="table">
@@ -25,7 +25,7 @@
                 </table>
             <!-- </div> -->
         </div>
-        <div class="col-12 col-md-5 sticky-top" id="map"></div>
+        <div class="col-12 col-lg-5 sticky-top" id="map"></div>
     </div>
 
     {{-- Modal formularza trasy --}}
