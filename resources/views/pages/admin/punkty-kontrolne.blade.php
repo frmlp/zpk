@@ -10,13 +10,13 @@
             <thead>
                 <tr>
                     <!-- <th>ID</th> -->
-                    <th data-priority="3">Kod</th>
-                    <th data-priority="6">Opis</th>
-                    <th data-priority="7">Obszar</th>
-                    <th data-priority="4">Easting</th>
-                    <th data-priority="4">Northing</th>
-                    <th data-priority="2"></th>
-                    <th data-priority="1"></th>
+                    <th>Kod</th>
+                    <th>Opis</th>
+                    <th>Obszar</th>
+                    <th>Easting</th>
+                    <th>Northing</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
