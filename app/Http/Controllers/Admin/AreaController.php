@@ -25,9 +25,6 @@ class AreaController extends Controller
                 'message' => 'Dodano nowy obszar',
                 'area' => new AreaResource($area) 
             ], 201);
-            // return response()->json([
-            //     'message' => 'Dodano nowy obszar'
-            // ], 201);
     
         } catch (ValidationException $e) {
             return response()->json([

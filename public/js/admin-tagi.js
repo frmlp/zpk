@@ -3,14 +3,12 @@ $(document).ready(function() {
 
     let columnsConfig = [
         {width: '50%'},
-        {width: '25%'},
+        null,
         null
     ]
 
     let columnDefsConfig = [
-        { responsivePriority: 3, targets: 0 }, // Priorytet dla kolumny 1 (indeks 1 w tabeli)
-        { responsivePriority: 3, targets: 1 },
-        { responsivePriority: 3, targets: 2 }
+        { orderable: false, targets: [1, 2]}
     ];
 
     csrfAjaxSetup();
@@ -27,10 +25,11 @@ $(document).ready(function() {
                 </tr>
             `).join('');
 
-            populateTable2(rows, columnsConfig, columnDefsConfig);
+            populateTable(rows, columnsConfig, columnDefsConfig);
         }).catch((error) => console.log(error));
 
     $('#newTagBtn').on('click', function() {
+        $('#alertMessage').hide();
         $('#tagModalLabel').text('Nowy Tag');
         $('#tagForm').attr('action', '/admin/tags');
         $('#tagForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
@@ -38,7 +37,11 @@ $(document).ready(function() {
 
         $('#tagForm')[0].reset(); // Wyczyść formularz
 
+        $('#pointsContainer').empty();
+        $('#pointsContainerWrapper').hide();
+
         $('#tagModal').modal('show');
+        
     });
 
     $('#tagForm').on('submit', function(event) {
@@ -53,31 +56,38 @@ $(document).ready(function() {
             method: form.attr('method'),
             data:formData,
             success: function(response, status, xhr) {
-                if (xhr.status === 200 || xhr.status === 201) {
-                    location.reload(); // Odśwież stronę
-                } else {
-                    $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                }
+                location.reload(); // Odśwież stronę   
             },
             error: function(xhr) {
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-                $('#error-message').text(errorMessage).show();
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+                $('#alertMessage').text(message).show();
             }
         })
 
     });
 
     $('#table').on('click', '.edit-btn', function() {
-        const id = $(this).data('id');
+        $('#alertMessage').hide();
 
+        const id = $(this).data('id');
         const tag = tags.find(tag => tag.id === id);
+        
 
         $('#tagForm').attr('action', '/admin/tags/' + tag.id);
         $('#tagForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
         $('#tagForm').append('<input type="hidden" name="_method" value="PUT">');
 
         $('#tagModalLabel').text('Edytuj Tag');
-        $('#tag').val(tag.name);
+        $('#name').val(tag.name);
+
+        $('#pointsContainerWrapper').show();
+        const pointsContainer = $('#pointsContainer');
+        pointsContainer.empty();
+
+      // Dodanie każdego punktu jako osobny element w kolumnie
+        tag.points.forEach(point => {
+            pointsContainer.append(`<div class="card bg-success-subtle m-1"><div class="card-body">${point}</div></div>`);
+        });
 
         $('#tagModal').modal('show');
     });

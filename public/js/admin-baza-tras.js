@@ -9,16 +9,47 @@ $(document).ready(function() {
     let paths = [];
     let points = [];
 
-    // let table = initTable(true);
-    // addTokenToForms(['form', 'logoutForm']);
+    const columnsConfig = [
+        { width: '25%' },
+        { width: '20%' },
+        { width: '10%' },
+        { width: '10%' },
+        { width: '15%' }, 
+        null,
+        null
+    ];
+
+    const columnDefsConfig =[
+        { responsivePriority: 1, targets: 0 },
+        { responsivePriority: 4, targets: 1 },
+        { responsivePriority: 3, targets: 2 },
+        { responsivePriority: 2, targets: 3 },
+        { responsivePriority: 5, targets: 4 },
+        { responsivePriority: 1, targets: 5 },
+        { responsivePriority: 1, targets: 6 },
+        { orderable: false, targets: [5, 6]}
+    ];
+    
     csrfAjaxSetup();
 
     getAdminPathData()
         .then(function(result) {
             // console.log("halo");
             paths = filterPathsWithPoints(result.data);
-            console.log(paths);
-            populateTable(paths, "admin/baza-tras");
+            
+            const rows = paths.map(path => `
+                <tr class="" data-id="${path.id}" id="${path.id}">
+                    <td>${path.name}</td>
+                    <td>${getPathAreaNames(path.points)}</td>
+                    <td>${path.points.length}</td>
+                    <td>${calculateRouteLength(path.points)}</td>
+                    <td>${checkRouteType(path.points)}</td>
+                    <td><button data-id="${path.id}" class="btn btn-warning btn-sm w-100 edit-btn">Edytuj</button></td>
+                    <td><button data-id="${path.id}" class="btn btn-danger btn-sm w-100 delete-btn">Usuń</button></td>
+                </tr>
+            `).join('');
+
+            populateTable(rows, columnsConfig, columnDefsConfig);
     }).catch((error) => console.log(error));
 
     getAdminPointsData()
@@ -39,6 +70,7 @@ $(document).ready(function() {
     });
 
     $('#newPathBtn').on('click', function() {
+        $('#alertMessage').hide();
         $('#pathModalLabel').text('Nowa trasa');
         $('#pathForm').attr('action', '/admin/paths');
         $('#pathForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
@@ -140,6 +172,8 @@ $(document).ready(function() {
     });
 
     $('#table').on('click', '.edit-btn', function() {
+        $('#alertMessage').hide();
+
         let id = $(this).data('id');
         // console.log(id);
         const path = paths.find(path => path.id === id);
@@ -189,7 +223,8 @@ $(document).ready(function() {
         let pathPoints = collectPoints('#dropdown-container select', points).map(point => point.id);
 
         if(pathPoints.length < 2) {
-            
+            const message = 'Trasa musi się składać z co najmniej dwóch punktów.';
+            $('#alertMessage').text(message).show();
             return;
         }
 
@@ -200,6 +235,7 @@ $(document).ready(function() {
         pathPoints.forEach(pointId => {
             $('<input>').attr({
                 type: 'hidden',
+                class: 'pointArray',
                 name: 'points[]',
                 value: pointId
             }).appendTo('#pathForm');
@@ -214,19 +250,14 @@ $(document).ready(function() {
             method: form.attr('method'), // Pobierz metodę (POST lub inne)
             data: formData,
             success: function (response, status, xhr) {
-                console.log("xhr status: " + xhr.status);
-                console.log(response);
-                console.log(status);
-                if (xhr.status === 200 || xhr.status === 201) {
-                    location.reload(); // Odśwież stronę
-                } else {
-                    $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                }
+                location.reload(); // Odśwież stronę
+                
             },
             error: function (xhr) {
                 // Wyświetl wiadomość o błędzie w zależności od odpowiedzi serwera
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-                $('#error-message').text(errorMessage).show();
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+                $('#alertMessage').text(message).show();
+                $('#pathForm .pointArray').remove(); // wyczyść poprzednie wpisy formularza
             }
         });
     })
@@ -254,6 +285,17 @@ $(document).ready(function() {
                 updatePath(); // Aktualizuj trasę po zmianie kolejności
             }
         }).sortable("refresh"); // Odśwież instancję
-    }
+    };
+
+    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    $(document).on('click', function(event){
+        if(!map.getContainer().contains(event.target)) {
+            map.closePopup();
+        }
+
+        if(!modalMap.getContainer().contains(event.target)) {
+            modalMap.closePopup();
+        }
+    });
 });
 

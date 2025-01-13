@@ -16,13 +16,14 @@ $(document).ready(function() {
     ];
 
     const columnDefsConfig =[
-        { responsivePriority: 5, targets: 0 },
-        { responsivePriority: 3, targets: 1 },
-        { responsivePriority: 2, targets: 2 },
+        { responsivePriority: 1, targets: 0 },
+        { responsivePriority: 5, targets: 1 },
+        { responsivePriority: 6, targets: 2 },
         { responsivePriority: 2, targets: 3 },
-        { responsivePriority: 4, targets: 4 },
+        { responsivePriority: 2, targets: 4 },
         { responsivePriority: 1, targets: 5 },
-        { responsivePriority: 1, targets: 6 }
+        { responsivePriority: 1, targets: 6 },
+        { orderable: false, targets: [5, 6]}
     ];
 
     csrfAjaxSetup();
@@ -45,7 +46,7 @@ $(document).ready(function() {
                 </tr>
             `).join('');
 
-            populateTable2(rows, columnsConfig, columnDefsConfig);
+            populateTable(rows, columnsConfig, columnDefsConfig);
 
             points.forEach(point => {
                 point.popup = point.code.concat(" - ", point.description + 
@@ -90,6 +91,7 @@ $(document).ready(function() {
     });
 
     $('#newPointBtn').on('click', function() {
+        $('#alertMessage').hide();
         $('#pointModalLabel').text('Nowa trasa');
         $('#pointForm').attr('action', '/admin/points');
         $('#pointForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
@@ -97,12 +99,16 @@ $(document).ready(function() {
         $('#pointForm').attr('mode', 'new');
 
         $('#pointForm')[0].reset(); // Wyczyść formularz
+        $('#coordinateEPSG2180').prop('checked', true);
+        $('input[name="coordinateType"]').trigger('change');
         resetTagDropdowns(tags);
 
         $('#pointModal').modal('show');
     })
 
     $(document).on('click', '.edit-btn', function() {
+        $('#alertMessage').hide();
+
         let id = $(this).data('id');
 
         const point = points.find(point => point.id === id);
@@ -117,12 +123,11 @@ $(document).ready(function() {
         $('#pointCode').val(point.code);
         $('#pointVirtual').prop('checked', point.pointVirtual === 1);
         $('#pointDescription').val(point.description);
+        $('#coordinateEPSG2180').prop('checked', true);
+        $('input[name="coordinateType"]').trigger('change');
         $('#pointEasting').val(point.easting);
         $('#pointNorthing').val(point.northing);
-
-        let wsg84coords = transformToWSG84([point.easting, point.northing]);
-        $('#pointLatitude').val(Number(wsg84coords[1].toFixed(5)));
-        $('#pointLongitude').val(Number(wsg84coords[0].toFixed(5)));
+        $('#pointNorthing').trigger('input');
 
         $('#areaId').val(point.area_id);
         $('#pointUrl').val(point.url);
@@ -136,10 +141,6 @@ $(document).ready(function() {
                 lastDropdown.closest('.dropdown-group').find('.tag-remove-btn').show();
             }
         })
-
-
-
-
 
         $('#pointModal').modal('show');
     });
@@ -171,63 +172,35 @@ $(document).ready(function() {
             return;
         }
 
-        // Pobierz token przed wysłaniem żądania DELETE
-        // getToken().then(function(response) {
-        //     const token = response.token; // Pobierz token z odpowiedzi serwera
+        // Wykonaj żądanie DELETE
+        $.ajax({
+            url: deleteUrl,
+            type: 'DELETE',
+            // data: {
+            //     _token: token // Dołącz token CSRF
+            // },
+            success: function(response) {
+                // Obsługa sukcesu (np. odświeżenie listy)
+                alert('Usunięto pomyślnie');
+                location.reload(); // Odśwież stronę
+            },
+            error: function(xhr) {
+                // Obsługa błędu
+                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
+                
+            }
+        });
 
-            // Wykonaj żądanie DELETE
-            $.ajax({
-                url: deleteUrl,
-                type: 'DELETE',
-                // data: {
-                //     _token: token // Dołącz token CSRF
-                // },
-                success: function(response) {
-                    // Obsługa sukcesu (np. odświeżenie listy)
-                    alert('Usunięto pomyślnie');
-                    location.reload(); // Odśwież stronę
-                },
-                error: function(xhr) {
-                    // Obsługa błędu
-                    const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
-                    alert(errorMessage);
-                }
-            });
-        // }).catch(function() {
-        //     // Obsługa błędu pobierania tokenu
-        //     alert('Nie udało się pobrać tokenu. Spróbuj ponownie.');
-        // });
     })
 
 
     $('#pointForm').on('submit', function(event) {
         event.preventDefault();
         const method = $('#pointForm').attr('mode') === 'edit'? 'PUT' : 'POST';
-        // let tags = collectPoints('#dropdown-container select', tags).map(tag => tag.id);
-
-        // $('#pointForm input[name="tags"]').remove();
-
-        // if (tags.length === 0) {
-        //     tags = $('<input>').attr({
-        //         type: 'hidden',
-        //         name: 'tags[]',
-        //         value: ''
-        //     }).appendTo('#pointForm');;
-        // } else {
-        //     tags.forEach(tag => {
-        //         $('<input>').attr({
-        //             type: 'hidden',
-        //             name: 'tags[]',
-        //             value: tag
-        //         }).appendTo('#pointForm');
-        //     });
-        // }
 
         let pathTags = collectPoints('#dropdown-container select', tags).map(tag => tag.id);
-        console.log(pathTags);
 
         const data = {
-            // id: parseInt($('#pointForm [name="id"]').val() || 0, 10), // Jeśli pole `id` istnieje
             code: $('#pointCode').val(),
             description: $('#pointDescription').val(),
             easting: parseFloat($('#pointEasting').val()),
@@ -236,15 +209,9 @@ $(document).ready(function() {
             url: $('#pointUrl').val(),
             area_id: parseInt($('#areaId').val(), 10), // Select na liczbę
             tag_ids: pathTags,// Konwersja string na tablicę
-            // _method: mode
+
         };
 
-        // console.log(data);
-
-
-        // const form = $(this);
-        // const actionUrl = form.attr('action'); // Pobierz URL akcji
-        // const formData = form.serialize(); // Serializuj dane formularza
 
         $.ajax({
             url: $(this).attr('action'),
@@ -252,19 +219,19 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response, status, xhr) {
-                console.log("xhr status: " + xhr.status);
-                console.log(response);
-                console.log(status);
-                if (xhr.status === 200 || xhr.status === 201) {
+                // console.log("xhr status: " + xhr.status);
+                // console.log(response);
+                // console.log(status);
+                // if (xhr.status === 200 || xhr.status === 201) {
                     location.reload(); // Odśwież stronę
-                } else {
-                    $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                }
+                // } else {
+                //     $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
+                // }
             },
             error: function (xhr) {
                 // Wyświetl wiadomość o błędzie w zależności od odpowiedzi serwera
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-                $('#error-message').text(errorMessage).show();
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+                $('#alertMessage').text(message).show();
             }
         });
 
@@ -272,6 +239,58 @@ $(document).ready(function() {
 
     });
 
+    $('input[name="coordinateType"]').on('change', function() {
+        if ($('#coordinateWSG84').is(':checked')) {
+        $('#wsg84Fields').show();
+        $('#epsg2180Fields').hide();
+    } else if ($('#coordinateEPSG2180').is(':checked')) {
+        $('#wsg84Fields').hide();
+        $('#epsg2180Fields').show();
+    }
+    });
+
+    $('#pointEasting').on('input', function() {
+        inputEPSG2180Field();
+    });
+
+    $('#pointNorthing').on('input', function() {
+        inputEPSG2180Field();
+    });
+
+    $('#pointLatitude').on('input', function() {
+        inputWSG84Field();
+    });
+
+    $('#pointLongitude').on('input', function() {
+        inputWSG84Field();
+    });
+
+    function inputEPSG2180Field() {
+        let easting = Number($('#pointEasting').val());
+        let northing = Number($('#pointNorthing').val());
+        let wsg84coords = proj4('EPSG:2180', 'WSG:84', [easting, northing]);
+        console.log(wsg84coords);
+
+        $('#pointLongitude').val(Number(wsg84coords[0].toFixed(5)));
+        $('#pointLatitude').val(Number(wsg84coords[1].toFixed(5)));
+        
+    };
+
+    function inputWSG84Field() {
+        let longitude = Number($('#pointLongitude').val());
+        let latitude = Number($('#pointLatitude').val());
+        let epsg2180coords = proj4('WSG:84', 'EPSG:2180', [longitude, latitude]);
+        console.log(epsg2180coords);
+        $('#pointEasting').val(Number(epsg2180coords[0].toFixed(2)));
+        $('#pointNorthing').val(Number(epsg2180coords[1].toFixed(2)));
+    };
+
+    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    $(document).on('click', function(event){
+        if(!map.getContainer().contains(event.target)) {
+            map.closePopup();
+        }
+    });
 
 
 })

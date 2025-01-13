@@ -112,7 +112,14 @@ $(document).ready(function() {
                 updatePath(); // Aktualizuj trasę po zmianie kolejności
             }
         }).sortable("refresh"); // Odśwież instancję
-    }
+    };
+
+    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    $(document).on('click', function(event){
+        if(!map.getContainer().contains(event.target)) {
+            map.closePopup();
+        }
+    });
 
 
 });

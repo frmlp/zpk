@@ -6,6 +6,21 @@ $(document).ready(function() {
     const markers = L.layerGroup();
     let startMarker = null;
     let endMarker = null;
+
+    const columnsConfig = [
+        { width: '30%' },
+        { width: '18%' },
+        { width: '18%' },
+        null
+    ];
+
+    const columnDefsConfig = [
+        { responsivePriority: 4, targets: 0 },
+        { responsivePriority: 3, targets: 1 },
+        { responsivePriority: 2, targets: 2 }, 
+        { responsivePriority: 1, targets: 3 },
+        { orderable: false, targets: 3}
+    ];
     
     getPointsData()
         .then(function(result) {
@@ -32,7 +47,19 @@ $(document).ready(function() {
                 paths = result.data;
                 $('#form-wrapper').hide();
                 $('#table-wrapper').show();
-                populateTable(paths, "generator");
+
+                const rows = paths.map(path => `
+                    <tr class="" data-id="${path.id}" id="${path.id}">
+                        
+                        <td>${checkPathArea(path.points)}</td>
+                        <td>${path.points.length}</td>
+                        <td>${calculateRouteLength(path.points)}</td>
+                        
+                        <td><button data-id="${path.id}" class="btn btn-success btn-sm w-100 download-btn">Pobierz mapę</button></td>
+                    </tr>
+                `).join('');
+
+                populateTable(rows, columnsConfig, columnDefsConfig);
                 updateMap(null, markers, map);
                 
             }).catch((error) => console.log(error));
@@ -113,6 +140,13 @@ $(document).ready(function() {
 
         // Wysłanie żądania GET do API w celu pobrania pliku mapy
         downloadMap(selectedMapId, pathPoints);
+    });
+
+    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    $(document).on('click', function(event){
+        if(!map.getContainer().contains(event.target)) {
+            map.closePopup();
+        }
     });
 
 });

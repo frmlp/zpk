@@ -34,7 +34,7 @@ class TagController extends Controller
             
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Blad walidacji',
+                'message' => 'Błąd walidacji',
                 'errors' => $e->errors(),
             ], 422);
         }
