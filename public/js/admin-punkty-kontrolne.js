@@ -91,6 +91,7 @@ $(document).ready(function() {
     });
 
     $('#newPointBtn').on('click', function() {
+        $('#alertMessage').hide();
         $('#pointModalLabel').text('Nowa trasa');
         $('#pointForm').attr('action', '/admin/points');
         $('#pointForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
@@ -106,6 +107,8 @@ $(document).ready(function() {
     })
 
     $(document).on('click', '.edit-btn', function() {
+        $('#alertMessage').hide();
+
         let id = $(this).data('id');
 
         const point = points.find(point => point.id === id);
@@ -184,7 +187,7 @@ $(document).ready(function() {
             error: function(xhr) {
                 // Obsługa błędu
                 const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
-                alert(errorMessage);
+                
             }
         });
 
@@ -196,7 +199,6 @@ $(document).ready(function() {
         const method = $('#pointForm').attr('mode') === 'edit'? 'PUT' : 'POST';
 
         let pathTags = collectPoints('#dropdown-container select', tags).map(tag => tag.id);
-        console.log(pathTags);
 
         const data = {
             code: $('#pointCode').val(),
@@ -217,19 +219,19 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response, status, xhr) {
-                console.log("xhr status: " + xhr.status);
-                console.log(response);
-                console.log(status);
-                if (xhr.status === 200 || xhr.status === 201) {
+                // console.log("xhr status: " + xhr.status);
+                // console.log(response);
+                // console.log(status);
+                // if (xhr.status === 200 || xhr.status === 201) {
                     location.reload(); // Odśwież stronę
-                } else {
-                    $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                }
+                // } else {
+                //     $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
+                // }
             },
             error: function (xhr) {
                 // Wyświetl wiadomość o błędzie w zależności od odpowiedzi serwera
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-                $('#error-message').text(errorMessage).show();
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+                $('#alertMessage').text(message).show();
             }
         });
 
@@ -249,19 +251,19 @@ $(document).ready(function() {
 
     $('#pointEasting').on('input', function() {
         inputEPSG2180Field();
-    })
+    });
 
     $('#pointNorthing').on('input', function() {
         inputEPSG2180Field();
-    })
+    });
 
     $('#pointLatitude').on('input', function() {
         inputWSG84Field();
-    })
+    });
 
     $('#pointLongitude').on('input', function() {
         inputWSG84Field();
-    })
+    });
 
     function inputEPSG2180Field() {
         let easting = Number($('#pointEasting').val());
@@ -272,7 +274,7 @@ $(document).ready(function() {
         $('#pointLongitude').val(Number(wsg84coords[0].toFixed(5)));
         $('#pointLatitude').val(Number(wsg84coords[1].toFixed(5)));
         
-    }
+    };
 
     function inputWSG84Field() {
         let longitude = Number($('#pointLongitude').val());
@@ -281,8 +283,14 @@ $(document).ready(function() {
         console.log(epsg2180coords);
         $('#pointEasting').val(Number(epsg2180coords[0].toFixed(2)));
         $('#pointNorthing').val(Number(epsg2180coords[1].toFixed(2)));
-    }
+    };
 
+    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    $(document).on('click', function(event){
+        if(!map.getContainer().contains(event.target)) {
+            map.closePopup();
+        }
+    });
 
 
 })

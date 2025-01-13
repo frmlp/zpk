@@ -11,6 +11,6 @@
             </div>
         </div>
 
-        <x-scripts />
+        <x-client-scripts />
     </body>
 </html>

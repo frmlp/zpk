@@ -66,6 +66,5 @@
 
 @section('js_files')
     <script src="../js/admin-ustawienia.js"></script>
-    <script src="../js/admin-logout.js"></script>
 @endsection
 

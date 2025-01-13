@@ -86,10 +86,5 @@
 @endsection
 
 @section('js_files')
-<script src="js/map.js" async></script>
-<script src="js/map-pdf.js" async></script>
-<script src="js/helpers.js" async></script>
-<script src="js/table.js" async></script>
-<script src="js/data.js" async></script>
-<script src="js/generator.js" async></script>
+    <script src="js/generator.js" async></script>
 @endsection

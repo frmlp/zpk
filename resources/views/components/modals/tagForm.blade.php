@@ -8,6 +8,7 @@
             <div class="modal-body">
                 <form id="tagForm">
                     @csrf
+                    <div id="alertMessage" class="alert alert-danger"></div>
                     <!-- Pole Kod -->
                     <div class="mb-3">
                         <label for="name" class="form-label">Nazwa</label>
