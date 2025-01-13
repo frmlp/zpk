@@ -11,6 +11,7 @@
             </div>
         </div>
 
-        <x-scripts />
+        <x-admin-scripts />
+        
     </body>
 </html>

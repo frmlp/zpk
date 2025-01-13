@@ -106,9 +106,9 @@
 @endsection
 
 @section('js_files')
-<script src="vendor/screenfull.min.js" ></script>
-        <script src="vendor/bowser.min.js" ></script>
-        <script src="vendor/marzipano.js" ></script>
-        <script src="js/spacer-data.js"></script>
-        <script src="js/spacer.js"></script>
+    <script src="vendor/screenfull.min.js" ></script>
+    <script src="vendor/bowser.min.js" ></script>
+    <script src="vendor/marzipano.js" ></script>
+    <script src="js/spacer-data.js" ></script>
+    <script src="js/spacer.js"></script>
 @endsection

@@ -77,6 +77,3 @@
     <x-modals.pictograms />
 @endsection
 
-{{-- @section('js_files')
-<script src="custom-driver.js"></script>
-@endsection --}}

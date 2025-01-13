@@ -6,6 +6,6 @@
 
         @yield('content')
 
-        <x-scripts />
+        <x-client-scripts />
     </body>
 </html>

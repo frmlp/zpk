@@ -25,11 +25,5 @@
 @endsection
 
 @section('js_files')
-    <script src="../js/map.js"></script>
-    <script src="../js/map-pdf.js"></script>
-    <script src="../js/helpers.js"></script>
-    <script src="../js/table.js"></script>
-    <script src="../js/data.js"></script>
     <script src="../js/admin-tagi.js"></script>
-    <script src="../js/admin-logout.js"></script>
 @endsection
