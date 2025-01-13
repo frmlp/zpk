@@ -36,8 +36,11 @@ class PointController extends Controller
             $point->tags()->attach($uniqueTagIds);
 
             // Przypisywanie obszarów
-            $areaIds = $request->input('area_ids', []);
-            $point->areas()->attach($areaIds); 
+            $point->assignAreas(); 
+            { // poprzednia wersja przypisania do tabeli pośredniej
+                // $areaIds = $request->input('area_ids', []);
+                // $point->areas()->attach($areaIds); 
+            }
             
             // Sprawdzenie okolicy (sector)
             $sectorMessage = $this->isPointInSameSector($point, $request)
@@ -88,10 +91,20 @@ class PointController extends Controller
                     Rule::unique('points')->ignore($point->id),
                 ],
             ]);
+
+            $originalEasting = $point->easting;
+            $originalNorthing = $point->northing;
+
             $point->update($validatedData);
 
-            $areaId = $request->input('area_id');
-            $point->areas()->sync($areaId);
+            if ($originalEasting != $point->easting || $originalNorthing != $point->northing) {
+                $point->areas()->detach(); // Odłącz wszystkie obszary
+                $point->assignAreas();     // Przypisz na nowo
+            }
+            { // poprzednia wersja
+                // $areaId = $request->input('area_id');
+                // $point->areas()->sync($areaId);
+            }
 
             $tagIds = $request->input('tag_ids', []); 
             $uniqueTagIds = array_unique($tagIds);
