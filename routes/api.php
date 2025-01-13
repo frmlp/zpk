@@ -42,7 +42,6 @@ Route::get('/map/{map}', [MapFileController::class, 'getMapFileWithDetails']);
 // endpoint przez który wysyła się zapytanie z parametrami do generatora
 // jako odpowiedź zwrotna dostaje się wygenerowane trasy
 Route::get('/generator', GeneratorService::class);
-// ggh todo: obsługa tagów w generatorze
 
 
 // MAPS

@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Cast\Double;
 
 class GeneratorService extends Controller
 {
-    
 
     public function __invoke(Request $request)
     {
@@ -22,90 +21,150 @@ class GeneratorService extends Controller
         define('MAX_DISTANCE', 'max_distance');
         define('UNLOADED_START', 'unloaded_start');
         define('PROBABILITY_FACTOR', 'probability_factor');
-        define('P4-6KM2-4', [
-            MIN_POINTS => 4,
-            MAX_POINTS => 6,
-            MIN_DISTANCE => 1.50,
-            MAX_DISTANCE => 4.50,
-            UNLOADED_START => false,
-            PROBABILITY_FACTOR => 40
-        ]);
-        define('P4-6KM5-7', [
-            MIN_POINTS => 4,
-            MAX_POINTS => 6,
-            MIN_DISTANCE => 4.50,
-            MAX_DISTANCE => 7.50,
-            UNLOADED_START => true,
-            PROBABILITY_FACTOR => 45
-        ]);
-        define('P4-6KM8-10', [
-            MIN_POINTS => 4,
-            MAX_POINTS => 6,
-            MIN_DISTANCE => 7.50,
-            MAX_DISTANCE => 10.50,
-            UNLOADED_START => true,
-            PROBABILITY_FACTOR => 50
-        ]);
-
-        //====================//
-        define('P7-9KM2-4', [
-            MIN_POINTS => 7,
-            MAX_POINTS => 9,
-            MIN_DISTANCE => 1.50,
-            MAX_DISTANCE => 4.50,
-            UNLOADED_START => false,
-            PROBABILITY_FACTOR => 60
-        ]);
-        define('P7-9KM5-7', [
-            MIN_POINTS => 7,
-            MAX_POINTS => 9,
-            MIN_DISTANCE => 4.50,
-            MAX_DISTANCE => 7.50,
-            UNLOADED_START => true,
-            PROBABILITY_FACTOR => 65
-        ]);
-        define('P7-9KM8-10', [
-            MIN_POINTS => 7,
-            MAX_POINTS => 9,
-            MIN_DISTANCE => 7.50,
-            MAX_DISTANCE => 10.50,
-            UNLOADED_START => true,
-            PROBABILITY_FACTOR => 70
-        ]);
         
-        //====================//
-        define('P10-12KM2-4', [
-            MIN_POINTS => 10,
-            MAX_POINTS => 12,
-            MIN_DISTANCE => 1.50,
-            MAX_DISTANCE => 4.50,
-            UNLOADED_START => false,
-            PROBABILITY_FACTOR => 65
-        ]);
-        define('P10-12KM5-7', [
-            MIN_POINTS => 10,
-            MAX_POINTS => 12,
-            MIN_DISTANCE => 4.50,
-            MAX_DISTANCE => 7.50,
-            UNLOADED_START => true,
-            PROBABILITY_FACTOR => 70
-        ]);
-        define('P10-12KM8-10', [
-            MIN_POINTS => 10,
-            MAX_POINTS => 12,
-            MIN_DISTANCE => 7.50,
-            MAX_DISTANCE => 10.50,
-            UNLOADED_START => true,
-            PROBABILITY_FACTOR => 75
-        ]);
+        { // poprzednia definicja setów
+            // define('P4-6KM2-4', [
+            //     MIN_POINTS => 4,
+            //     MAX_POINTS => 6,
+            //     MIN_DISTANCE => 1.50,
+            //     MAX_DISTANCE => 4.50,
+            //     UNLOADED_START => false,
+            //     PROBABILITY_FACTOR => 40
+            // ]);
+            // define('P4-6KM5-7', [
+            //     MIN_POINTS => 4,
+            //     MAX_POINTS => 6,
+            //     MIN_DISTANCE => 4.50,
+            //     MAX_DISTANCE => 7.50,
+            //     UNLOADED_START => true,
+            //     PROBABILITY_FACTOR => 45
+            // ]);
+            // define('P4-6KM8-10', [
+            //     MIN_POINTS => 4,
+            //     MAX_POINTS => 6,
+            //     MIN_DISTANCE => 7.50,
+            //     MAX_DISTANCE => 10.50,
+            //     UNLOADED_START => true,
+            //     PROBABILITY_FACTOR => 50
+            // ]);
+
+            // //====================//
+            // define('P7-9KM2-4', [
+            //     MIN_POINTS => 7,
+            //     MAX_POINTS => 9,
+            //     MIN_DISTANCE => 1.50,
+            //     MAX_DISTANCE => 4.50,
+            //     UNLOADED_START => false,
+            //     PROBABILITY_FACTOR => 60
+            // ]);
+            // define('P7-9KM5-7', [
+            //     MIN_POINTS => 7,
+            //     MAX_POINTS => 9,
+            //     MIN_DISTANCE => 4.50,
+            //     MAX_DISTANCE => 7.50,
+            //     UNLOADED_START => true,
+            //     PROBABILITY_FACTOR => 65
+            // ]);
+            // define('P7-9KM8-10', [
+            //     MIN_POINTS => 7,
+            //     MAX_POINTS => 9,
+            //     MIN_DISTANCE => 7.50,
+            //     MAX_DISTANCE => 10.50,
+            //     UNLOADED_START => true,
+            //     PROBABILITY_FACTOR => 70
+            // ]);
+            
+            // //====================//
+            // define('P10-12KM2-4', [
+            //     MIN_POINTS => 10,
+            //     MAX_POINTS => 12,
+            //     MIN_DISTANCE => 1.50,
+            //     MAX_DISTANCE => 4.50,
+            //     UNLOADED_START => false,
+            //     PROBABILITY_FACTOR => 65
+            // ]);
+            // define('P10-12KM5-7', [
+            //     MIN_POINTS => 10,
+            //     MAX_POINTS => 12,
+            //     MIN_DISTANCE => 4.50,
+            //     MAX_DISTANCE => 7.50,
+            //     UNLOADED_START => true,
+            //     PROBABILITY_FACTOR => 70
+            // ]);
+            // define('P10-12KM8-10', [
+            //     MIN_POINTS => 10,
+            //     MAX_POINTS => 12,
+            //     MIN_DISTANCE => 7.50,
+            //     MAX_DISTANCE => 10.50,
+            //     UNLOADED_START => true,
+            //     PROBABILITY_FACTOR => 75
+            // ]);
+        }
 
         $start_point_id = $request->start_point_id;
         $end_point_id = $request->end_point_id;
-        $data_set = constant($request->number_of_points_range . $request->distance_range);
+        $start_point = Point::find($start_point_id);
+        $end_point = Point::find($end_point_id);
+        $data_set = $this->getDataSet($request->number_of_points_range, $request->distance_range);
+        // $data_set = constant($request->number_of_points_range . $request->distance_range);
         
-        // ggh - zwrot z controllera
-        return $this->generatePaths(Point::all(), $start_point_id, $end_point_id, $data_set, 20);
+        // Pobieranie punktów z filtrowaniem
+        $db_points = Point::query();
+        if (!empty($request->tags)) {
+            $db_points = $db_points->whereHas('tags', function ($query) use ($request) {
+                $query->whereIn('tags.id', $request->tags);
+            });
+        }
+        $db_points = $db_points->get();
+        $db_points = $db_points->push($start_point, $end_point);
+        
+        return $this->generatePaths($db_points, $start_point_id, $end_point_id, $data_set, 8);
+        //return $this->generatePaths(Point::all(), $start_point_id, $end_point_id, $data_set, 8);
 
+    }
+
+    private function getDataSet($numberOfPointsRange, $distanceRange)
+    {
+        // Definiujemy zakresy punktów i odległości
+        $pointRanges = [
+            [MIN_POINTS => 4, MAX_POINTS => 6],
+            [MIN_POINTS => 7, MAX_POINTS => 9],
+            [MIN_POINTS => 10, MAX_POINTS => 12],
+            [MIN_POINTS => 13, MAX_POINTS => 15],
+            [MIN_POINTS => 16, MAX_POINTS => 18],
+            [MIN_POINTS => 19, MAX_POINTS => 21],
+            [MIN_POINTS => 22, MAX_POINTS => 24],
+        ];
+        $distanceRanges = [
+            [MIN_DISTANCE => 1.50, MAX_DISTANCE => 4.50],
+            [MIN_DISTANCE => 4.50, MAX_DISTANCE => 7.50],
+            [MIN_DISTANCE => 7.50, MAX_DISTANCE => 10.50],
+            [MIN_DISTANCE => 10.50, MAX_DISTANCE => 13.50],
+            [MIN_DISTANCE => 13.50, MAX_DISTANCE => 16.50],
+            [MIN_DISTANCE => 16.50, MAX_DISTANCE => 19.50],
+            [MIN_DISTANCE => 19.50, MAX_DISTANCE => 21.50],
+            [MIN_DISTANCE => 22.50, MAX_DISTANCE => 24.50],
+        ];
+
+        // Indeksy zakresów z argumentów funkcji
+        $pointRangeIndex = array_search($numberOfPointsRange, ['P4-6', 'P7-9', 'P10-12', 'P13-15', 'P16-18', 'P19-21', 'P22-24']);
+        $distanceRangeIndex = array_search($distanceRange, ['KM2-4', 'KM5-7', 'KM8-10', 'KM11-13', 'KM14-16', 'KM17-19', 'KM20-22']);
+
+        // Zakresy punktów i odległości na podstawie indeksów
+        $pointRange = $pointRanges[$pointRangeIndex];
+        $distanceRange = $distanceRanges[$distanceRangeIndex];
+
+        // PROBABILITY_FACTOR
+        $probabilityFactor = 40 + ($pointRangeIndex * 15) + ($distanceRangeIndex * 5);
+        $probabilityFactor = min($probabilityFactor, 100); 
+
+        // Zestaw danych
+        $dataSet = array_merge($pointRange, $distanceRange, [
+            UNLOADED_START => $distanceRangeIndex > 0, // UNLOADED_START jest true dla wszystkich zakresów odległości oprócz pierwszego
+            PROBABILITY_FACTOR => $probabilityFactor
+        ]);
+
+        return $dataSet;
     }
 
     // funkcja tworząca macierz grafu - klika o ważonych krawędziach
@@ -151,6 +210,10 @@ class GeneratorService extends Controller
     // funkcja, która z tablicy indeksów, tworzy tablicę obiektów Punktów;
     // generator tworzy tablicę indeksów, bo indeksy ułatwiają pracę z macierzą
     // na koniec na frontend musimy wysłać obiekty Punktów z wszystkimi informacjami
+    
+
+
+    // poprzednia wersja
     private function transformPathFromIdxToPointArray(array $path_idx, Collection $points_db): array
     {
         $path_points = [];
@@ -160,9 +223,17 @@ class GeneratorService extends Controller
         return $path_points;
     }
 
-    private function generatePaths($db_points, $start_point_id, $end_point_id, $data_set, $number_of_paths = 1): AnonymousResourceCollection
+    private function generatePaths($db_points, $start_point_id, $end_point_id, $data_set, $number_of_paths = 1, $tags = []): AnonymousResourceCollection
     {
         $result = collect();
+
+        // filtrowanie po tagach
+        if (!empty($tags)) {
+            $db_points = $db_points->whereHas('tags', function ($query) use ($tags) {
+                $query->whereIn('tags.id', $tags);
+            });
+        }
+
         $matrix = $this->buildMatrix($db_points);
 
         for($i = 0; $i < $number_of_paths; $i++) {
@@ -278,4 +349,6 @@ class GeneratorService extends Controller
         // nic się nie udało xD
         return null;
     }
+
+
 }
