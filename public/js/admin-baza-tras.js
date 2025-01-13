@@ -223,7 +223,8 @@ $(document).ready(function() {
         let pathPoints = collectPoints('#dropdown-container select', points).map(point => point.id);
 
         if(pathPoints.length < 2) {
-            
+            const message = 'Trasa musi się składać z co najmniej dwóch punktów.';
+            $('#alertMessage').text(message).show();
             return;
         }
 

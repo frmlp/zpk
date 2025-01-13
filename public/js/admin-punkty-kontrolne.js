@@ -199,7 +199,6 @@ $(document).ready(function() {
         const method = $('#pointForm').attr('mode') === 'edit'? 'PUT' : 'POST';
 
         let pathTags = collectPoints('#dropdown-container select', tags).map(tag => tag.id);
-        console.log(pathTags);
 
         const data = {
             code: $('#pointCode').val(),

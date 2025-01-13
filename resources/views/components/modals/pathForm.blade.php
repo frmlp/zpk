@@ -6,12 +6,11 @@
                 <h5 class="modal-title" id="pathModalLabel">Trasa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="error-message" class="text-danger m-3"></div>
             <div class="modal-body">
                 <form id="pathForm">
                     @csrf
                     <div id="alertMessage" class="alert alert-danger"></div>
-                    <div class="m-3">
+                    {{-- <div class="m-3"> --}}
                         <!-- Nazwa -->
                         <div class="mb-3">
                             <label for="pathName" class="form-label">Nazwa</label>
@@ -24,8 +23,8 @@
                             </div>
                         </div>
                         <!-- Mapa -->
-                        <div class="" id="map-modal"></div>
-                    </div>
+                        <div class="mb-3" id="map-modal"></div>
+                    {{-- </div> --}}
 
                     <!-- Przyciski -->
                     <div class="row">
