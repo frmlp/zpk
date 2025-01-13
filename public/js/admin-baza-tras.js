@@ -70,6 +70,7 @@ $(document).ready(function() {
     });
 
     $('#newPathBtn').on('click', function() {
+        $('#alertMessage').hide();
         $('#pathModalLabel').text('Nowa trasa');
         $('#pathForm').attr('action', '/admin/paths');
         $('#pathForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
@@ -171,6 +172,8 @@ $(document).ready(function() {
     });
 
     $('#table').on('click', '.edit-btn', function() {
+        $('#alertMessage').hide();
+
         let id = $(this).data('id');
         // console.log(id);
         const path = paths.find(path => path.id === id);
@@ -231,6 +234,7 @@ $(document).ready(function() {
         pathPoints.forEach(pointId => {
             $('<input>').attr({
                 type: 'hidden',
+                class: 'pointArray',
                 name: 'points[]',
                 value: pointId
             }).appendTo('#pathForm');
@@ -245,19 +249,14 @@ $(document).ready(function() {
             method: form.attr('method'), // Pobierz metodę (POST lub inne)
             data: formData,
             success: function (response, status, xhr) {
-                console.log("xhr status: " + xhr.status);
-                console.log(response);
-                console.log(status);
-                if (xhr.status === 200 || xhr.status === 201) {
-                    location.reload(); // Odśwież stronę
-                } else {
-                    $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                }
+                location.reload(); // Odśwież stronę
+                
             },
             error: function (xhr) {
                 // Wyświetl wiadomość o błędzie w zależności od odpowiedzi serwera
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-                $('#error-message').text(errorMessage).show();
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+                $('#alertMessage').text(message).show();
+                $('#pathForm .pointArray').remove(); // wyczyść poprzednie wpisy formularza
             }
         });
     })

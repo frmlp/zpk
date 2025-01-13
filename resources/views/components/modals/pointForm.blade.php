@@ -9,7 +9,8 @@
             <div class="modal-body">
                 <form id="pointForm">
                     @csrf
-                     <div class="row">
+                    <div id="alertMessage" class="alert alert-danger"></div>
+                    <div class="row">
                         <!-- Pole Kod -->
                         <div class="col mb-3">
                             <label for="pointCode" class="form-label">Kod</label>
@@ -23,7 +24,7 @@
                                 <input class="form-check-input" type="checkbox" id="pointVirtual" name="pointVirtual" value="1">
                             </div>
                         </div>
-                     </div>
+                    </div>
                     
                     <!-- Pole Opis -->
                     <div class="mb-3">

@@ -29,6 +29,7 @@ $(document).ready(function() {
         }).catch((error) => console.log(error));
 
     $('#newTagBtn').on('click', function() {
+        $('#alertMessage').hide();
         $('#tagModalLabel').text('Nowy Tag');
         $('#tagForm').attr('action', '/admin/tags');
         $('#tagForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
@@ -55,21 +56,19 @@ $(document).ready(function() {
             method: form.attr('method'),
             data:formData,
             success: function(response, status, xhr) {
-                if (xhr.status === 200 || xhr.status === 201) {
-                    location.reload(); // Odśwież stronę
-                } else {
-                    $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                }
+                location.reload(); // Odśwież stronę   
             },
             error: function(xhr) {
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-                $('#error-message').text(errorMessage).show();
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+                $('#alertMessage').text(message).show();
             }
         })
 
     });
 
     $('#table').on('click', '.edit-btn', function() {
+        $('#alertMessage').hide();
+
         const id = $(this).data('id');
         const tag = tags.find(tag => tag.id === id);
         

@@ -10,6 +10,7 @@
             <div class="modal-body">
                 <form id="pathForm">
                     @csrf
+                    <div id="alertMessage" class="alert alert-danger"></div>
                     <div class="m-3">
                         <!-- Nazwa -->
                         <div class="mb-3">

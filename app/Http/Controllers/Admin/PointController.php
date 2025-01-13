@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PointResource;
 use App\Models\Point;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -51,7 +52,7 @@ class PointController extends Controller
 
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Blad walidacji',
+                'message' => 'Błąd walidacji',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -69,7 +70,7 @@ class PointController extends Controller
             $point->load('tags'); 
             return (new PointResource($point))->response()->setStatusCode(200); 
     
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception); 
 
             return response()->json([
