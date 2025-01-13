@@ -207,7 +207,7 @@ $(document).ready(function() {
             northing: parseFloat($('#pointNorthing').val()),
             pointVirtual: $('#pointVirtual').is(':checked') ? 1 : 0, // Checkbox na liczbę
             url: $('#pointUrl').val(),
-            area_id: parseInt($('#areaId').val(), 10), // Select na liczbę
+            // area_id: parseInt($('#areaId').val(), 10), // Select na liczbę
             tag_ids: pathTags,// Konwersja string na tablicę
 
         };

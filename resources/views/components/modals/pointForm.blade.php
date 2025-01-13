@@ -72,15 +72,6 @@
                         </div>
                     </div>
                     
-                    
-                    <!-- Obszar -->
-                    {{-- <div class="mb-3">
-                        <label for="areaId" class="form-label">Obszar</label>
-                        <select class="form-select" id="areaId" name="area_id">
-                            <option value="1">Grabówek</option>
-                            <option value="2">Chylonia</option>
-                        </select>
-                    </div> --}}
                     <!-- Url kodu QR -->
                     <div class="mb-3">
                         <label class="form-label">Url kodu QR</label>
