@@ -281,7 +281,14 @@ $(document).ready(function() {
         console.log(epsg2180coords);
         $('#pointEasting').val(Number(epsg2180coords[0].toFixed(2)));
         $('#pointNorthing').val(Number(epsg2180coords[1].toFixed(2)));
-    }
+    };
+
+    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    $(document).on('click', function(event){
+        if(!map.getContainer().contains(event.target)) {
+            map.closePopup();
+        }
+    });
 
 
 
