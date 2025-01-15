@@ -81,41 +81,39 @@ class GeneratorService extends Controller
     {
         // Zakresy punktów i odległości
         $pointRanges = [
-            [self::MIN_POINT_COUNT => 4, self::MAX_POINT_COUNT => 6],
-            [self::MIN_POINT_COUNT => 7, self::MAX_POINT_COUNT => 9],
-            [self::MIN_POINT_COUNT => 10, self::MAX_POINT_COUNT => 12],
-            [self::MIN_POINT_COUNT => 13, self::MAX_POINT_COUNT => 15],
-            [self::MIN_POINT_COUNT => 16, self::MAX_POINT_COUNT => 18],
-            [self::MIN_POINT_COUNT => 19, self::MAX_POINT_COUNT => 21],
+            [self::MIN_POINT_COUNT => 3, self::MAX_POINT_COUNT => 5],
+            [self::MIN_POINT_COUNT => 6, self::MAX_POINT_COUNT => 8],
+            [self::MIN_POINT_COUNT => 9, self::MAX_POINT_COUNT => 11],
+            [self::MIN_POINT_COUNT => 12, self::MAX_POINT_COUNT => 14],
+            [self::MIN_POINT_COUNT => 15, self::MAX_POINT_COUNT => 17],
+            [self::MIN_POINT_COUNT => 18, self::MAX_POINT_COUNT => 21],
         ];
         $distanceRanges = [
-            [self::MIN_DISTANCE_KM => 1.50, self::MAX_DISTANCE_KM => 4.50],
-            [self::MIN_DISTANCE_KM => 4.50, self::MAX_DISTANCE_KM => 7.50],
-            [self::MIN_DISTANCE_KM => 7.50, self::MAX_DISTANCE_KM => 10.50],
-            [self::MIN_DISTANCE_KM => 10.50, self::MAX_DISTANCE_KM => 13.50],
-            [self::MIN_DISTANCE_KM => 13.50, self::MAX_DISTANCE_KM => 16.50],
-            [self::MIN_DISTANCE_KM => 16.50, self::MAX_DISTANCE_KM => 19.50],
-            [self::MIN_DISTANCE_KM => 19.50, self::MAX_DISTANCE_KM => 21.50],
-            [self::MIN_DISTANCE_KM => 21.50, self::MAX_DISTANCE_KM => 23.50],
+            [self::MIN_DISTANCE_KM => 1.50, self::MAX_DISTANCE_KM => 5.50],
+            [self::MIN_DISTANCE_KM => 5.50, self::MAX_DISTANCE_KM => 9.50],
+            [self::MIN_DISTANCE_KM => 9.50, self::MAX_DISTANCE_KM => 12.50],
+            [self::MIN_DISTANCE_KM => 12.50, self::MAX_DISTANCE_KM => 15.50],
+            [self::MIN_DISTANCE_KM => 15.50, self::MAX_DISTANCE_KM => 18.50],
+            [self::MIN_DISTANCE_KM => 18.50, self::MAX_DISTANCE_KM => 24.50],
+            // [self::MIN_DISTANCE_KM => 19.50, self::MAX_DISTANCE_KM => 21.50],
         ];
 
         // Indeksy zakresów
         $pointRangeIndex = array_search($numberOfPointsRange, [
-            'P4-6', 
-            'P7-9', 
-            'P10-12', 
-            'P13-15', 
-            'P16-18', 
-            'P19-21', 
+            'P3-5', 
+            'P6-8', 
+            'P9-11', 
+            'P12-14', 
+            'P15-17', 
+            'P18-21', 
         ]);
         $distanceRangeIndex = array_search($distanceRange, [
-            'KM2-4', 
-            'KM5-7', 
-            'KM8-10', 
-            'KM11-13', 
-            'KM14-16', 
-            'KM17-19', 
-            'KM20-22',
+            'KM2-5', 
+            'KM6-9', 
+            'KM10-12', 
+            'KM13-15', 
+            'KM16-18', 
+            'KM19-24', 
         ]);
 
         // Zakresy punktów i odległości na podstawie indeksów
@@ -154,7 +152,7 @@ class GeneratorService extends Controller
     private function generatePaths(Collection $dbPoints, $startPointId, $endPointId, $dataSet, $numberOfPaths = 1): AnonymousResourceCollection
     {
         $result = new Collection();
-        $maxAttemps = 200;
+        $maxAttemps = 300;
 
         for ($i = 0; $i < $numberOfPaths; $i++) {
             $pathIdx = null;
