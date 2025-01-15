@@ -42,7 +42,7 @@
                         <a class="nav-link" href="/admin/tagi"><i class="bi-tags"></i> Tagi</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        <form id="logoutForm" method="POST" action="/logout">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
+                        <form id="logoutForm">@csrf<button class="nav-link" id="logout-btn" type="submit"><i class="bi-person-circle"></i> Wyloguj</button></form>
                         
                     </div>
                 </div>
@@ -163,11 +163,15 @@
                     </div>
                     <!-- Url kodu QR -->
                     <div class="mb-3">
-                        <label for="pointUrl" class="form-label">Url kodu QR</label>
+                        <label class="form-label">Url kodu QR</label>
                         <input type="text" class="form-control" id="pointUrl" name="url">
                     </div>
                     <!-- Tagi -->
-                    <div id="dropdown-container" class="mb-3"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Tagi</label>
+                        <div id="dropdown-container" class="mb-3"></div>
+                    </div>
+                    
                     <!-- Przyciski -->
                      <div class="row">
                         <div class="col">
@@ -204,6 +208,7 @@
         <script src="../js/table.js" async></script>
         <script src="../js/data.js" async></script>
         <script src="../js/admin-zpk.js" async></script>
+        <script src="../js/admin-logout.js" async></script>
 
         {{-- <script>
             $(document).ready(function() {

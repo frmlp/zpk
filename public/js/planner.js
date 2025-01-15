@@ -1,5 +1,6 @@
 $(document).ready(function() {
     let points = [];
+    let maps = [];
     const map = initMap("map");
     const markers = initMarkers();
     let pathMarkers = initMarkers();
@@ -14,6 +15,11 @@ $(document).ready(function() {
             initPointsPreview(points, markers, map, "planer");
         });
     
+    getMapUIData()
+        .then(function(result) {
+            maps = result;
+            console.log(maps);
+        }).catch((error) => console.log(error));
 
     $(document).on('change', '.dropdown', function() {
         var parentGroup = $(this).closest('.dropdown-group');
@@ -40,13 +46,37 @@ $(document).ready(function() {
         endMarker = null;
     });
 
-    $('#finish-btn').on('click', function() {
+
+
+    $(document).on('click', '#finish-btn', function() {
+
+        // const pathId = 0; // Pobranie ID mapy z przycisku
+
+        $('#mapList').html(prepareHtmlForMapChoiceModal(maps, 0)); // Wstawienie wygenerowanej listy do modala
+
+        $('#mapModal').modal('show'); // Wyświetlenie modala
+    });
+
+    // Obsługa kliknięcia przycisku "Pobierz"
+    $('#download-file').on('click', function () {
+        const selectedMapId = $('input[name="mapRadio"]:checked').data('id');
+        
+        if (!selectedMapId) {
+            alert('Wybierz mapę podkładową przed pobraniem.');
+            return;
+        }
+
         let pathPoints = collectPoints('select', points);
 
         if(pathPoints.length > 1) {
-            downloadMap(pathPoints);
+
+            pathPoints.forEach((point, index) => {
+                point.position = index + 1;
+            });
+
+            downloadMap(selectedMapId, pathPoints);
         }
-        
+
     });
         
     $(document).on('click', '#add-point-btn', function () {

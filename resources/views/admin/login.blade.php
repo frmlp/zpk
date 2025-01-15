@@ -42,24 +42,19 @@
         <div class="content mt-5">
             <div class="form-signin m-auto bg-light">
                 <!-- <main class="form-signin w-100 m-auto"> -->
-                    <form method="POST" action="/login">
+                    <form id="loginForm">
                         @csrf
                         <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
                         <h1 class="mb-3">Zaloguj się:</h1>
                         <div class="form-floating mb-1">
-                            <input class="form-control" type="email" id="email" name="email">
-                            <label for="email">Adres email</label>
+                            <input class="form-control" type="name" id="name" name="name" required>
+                            <label for="name">Nazwa użytkownika</label>
                         </div>
                         <div class="form-floating mb-1">
-                            <input class="form-control" type="password" id="password" name="password">
+                            <input class="form-control" type="password" id="password" name="password" required>
                             <label for="password">Hasło</label>
                         </div>
-                        <!-- <div class="form-check text-start my-3">
-                            <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                            Remember me
-                            </label>
-                        </div> -->
+                        
                         <button class="btn btn-primary w-100 mt-1" type="submit">Zaloguj</button>
                         <!-- <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2024</p> -->
                     </form>
@@ -89,23 +84,7 @@
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
-        <script>
-            // $(document).ready(function() {
-            //     $.ajax({
-            //         url: 'token',
-            //         type: 'GET',
-            //         dataType: 'json',
-            //         success: function(response) {
-            //             console.log(response.token);
-
-            //             $('form').append('<input type="hidden" name="_token" value="' + response.token + '">');
-            //         },
-            //         error: function(error){
-            //             console.log("Błąd: ", error);
-            //         }
-            //     })
-
-            // })
-        </script>
+        
+        <script src="../js/admin-login.js" async></script>
     </body>
 </html>

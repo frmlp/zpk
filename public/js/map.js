@@ -127,7 +127,7 @@ function drawPath(points, markers, map) {
         return wsg84coords;
     });
 
-    const polyline = L.polyline(wsg84points, { color: 'red' });
+    const polyline = L.polyline(wsg84points, { color: 'magenta' });
     markers.addLayer(polyline);
     markers.addTo(map);
 }
@@ -238,7 +238,7 @@ function updateMap(points, markers, map) {
     });
 
     // Draw polyline connecting all points
-    const polyline = L.polyline(wsg84points, { color: 'red' });
+    const polyline = L.polyline(wsg84points, { color: 'magenta' });
     markers.addLayer(polyline);
     markers.addTo(map);
 }
