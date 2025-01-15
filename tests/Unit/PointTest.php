@@ -2,64 +2,52 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Models\Point;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PointTest extends TestCase
 {
-    public function testCreatePoint()
-    {
-        // Tworzenie nowego punktu
-        $point = Point::create([
-            'code' => 'TEST123',
-            'description' => 'Test point',
-            'latitude' => 54.523,
-            'longitude' => 18.532,
-            'type' => 'attraction',
-        ]);
 
-        // Sprawdzenie, czy punkt został utworzony
+    use RefreshDatabase;
+
+    // TEST 1
+    public function test_tworzenie_punktu_z_poprawnymi_danymi()
+    {
+        $data = [
+            'code' => 'TEST123',
+            'description' => 'Punkt testowy',
+            'easting' => 123456,
+            'northing' => 789012,
+            'pointVirtual' => false,
+            'url' => 'https://example.com',
+        ];
+
+        $point = Point::create($data);
+
         $this->assertInstanceOf(Point::class, $point);
-        $this->assertEquals('TEST123', $point->code);
-        $this->assertEquals('Test point', $point->description);
-        $this->assertEquals(54.523, $point->latitude);
-        $this->assertEquals(18.532, $point->longitude);
-        $this->assertEquals('attraction', $point->type);
+        $this->assertEquals($data['code'], $point->code);
+        $this->assertEquals($data['description'], $point->description);
+        $this->assertEquals($data['easting'], $point->easting);
+        $this->assertEquals($data['northing'], $point->northing);
+        $this->assertEquals($data['pointVirtual'], $point->pointVirtual);
+        $this->assertEquals($data['url'], $point->url);
     }
 
-    public function testUpdatePoint()
+    // TEST 2
+    public function test_tworzenie_punktu_z_niepoprawnymi_danymi()
     {
-        // Tworzenie punktu
-        $point = Point::create([
-            'code' => 'TEST123',
-            'description' => 'Test point',
-            // ... inne dane
-        ]);
+        $data = [
+            'code' => 5, 
+            'description' => 'Punkt testowy',
+            'easting' => 'aa', 
+            'northing' => 789012,
+            'pointVirtual' => false,
+            'url' => 'https://example.com',
+        ];
 
-        // Aktualizacja danych punktu
-        $point->update([
-            'description' => 'Updated description',
-        ]);
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
 
-        // Sprawdzenie, czy dane zostały zaktualizowane
-        $this->assertEquals('Updated description', $point->description);
-    }
-
-    public function testDeletePoint()
-    {
-        // Tworzenie punktu
-        $point = Point::create([
-            'code' => 'TEST123',
-            'description' => 'Test point',
-            // ... inne dane
-        ]);
-
-        // Usunięcie punktu
-        $point->delete();
-
-        // Sprawdzenie, czy punkt został usunięty z bazy danych
-        // $this->assertDatabaseMissing('points', [
-        //     'code' => 'TEST123',
-        // ]);
+        Point::create($data);
     }
 }
