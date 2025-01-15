@@ -2,6 +2,8 @@ $(document).ready(function() {
     let points = [];
     let paths = [];
     let maps = [];
+    let tags=[];
+    let areas = [];
     const map = initMap("map");
     const markers = L.layerGroup();
     let startMarker = null;
@@ -30,19 +32,90 @@ $(document).ready(function() {
         })
         .catch(() => console.log("Error"));
 
+    getTagsData()
+        .then(function(result){
+            tags = result.tags
+            console.log(tags);
+
+            tags.forEach(tag => {
+                if(tag.points.length === 0) {
+                    return;
+                }
+
+                const checkbox = `
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="${tag.id}" id="tag-${tag.id}">
+                    <label class="form-check-label row" for="tag-${tag.id}">
+                      <div class="col">${tag.name}</div><div class="col">- liczba punktów: ${tag.points.length}</div>
+                    </label>
+                  </div>
+                `;
+                $('#tag-list').append(checkbox);
+            });
+
+            
+        }).catch((error) => console.log(error));
+
+    getAreasData()
+        .then(function(result){
+            areas = result.data;
+            
+            const areasList = $('#areas-list');
+
+            areas.forEach(area => {
+                const checkbox = `
+                    <div class="form-check d-inline-block me-3">
+                        <input class="form-check-input" type="checkbox" id="area-${area.id}" value="${area.id}" checked>
+                        <label class="form-check-label" for="area-${area.id}">${area.name}</label>
+                    </div>
+                `;
+                areasList.append(checkbox);
+            });
+        })
+
     getMapUIData()
         .then(function(result) {
             maps = result;
             console.log(maps);
         }).catch((error) => console.log(error));
 
-    $('.generate-btn').on('click', function(event) {
-        event.preventDefault(event);
-        let startPoint = $('#start-point').val();
-        let endPoint = $('#end-point').val();
-        let distance = $('input[name="distance"]:checked').val();
-        let points = $('input[name="points"]:checked').val();
-        getGeneratorData(startPoint, endPoint, distance, points)
+    $('#tag-btn').on('click', function () {
+        $('#tag-modal').modal('show');
+    });
+
+    $('#generatorForm').on('submit', function(event) {
+        event.preventDefault();
+
+        const startPoint = $('#start-point').val();
+        const endPoint = $('#end-point').val();
+        const distanceRange = $('#distance').val();
+        const pointsRange = $('#points').val();
+        const selectedTags = [];
+        const selectedAreas = [];
+        const virtualPoints = $('#virtualpoints').is(':checked');
+
+        // Pobranie zaznaczonych checkboxów
+        $('#tag-list input:checked').each(function () {
+            selectedTags.push(parseInt($(this).val()));
+        });
+        
+        $('#areas-list input:checked').each(function () {
+            selectedAreas.push(parseInt($(this).val()));
+        });
+
+        const firstAreaCheckbox = $('#areas-list input[type="checkbox"]').first()[0];
+
+        if(selectedAreas.length < 1) {
+            console.log("here");
+            firstAreaCheckbox.setCustomValidity('Musisz zaznaczyć przynajmniej jeden obszar.');
+            firstAreaCheckbox.reportValidity(); // Pokaż komunikat walidacji
+            return; // Zatrzymaj dalsze przetwarzanie
+        } else {
+            firstAreaCheckbox.setCustomValidity(''); // Wyczyść komunikat walidacji, jeśli wszystko jest OK
+        }
+        
+
+        getGeneratorData({startPoint, endPoint, distanceRange, pointsRange, selectedTags, selectedAreas, virtualPoints}, showLoading, hideLoading)
             .then(function(result) {
                 paths = result.data;
                 $('#form-wrapper').hide();
@@ -62,8 +135,22 @@ $(document).ready(function() {
                 populateTable(rows, columnsConfig, columnDefsConfig);
                 updateMap(null, markers, map);
                 
-            }).catch((error) => console.log(error));
+            }).catch((error) => {
+                console.log(error)
 
+                $('#form-wrapper').show();
+            });
+
+    });
+
+    $('#areas-list').on('change', 'input[type="checkbox"]', function () {
+        console.log('zmiana checkbox');
+        const firstAreaCheckbox = $('#areas-list input[type="checkbox"]').first()[0];
+        
+        // Jeśli przynajmniej jeden checkbox jest zaznaczony, wyczyść komunikat walidacji
+        if ($('#areas-list input:checked').length > 0) {
+            firstAreaCheckbox.setCustomValidity('');
+        }
     });
 
     $('#change-parameters-btn').on('click', function(event) {
@@ -150,3 +237,13 @@ $(document).ready(function() {
     });
 
 });
+
+function showLoading() {
+    $('#form-wrapper').hide();
+    $('#table-wrapper').hide();
+    $('#loading-spinner').show();
+}
+
+function hideLoading() {
+    $('#loading-spinner').hide();
+}

@@ -35,6 +35,16 @@ Route::get('/paths/{path}', function ($path) {
     return redirect()->route('admin.paths.show', ['path' => $path]);
 });
 
+// TAGS 'api/tags'
+Route::get('/tags', function() {
+    return redirect()->route('admin.tags.index');
+});
+
+Route::get('/areas', function() {
+    return redirect()->route('admin.areas.index');
+});
+
+
 Route::get('/map/ui-data', [MapFileController::class, 'getMapUIData']);
 
 Route::get('/map/{map}', [MapFileController::class, 'getMapFileWithDetails']);

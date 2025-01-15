@@ -15,7 +15,8 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
     Route::get('/paths', [PathController::class, 'index'])->name('admin.paths.index');
     Route::get('/paths/non-virtual', [PathController::class, 'nonVirtualPaths'])->name('admin.nonVirtualPaths');
     Route::get('/paths/{path}', [PathController::class, 'show'])->name('admin.paths.show');
-    
+    Route::get('/tags', [TagController::class, 'index'])->name('admin.tags.index');
+    Route::get('/areas', [AreaController::class, 'index'])->name('admin.areas.index');    
 
     // PRIVATE routes:
     Route::middleware('auth')->group(function () { // endpointy w tej grupie wymagają żeby użytkownik był zalogowany
@@ -63,10 +64,9 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         });
 
         // TAGS
-        Route::prefix('tags')->controller(tagController::class)->name('admin.tags')->group(function () {
+        Route::prefix('tags')->controller(TagController::class)->name('admin.tags')->group(function () {
             
             Route::post('/', 'store')->name('store');
-            Route::get('/', 'index')->name('index');
             Route::get('/{tag}', 'show')->name('show');
             Route::put('/{tag}', 'update')->name('update');
             Route::delete('/{tag}', 'destroy')->name('destroy');
@@ -79,7 +79,6 @@ Route::prefix('admin')->group(function() { // utworzenie grupy endpointów z pre
         Route::prefix('areas')->controller(AreaController::class)->name('admin.areas')->group(function () {
     
             Route::post('/', 'store')->name('store');
-            Route::get('/', 'index')->name('index');
             Route::get('/{area}', 'show')->name('show');
             Route::put('/{area}', 'update')->name('update');
             Route::delete('/{area}', 'destroy')->name('destroy');  // do poprawy

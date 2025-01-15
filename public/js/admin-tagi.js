@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     csrfAjaxSetup();
 
-    getTagData()
+    getAdminTagsData()
         .then(function(result){
             tags = result.tags
 
