@@ -25,12 +25,12 @@
                             <label class="form-label bg-body-secondary p-1 w-100" for="distance">Długość trasy:</label>
                             <select class="form-select" id="distance" name="distance" required>
                                 <option disabled selected>Wybierz długość trasy</option>
-                                <option value="KM2-4">2 - 4 km</option>
-                                <option value="KM5-7">5 - 7 km</option>
-                                <option value="KM8-10">8 - 10 km</option>
-                                <option value="KM11-13">11 - 13 km</option>
-                                <option value="KM14-16">14 - 16 km</option>
-                                <option value="KM17-19">17 - 20 km</option>
+                                <option value="KM2-5">2 - 5 km</option>
+                                <option value="KM6-9">4 - 9 km</option>
+                                <option value="KM10-12">10 - 12 km</option>
+                                <option value="KM13-15">13 - 15 km</option>
+                                <option value="KM16-18">16 - 18 km</option>
+                                <option value="KM19-24">19 - 24 km</option>
                             </select>
                             
                         </div>
@@ -38,12 +38,12 @@
                             <label class="form-label bg-body-secondary p-1 w-100" for="points">Liczba punktów kontrolnych:</label>
                             <select class="form-select" id="points" name="points" required>
                                 <option value="" disabled selected>Wybierz liczbę punktów</option>
-                                <option value="P4-6">4 - 6</option>
-                                <option value="P7-9">7 - 9</option>
-                                <option value="P10-12">10 - 12</option>
-                                <option value="P13-15">13 - 15</option>
-                                <option value="P16-18">16 - 18</option>
-                                <option value="P19-21">19 - 21</option>
+                                <option value="P3-5">3 - 5</option>
+                                <option value="P6-8">6 - 8</option>
+                                <option value="P9-11">9 - 11</option>
+                                <option value="P12-14">12 - 14</option>
+                                <option value="P15-17">15 - 17</option>
+                                <option value="P18-21">18 - 21</option>
                             </select>
                            
                         </div>
@@ -93,7 +93,7 @@
                         <tbody id="tbody">
                         </tbody>
                     </table>
-                    <button class="btn btn-success generate-btn">Wygeneruj nowe trasy</button>
+                    <button id="re-generate-btn" class="btn btn-success">Wygeneruj nowe trasy</button>
                     <button id="change-parameters-btn" class="btn btn-success">Zmień parametry</button>
                 </div>
             </div>

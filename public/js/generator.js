@@ -143,6 +143,10 @@ $(document).ready(function() {
 
     });
 
+    $('#re-generate-btn').click(function() {
+        $('#generatorForm').submit();
+    });
+
     $('#areas-list').on('change', 'input[type="checkbox"]', function () {
         console.log('zmiana checkbox');
         const firstAreaCheckbox = $('#areas-list input[type="checkbox"]').first()[0];
