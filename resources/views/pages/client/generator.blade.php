@@ -93,7 +93,7 @@
                         <tbody id="tbody">
                         </tbody>
                     </table>
-                    <button class="btn btn-success generate-btn">Wygeneruj nowe trasy</button>
+                    <button id="re-generate-btn" class="btn btn-success">Wygeneruj nowe trasy</button>
                     <button id="change-parameters-btn" class="btn btn-success">Zmień parametry</button>
                 </div>
             </div>
