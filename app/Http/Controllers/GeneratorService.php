@@ -96,6 +96,7 @@ class GeneratorService extends Controller
             [self::MIN_DISTANCE_KM => 13.50, self::MAX_DISTANCE_KM => 16.50],
             [self::MIN_DISTANCE_KM => 16.50, self::MAX_DISTANCE_KM => 19.50],
             [self::MIN_DISTANCE_KM => 19.50, self::MAX_DISTANCE_KM => 21.50],
+            [self::MIN_DISTANCE_KM => 21.50, self::MAX_DISTANCE_KM => 23.50],
         ];
 
         // Indeksy zakresów
@@ -114,6 +115,7 @@ class GeneratorService extends Controller
             'KM11-13', 
             'KM14-16', 
             'KM17-19', 
+            'KM20-22',
         ]);
 
         // Zakresy punktów i odległości na podstawie indeksów
@@ -152,7 +154,7 @@ class GeneratorService extends Controller
     private function generatePaths(Collection $dbPoints, $startPointId, $endPointId, $dataSet, $numberOfPaths = 1): AnonymousResourceCollection
     {
         $result = new Collection();
-        $maxAttemps = 100;
+        $maxAttemps = 200;
 
         for ($i = 0; $i < $numberOfPaths; $i++) {
             $pathIdx = null;
@@ -186,11 +188,6 @@ class GeneratorService extends Controller
         return GeneratorPathResource::collection($result);
     }
 
-
-    // główna funkcja tworząca ścieżki
-    /*  OPIS ALGORYTMU:
-        todo        
-    */
     function findPath(
         $avaliablePoints, 
         $startPoint, $endPoint,
@@ -230,7 +227,7 @@ class GeneratorService extends Controller
 
             // Usuwamy wylosowany punkt z $dbPoints (i punkt startowy w pierwszej iteracji)
             $avaliablePoints = $avaliablePoints->filter(function ($point) use ($randomPoint, $startPoint) {
-                return $point->id != $randomPoint->id && $point->id != $startPoint; 
+                return $point->id != $randomPoint->id; 
             });
         }
         // Sprawdzenie, czy ścieżka spełnia założenia
