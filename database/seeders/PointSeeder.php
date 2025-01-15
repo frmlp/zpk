@@ -34,7 +34,6 @@ class PointSeeder extends Seeder
                 $easting = (float)str_replace(",", ".", $data[1]);
                 $northing = (float)str_replace(",", ".", $data[2]);
                 $pointVirtual = $data[3];
-                $area_id = $data[4];
                 $url = $data[5];
                 $description = $data[6];
 
@@ -47,8 +46,6 @@ class PointSeeder extends Seeder
                     'url' => $url
                 ]);
                 $point->assignAreas(); 
-                //$area = Area::find($area_id);
-                //$area->points()->attach($point->id); 
             }
         }
     }
