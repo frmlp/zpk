@@ -14,6 +14,22 @@ function getPointsData() {
     })
 }
 
+function getTagsData() {
+    return $.ajax({
+        url: 'http://localhost:8000/api/tags',
+        type: 'GET',
+        dataType: 'json',
+    })
+}
+
+function getAreasData() {
+    return $.ajax({
+        url: 'http://localhost:8000/api/areas',
+        type: 'GET',
+        dataType: 'json',
+    })
+}
+
 function getAdminPathData() {
     return $.ajax({
         url: 'http://localhost:8000/admin/paths',
@@ -40,8 +56,13 @@ function getAdminTagsData() {
 
 
 
-function getGeneratorData(startPoint, endPoint, distance_range, points_range) {
-    // event.preventDefault(event);
+function getGeneratorData({startPoint, endPoint, distanceRange, pointsRange, selectedTags, selectedAreas, virtualPoints}, showLoading, hideLoading ) {
+    
+    showLoading();
+
+    console.log("distance: " + distanceRange);
+    console.log("points: " + pointsRange);
+
     return $.ajax({
         url: 'http://localhost:8000/api/generator',
         type: 'GET',
@@ -49,20 +70,26 @@ function getGeneratorData(startPoint, endPoint, distance_range, points_range) {
         data: {
             start_point_id: startPoint,
             end_point_id: endPoint,
-            number_of_points_range: points_range,
-            distance_range: distance_range
+            number_of_points_range: pointsRange,
+            distance_range: distanceRange,
+            tags: selectedTags,
+            areas: selectedAreas,
+            virtualpoints: virtualPoints
         }
        
+    }).always(function () {
+
+        hideLoading();
     });
 }
 
-function getTagData(){
-    return $.ajax({
-        url: 'http://localhost:8000/admin/tags',
-        type: 'GET',
-        dataType: 'json'
-    })
-}
+// function getTagData(){
+//     return $.ajax({
+//         url: 'http://localhost:8000/admin/tags',
+//         type: 'GET',
+//         dataType: 'json'
+//     })
+// }
 
 function csrfAjaxSetup() {
     $.ajaxSetup({
