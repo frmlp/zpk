@@ -152,7 +152,7 @@ class GeneratorService extends Controller
     private function generatePaths(Collection $dbPoints, $startPointId, $endPointId, $dataSet, $numberOfPaths = 1): AnonymousResourceCollection
     {
         $result = new Collection();
-        $maxAttemps = 300;
+        $maxAttemps = 400;
 
         for ($i = 0; $i < $numberOfPaths; $i++) {
             $pathIdx = null;
