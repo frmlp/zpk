@@ -16,12 +16,10 @@ class GeneratorService extends Controller
     const MAX_POINT_COUNT = 'max_point_count';
     const MIN_DISTANCE_KM = 'min_distance_km';
     const MAX_DISTANCE_KM = 'max_distance_km';
-    const IS_UNLOADED_START = 'is_unloaded_start';
-    const PROBABILITY_FACTOR_PERCENT = 'probability_factor_percent';    
+    const NUMBER_OF_PATHS = 5;
 
     public function __invoke(Request $request)
     {
-        
         $startPointId = $request->start_point_id;
         $endPointId = $request->end_point_id;
         $startPoint = Point::find($startPointId);
@@ -32,8 +30,19 @@ class GeneratorService extends Controller
         // Dodanie punktu startowego do kolekcji
         $dbPoints = (new Point())->newCollection([$startPoint]);
 
-        // Pobieranie punktów z filtrowaniem
+        // Pobieranie punktów z filtrowaniem (areas, virtualPoints: false->noVP, tags)
         $filteredPoints = Point::query();
+
+        if (!empty($request->areas)) {
+            $filteredPoints = $filteredPoints->whereHas('areas', function ($query) use ($request) {
+                $query->whereIn('areas.id', $request->areas);
+            });
+        }
+
+        if ($request->has('virtualpoints') && $request->virtualpoints == false) { 
+            $filteredPoints = $filteredPoints->where('pointVirtual', false); 
+        }
+
         if (!empty($request->tags)) {
             $filteredPoints = $filteredPoints->whereHas('tags', function ($query) use ($request) {
                 $query->whereIn('tags.id', $request->tags);
@@ -65,7 +74,7 @@ class GeneratorService extends Controller
             ], 400);
         }
 
-        return $this->generatePaths($dbPoints, $startPointId, $endPointId, $dataSet, 4);
+        return $this->generatePaths($dbPoints, $startPointId, $endPointId, $dataSet, self::NUMBER_OF_PATHS);
     }
 
     private function getDataSet($numberOfPointsRange, $distanceRange)
@@ -78,7 +87,6 @@ class GeneratorService extends Controller
             [self::MIN_POINT_COUNT => 13, self::MAX_POINT_COUNT => 15],
             [self::MIN_POINT_COUNT => 16, self::MAX_POINT_COUNT => 18],
             [self::MIN_POINT_COUNT => 19, self::MAX_POINT_COUNT => 21],
-            [self::MIN_POINT_COUNT => 22, self::MAX_POINT_COUNT => 24],
         ];
         $distanceRanges = [
             [self::MIN_DISTANCE_KM => 1.50, self::MAX_DISTANCE_KM => 4.50],
@@ -88,12 +96,25 @@ class GeneratorService extends Controller
             [self::MIN_DISTANCE_KM => 13.50, self::MAX_DISTANCE_KM => 16.50],
             [self::MIN_DISTANCE_KM => 16.50, self::MAX_DISTANCE_KM => 19.50],
             [self::MIN_DISTANCE_KM => 19.50, self::MAX_DISTANCE_KM => 21.50],
-            [self::MIN_DISTANCE_KM => 22.50, self::MAX_DISTANCE_KM => 24.50],
         ];
 
         // Indeksy zakresów
-        $pointRangeIndex = array_search($numberOfPointsRange, ['P4-6', 'P7-9', 'P10-12', 'P13-15', 'P16-18', 'P19-21', 'P22-24']);
-        $distanceRangeIndex = array_search($distanceRange, ['KM2-4', 'KM5-7', 'KM8-10', 'KM11-13', 'KM14-16', 'KM17-19', 'KM20-22']);
+        $pointRangeIndex = array_search($numberOfPointsRange, [
+            'P4-6', 
+            'P7-9', 
+            'P10-12', 
+            'P13-15', 
+            'P16-18', 
+            'P19-21', 
+        ]);
+        $distanceRangeIndex = array_search($distanceRange, [
+            'KM2-4', 
+            'KM5-7', 
+            'KM8-10', 
+            'KM11-13', 
+            'KM14-16', 
+            'KM17-19', 
+        ]);
 
         // Zakresy punktów i odległości na podstawie indeksów
         $pointRange = $pointRanges[$pointRangeIndex];
@@ -119,7 +140,6 @@ class GeneratorService extends Controller
         return sqrt($deltaXSq + $deltaYSq);
     }
 
-    // Przekształcenie tablicy indeksów na tablicę obiektów Point
     private function transformPathFromIdxToPointArray(array $pathIdx, Collection $pointsDb): array
     {
         $pathPoints = [];
@@ -132,11 +152,19 @@ class GeneratorService extends Controller
     private function generatePaths(Collection $dbPoints, $startPointId, $endPointId, $dataSet, $numberOfPaths = 1): AnonymousResourceCollection
     {
         $result = new Collection();
+        $maxAttemps = 100;
+
         for ($i = 0; $i < $numberOfPaths; $i++) {
             $pathIdx = null;
-            while ($pathIdx == null) {
+            $attemps = 0;
+            
+            $avaliablePoints = $dbPoints->map(function ($point) {
+                return $point;
+            });
+
+            while ($pathIdx == null && $attemps < $maxAttemps) {
                 $pathIdx = $this->findPath(
-                    $dbPoints,
+                    $avaliablePoints,
                     $startPointId,
                     $endPointId,
                     $dataSet[self::MIN_DISTANCE_KM],
@@ -144,12 +172,15 @@ class GeneratorService extends Controller
                     $dataSet[self::MIN_POINT_COUNT],
                     $dataSet[self::MAX_POINT_COUNT],
                 );
+                $attemps++;
             }
 
-            $pathPoints = $this->transformPathFromIdxToPointArray($pathIdx, $dbPoints);
-            $route = ['id' => $i, 'points' => $pathPoints];
-
-            $result->push((object)$route);
+            // Dodanie ścieżki do wyniku, jeśli została znaleziona
+            if ($pathIdx) {
+                $pathPoints = $this->transformPathFromIdxToPointArray($pathIdx, $dbPoints);
+                $route = ['id' => $i, 'points' => $pathPoints];
+                $result->push((object)$route);
+            } 
         }
 
         return GeneratorPathResource::collection($result);
@@ -161,67 +192,52 @@ class GeneratorService extends Controller
         todo        
     */
     function findPath(
-        $dbPoints, $startPoint, $endPoint,
+        $avaliablePoints, 
+        $startPoint, $endPoint,
         $minLength, $maxLength,
         $minPoints, $maxPoints,
-        $currentLength = 0.0,
-        $path = [],
-        $visitedPoints = []
     ) 
     {
+
         // Inicjalizacja ścieżki
         $path[] = $startPoint;
-        $visitedPoints[$startPoint] = true;
         $currentPoint = $startPoint;
         $currentLength = 0.0;
 
-        while ($currentPoint != $endPoint) {
-            // Wybór losowego punktu z puli
-            $availablePoints = $dbPoints->whereNotIn('id', array_keys($visitedPoints));
-            $randomPoint = $availablePoints->random();
-            $randomPoint = $dbPoints->firstWhere('id', $randomPoint->id);
+        $avaliablePoints = $avaliablePoints->filter(function ($point) use ($startPoint) {
+            return $point->id != $startPoint; 
+        });
 
-            // Dodanie punktu do ścieżki
+        while (
+            $currentPoint != $endPoint && 
+            count($path) < $maxPoints && 
+            $currentLength < $maxLength &&
+            $avaliablePoints->isNotEmpty()   
+        ) {
+            // Losujemy punkt z dostępnych
+            $randomPoint = $avaliablePoints->random();
+
+            // Dodajemy punkt do ścieżki
             $path[] = $randomPoint->id;
-            $visitedPoints[$randomPoint->id] = true;
 
-            // Aktualizacja parametrów ścieżki
-            $currentPointObject = $dbPoints->firstWhere('id', $currentPoint);
+            // Aktualizujemy parametry ścieżki
+            $currentPointObject = Point::find($currentPoint);
             $currentLength += $this->calculateDistance($currentPointObject, $randomPoint);
-            // $currentLength += $this->calculateDistance($dbPoints[$currentPoint], $randomPoint);
+            // dd([
+            //         'zmienna' => $currentLength,
+            // ]);
             $currentPoint = $randomPoint->id;
-            $startX = $randomPoint->easting;
-            $startY = $randomPoint->northing;
 
-            // Sprawdzenie parametrów ścieżki
-            if ($currentLength > $maxLength || count($path) > $maxPoints) {
-                // Parametry przekroczone - restart
-                return $this->findPath(
-                    $dbPoints,
-                    $startPoint,
-                    $endPoint,
-                    $minLength,
-                    $maxLength,
-                    $minPoints,
-                    $maxPoints,
-                );
-            }
+            // Usuwamy wylosowany punkt z $dbPoints (i punkt startowy w pierwszej iteracji)
+            $avaliablePoints = $avaliablePoints->filter(function ($point) use ($randomPoint, $startPoint) {
+                return $point->id != $randomPoint->id && $point->id != $startPoint; 
+            });
         }
-
         // Sprawdzenie, czy ścieżka spełnia założenia
         if ($currentLength >= $minLength && count($path) >= $minPoints) {
-            return $path;
+            return $path; // Zwracamy ścieżkę, jeśli spełnia kryteria
         } else {
-            // Ścieżka nie spełnia założeń - restart
-            return $this->findPath(
-                $dbPoints,
-                $startPoint,
-                $endPoint,
-                $minLength,
-                $maxLength,
-                $minPoints,
-                $maxPoints,
-            );
+            return null; // Zwracamy null, jeśli ścieżka nie spełnia kryteriów
         }
     }
 }
