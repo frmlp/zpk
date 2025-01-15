@@ -229,7 +229,10 @@ class GeneratorService extends Controller
             });
         }
         // Sprawdzenie, czy ścieżka spełnia założenia
-        if ($currentLength >= $minLength && count($path) >= $minPoints) {
+        if (
+            $currentLength >= $minLength && 
+            count($path) >= $minPoints &&
+            end($path) == $endPoint) {
             return $path; // Zwracamy ścieżkę, jeśli spełnia kryteria
         } else {
             return null; // Zwracamy null, jeśli ścieżka nie spełnia kryteriów
