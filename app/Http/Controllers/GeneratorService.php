@@ -16,7 +16,7 @@ class GeneratorService extends Controller
     const MAX_POINT_COUNT = 'max_point_count';
     const MIN_DISTANCE_KM = 'min_distance_km';
     const MAX_DISTANCE_KM = 'max_distance_km';
-    const NUMBER_OF_PATHS = 5;
+    const NUMBER_OF_PATHS = 6;
 
     public function __invoke(Request $request)
     {
