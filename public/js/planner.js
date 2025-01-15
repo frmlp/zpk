@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $('#alertMessage').hide();
+
     let points = [];
     let maps = [];
     const map = initMap("map");
@@ -22,6 +24,8 @@ $(document).ready(function() {
         }).catch((error) => console.log(error));
 
     $(document).on('change', '.dropdown', function() {
+        $('#alertMessage').hide();
+
         var parentGroup = $(this).closest('.dropdown-group');
         parentGroup.find('.remove-btn, .handle').show();
         // parentGroup.find('.handle').show();
@@ -50,7 +54,12 @@ $(document).ready(function() {
 
     $(document).on('click', '#finish-btn', function() {
 
-        // const pathId = 0; // Pobranie ID mapy z przycisku
+        let pathPoints = collectPoints('select', points);
+        if(pathPoints.length < 2) {
+            const message = 'Trasa musi się składać z co najmniej dwóch punktów.';
+            $('#alertMessage').text(message).show();
+            return;
+        }
 
         $('#mapList').html(prepareHtmlForMapChoiceModal(maps, 0)); // Wstawienie wygenerowanej listy do modala
 
@@ -68,7 +77,7 @@ $(document).ready(function() {
 
         let pathPoints = collectPoints('select', points);
 
-        if(pathPoints.length > 1) {
+        if(pathPoints.length > 2) {
 
             pathPoints.forEach((point, index) => {
                 point.position = index + 1;

@@ -132,7 +132,7 @@ $(document).ready(function() {
                     </tr>
                 `).join('');
 
-                populateTable(rows, columnsConfig, columnDefsConfig);
+                populateTable(rows, columnsConfig, columnDefsConfig, false, 'Nie udało się wygenerować trasy');
                 updateMap(null, markers, map);
                 
             }).catch((error) => {
