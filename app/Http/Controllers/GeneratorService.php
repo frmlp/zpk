@@ -38,9 +38,11 @@ class GeneratorService extends Controller
                 $query->whereIn('areas.id', $request->areas);
             });
         }
+        // error_log($request->virtualpoints);
 
-        if ($request->has('virtualpoints') && $request->virtualpoints == false) { 
-            $filteredPoints = $filteredPoints->where('pointVirtual', false); 
+        if ($request->has('virtualpoints') && $request->virtualpoints == 0) { 
+            // error_log("false virtual points");
+            $filteredPoints = $filteredPoints->where('pointVirtual', 0); 
         }
 
         if (!empty($request->tags)) {
@@ -199,9 +201,32 @@ class GeneratorService extends Controller
         $currentPoint = $startPoint;
         $currentLength = 0.0;
 
-        $avaliablePoints = $avaliablePoints->filter(function ($point) use ($startPoint) {
-            return $point->id != $startPoint; 
-        });
+        if($startPoint === $endPoint) {
+            // Losujemy punkt z dostępnych
+            $randomPoint = $avaliablePoints->random();
+
+            // Dodajemy punkt do ścieżki
+            $path[] = $randomPoint->id;
+
+            // Aktualizujemy parametry ścieżki
+            $currentPointObject = Point::find($currentPoint);
+            $currentLength += $this->calculateDistance($currentPointObject, $randomPoint);
+
+            $currentPoint = $randomPoint->id;
+
+            // Usuwamy wylosowany punkt z $dbPoints
+            $avaliablePoints = $avaliablePoints->filter(function ($point) use ($randomPoint) {
+                return $point->id != $randomPoint->id; 
+            });
+        } else {
+            $avaliablePoints = $avaliablePoints->filter(function ($point) use ($startPoint) {
+                return $point->id != $startPoint; 
+            });
+        }
+
+        // $avaliablePoints = $avaliablePoints->filter(function ($point) use ($startPoint) {
+        //     return $point->id != $startPoint; 
+        // });
 
         while (
             $currentPoint != $endPoint && 
