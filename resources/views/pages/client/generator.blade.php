@@ -24,7 +24,7 @@
                         <div class="mb-3">
                             <label class="form-label bg-body-secondary p-1 w-100" for="distance">Długość trasy:</label>
                             <select class="form-select" id="distance" name="distance" required>
-                                <option disabled selected>Wybierz długość trasy</option>
+                                <option value="" disabled selected>Wybierz długość trasy</option>
                                 <option value="KM2-5">2 - 5 km</option>
                                 <option value="KM6-9">4 - 9 km</option>
                                 <option value="KM10-12">10 - 12 km</option>
@@ -76,6 +76,12 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
+
+                <div id="alertMessage" style="display: none;">
+                    <div class="alert alert-danger mb-3">Nie udało się wygenerować trasy</div>
+                    <button class="btn btn-success re-generate-btn">Wygeneruj nowe trasy</button>
+                    <button class="btn btn-success change-parameters-btn">Zmień parametry</button>
+                </div>
                 
 
                 <div id="table-wrapper" style="display: none;">
@@ -93,8 +99,8 @@
                         <tbody id="tbody">
                         </tbody>
                     </table>
-                    <button id="re-generate-btn" class="btn btn-success">Wygeneruj nowe trasy</button>
-                    <button id="change-parameters-btn" class="btn btn-success">Zmień parametry</button>
+                    <button class="btn btn-success re-generate-btn">Wygeneruj nowe trasy</button>
+                    <button class="btn btn-success change-parameters-btn">Zmień parametry</button>
                 </div>
             </div>
         </div>
@@ -108,5 +114,5 @@
 @endsection
 
 @section('js_files')
-    <script src="js/generator.js" async></script>
+    <script src="js/client/generator.js" async></script>
 @endsection

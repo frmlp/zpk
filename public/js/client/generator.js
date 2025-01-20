@@ -84,6 +84,8 @@ $(document).ready(function() {
     });
 
     $('#generatorForm').on('submit', function(event) {
+        // $('#alertMessage').hide();
+
         event.preventDefault();
 
         const startPoint = $('#start-point').val();
@@ -92,7 +94,7 @@ $(document).ready(function() {
         const pointsRange = $('#points').val();
         const selectedTags = [];
         const selectedAreas = [];
-        const virtualPoints = $('#virtualpoints').is(':checked');
+        const virtualPoints = $('#virtualpoints').is(':checked')? 1 : 0;
 
         // Pobranie zaznaczonych checkboxów
         $('#tag-list input:checked').each(function () {
@@ -119,12 +121,11 @@ $(document).ready(function() {
             .then(function(result) {
                 paths = result.data;
                 $('#form-wrapper').hide();
-                $('#table-wrapper').show();
-
+                console.log(paths);
                 const rows = paths.map(path => `
                     <tr class="" data-id="${path.id}" id="${path.id}">
                         
-                        <td>${checkPathArea(path.points)}</td>
+                        <td>${getPathAreaNames(path.points)}</td>
                         <td>${path.points.length}</td>
                         <td>${calculateRouteLength(path.points)}</td>
                         
@@ -132,8 +133,17 @@ $(document).ready(function() {
                     </tr>
                 `).join('');
 
-                populateTable(rows, columnsConfig, columnDefsConfig, false, 'Nie udało się wygenerować trasy');
                 updateMap(null, markers, map);
+
+                if(paths.length < 1) {
+                    // const message = 'Nie udało się wygenerować trasy';
+                    // $('#alertMessage').text(message).show();
+                    $('#alertMessage').show();
+                    return;
+                }
+
+                populateTable(rows, columnsConfig, columnDefsConfig, false);
+                $('#table-wrapper').show();
                 
             }).catch((error) => {
                 console.log(error)
@@ -143,7 +153,8 @@ $(document).ready(function() {
 
     });
 
-    $('#re-generate-btn').click(function() {
+    $('.re-generate-btn').click(function() {
+        $('#alertMessage').hide();
         $('#generatorForm').submit();
     });
 
@@ -157,8 +168,9 @@ $(document).ready(function() {
         }
     });
 
-    $('#change-parameters-btn').on('click', function(event) {
+    $('.change-parameters-btn').on('click', function(event) {
         // console.log(points);
+        $('#alertMessage').hide();
         $('#table-wrapper').hide();
         $('#form-wrapper').show();
         initPointsPreview(points, markers, map, "generator");
@@ -245,6 +257,7 @@ $(document).ready(function() {
 function showLoading() {
     $('#form-wrapper').hide();
     $('#table-wrapper').hide();
+    $('#alertMessage').hide();
     $('#loading-spinner').show();
 }
 

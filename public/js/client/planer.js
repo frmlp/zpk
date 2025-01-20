@@ -79,9 +79,19 @@ $(document).ready(function() {
 
         if(pathPoints.length > 2) {
 
-            pathPoints.forEach((point, index) => {
-                point.position = index + 1;
-            });
+            // pathPoints.forEach((point, index) => {
+            //     point.position = index + 1;
+            // });
+            console.log("tworzenie tablicy:")
+            for(let i = 0; i < pathPoints.length; i++) {
+                console.log(pathPoints[i].id);
+                
+                pathPoints[i].position = i + 1;
+                console.log(pathPoints[i].position);
+            }
+
+            console.log("gotowe punkty:");
+            console.log(pathPoints);
 
             downloadMap(selectedMapId, pathPoints);
         }

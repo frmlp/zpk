@@ -30,7 +30,7 @@
         </div>
 
         <x-client-scripts />
-        <script src="js/admin-login.js" async></script>
+        <script src="js/admin/admin-login.js" async></script>
 
     </body>
 </html>

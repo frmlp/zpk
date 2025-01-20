@@ -24,5 +24,5 @@
 @endsection
 
 @section('js_files')
-    <script src="js/planner.js"></script>
+    <script src="js/client/planer.js"></script>
 @endsection
