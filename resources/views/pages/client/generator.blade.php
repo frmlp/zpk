@@ -81,8 +81,7 @@
                     <div class="alert alert-danger mb-3">Nie udało się wygenerować trasy</div>
                     <button class="btn btn-success re-generate-btn">Wygeneruj nowe trasy</button>
                     <button class="btn btn-success change-parameters-btn">Zmień parametry</button>
-                </div>
-                
+                </div>                
 
                 <div id="table-wrapper" style="display: none;">
                     <table class="table table-hover" id="table" >
