@@ -40,13 +40,19 @@ $(document).ready(function() {
             `).join('');
 
             populateTable(rows, columnsConfig, columnDefsConfig);
-    }).catch((error) => console.log(error));
+    }).catch((xhr) => {
+        const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+        alert(message);
+    });
 
     getMapUIData()
         .then(function(result) {
             maps = result;
             console.log(maps);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
     
     $('#table tbody').on('click', 'tr', function() {
         let id = $(this).data('id');

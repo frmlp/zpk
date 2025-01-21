@@ -21,7 +21,10 @@ $(document).ready(function() {
         .then(function(result) {
             maps = result;
             console.log(maps);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     $(document).on('change', '.dropdown', function() {
         // $('#alertMessage').hide();

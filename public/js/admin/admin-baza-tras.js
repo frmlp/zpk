@@ -50,7 +50,10 @@ $(document).ready(function() {
             `).join('');
 
             populateTable(rows, columnsConfig, columnDefsConfig);
-    }).catch((error) => console.log(error));
+    }).catch((xhr) => {
+        const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+        alert(message);
+    });
 
     getAdminPointsData()
         .then(function(result) {
@@ -59,6 +62,9 @@ $(document).ready(function() {
             initializeSortable();
             // initPointsPreview(points, markers, modalMap, "planer");
             console.log(points);
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
         });
     
     $('#table tbody').on('click', 'tr', function() {

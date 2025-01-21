@@ -29,8 +29,10 @@ $(document).ready(function() {
             points = result.data;
             initPointsPreview(points, markers, map, "generator");
             populateDropdowns(points);
-        })
-        .catch(() => console.log("Error"));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     getTagsData()
         .then(function(result){
@@ -53,8 +55,10 @@ $(document).ready(function() {
                 $('#tag-list').append(checkbox);
             });
 
-            
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     getAreasData()
         .then(function(result){
@@ -71,13 +75,19 @@ $(document).ready(function() {
                 `;
                 areasList.append(checkbox);
             });
-        })
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     getMapUIData()
         .then(function(result) {
             maps = result;
             console.log(maps);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     $('#tag-btn').on('click', function () {
         $('#tag-modal').modal('show');
@@ -145,10 +155,11 @@ $(document).ready(function() {
                 populateTable(rows, columnsConfig, columnDefsConfig, false);
                 $('#table-wrapper').show();
                 
-            }).catch((error) => {
-                console.log(error)
-
+            }).catch((xhr) => {
                 $('#form-wrapper').show();
+
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+                alert(message);
             });
 
     });
