@@ -24,7 +24,7 @@ $(document).ready(function() {
         }).catch((error) => console.log(error));
 
     $(document).on('change', '.dropdown', function() {
-        $('#alertMessage').hide();
+        // $('#alertMessage').hide();
 
         var parentGroup = $(this).closest('.dropdown-group');
         parentGroup.find('.remove-btn, .handle').show();
@@ -43,6 +43,7 @@ $(document).ready(function() {
     });
 
     $('#reset-btn').on('click', function() {
+        $('#alertMessage').hide();
         resetDropdowns(points);
         updatePath();
         resetMarkers([startMarker, endMarker]);
