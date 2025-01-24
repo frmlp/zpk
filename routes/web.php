@@ -22,14 +22,14 @@ Route::get('/planner', function () {
 })->name("planer");
 
 Route::get('/spacer', function () {
-    return view('pages.client.spacer-vr');
+    return view('pages.client.spacer-wirtualny');
 })->name("spacer");
 
 // ten endpoint niedługo nie będzie potrzebny, rozwiązanie tymczasowe
 // jak moje pliki html podmienie na templatki blade'a to token będzie wszysty w meta dane strony
-Route::get('/token', function() {
-    return response()->json(['token' => csrf_token()]);
-});
+// Route::get('/token', function() {
+//     return response()->json(['token' => csrf_token()]);
+// });
 
 
 // wyeksportowane endpointy związane z konkretną funkcjonalnością aplikacji

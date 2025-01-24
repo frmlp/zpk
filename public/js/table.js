@@ -34,3 +34,5 @@ function populateTable(rows, columnsConfig, columnDefsConfig, hasPaging=true, em
         columnDefs: columnDefsConfig
     });
 }
+
+module.exports = {populateTable};

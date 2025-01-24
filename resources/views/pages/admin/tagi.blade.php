@@ -25,5 +25,5 @@
 @endsection
 
 @section('js_files')
-    <script src="../js/admin-tagi.js"></script>
+    <script src="../js/admin/admin-tagi.js"></script>
 @endsection

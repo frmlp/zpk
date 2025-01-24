@@ -60,9 +60,6 @@ function getGeneratorData({startPoint, endPoint, distanceRange, pointsRange, sel
     
     showLoading();
 
-    console.log("distance: " + distanceRange);
-    console.log("points: " + pointsRange);
-
     return $.ajax({
         url: 'http://localhost:8000/api/generator',
         type: 'GET',

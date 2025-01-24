@@ -26,7 +26,10 @@ $(document).ready(function() {
             `).join('');
 
             populateTable(rows, columnsConfig, columnDefsConfig);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     $('#newTagBtn').on('click', function() {
         $('#alertMessage').hide();
@@ -115,8 +118,8 @@ $(document).ready(function() {
             },
             error: function(xhr) {
                 // Obsługa błędu
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
-                alert(errorMessage);
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
+                alert(message);
             }
             
         })

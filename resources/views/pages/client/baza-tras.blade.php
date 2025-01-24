@@ -31,5 +31,5 @@
 @endsection
 
 @section('js_files')
-    <script src="js/baza-tras.js"></script>
+    <script src="js/client/baza-tras.js"></script>
 @endsection

@@ -3,8 +3,8 @@
 @section('title', 'Spacer wirtualny')
 
 @section('css_files')
-    <link rel="stylesheet" href="vendor/reset.min.css">
-    <link rel="stylesheet" href="css/spacer-style.css">
+    <link rel="stylesheet" href="css/vr-tour/reset.min.css">
+    <link rel="stylesheet" href="css/vr-tour/style.css">
 @endsection
 
 @section('content')
@@ -106,9 +106,9 @@
 @endsection
 
 @section('js_files')
-    <script src="vendor/screenfull.min.js" ></script>
-    <script src="vendor/bowser.min.js" ></script>
-    <script src="vendor/marzipano.js" ></script>
-    <script src="js/spacer-data.js" ></script>
-    <script src="js/spacer.js"></script>
+    <script src="js/vr-tour/vendor/screenfull.min.js" ></script>
+    <script src="js/vr-tour/vendor/bowser.min.js" ></script>
+    <script src="js/vr-tour/vendor/marzipano.js" ></script>
+    <script src="js/vr-tour/data.js" ></script>
+    <script src="js/vr-tour/index.js"></script>
 @endsection

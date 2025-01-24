@@ -21,10 +21,13 @@ $(document).ready(function() {
         .then(function(result) {
             maps = result;
             console.log(maps);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     $(document).on('change', '.dropdown', function() {
-        $('#alertMessage').hide();
+        // $('#alertMessage').hide();
 
         var parentGroup = $(this).closest('.dropdown-group');
         parentGroup.find('.remove-btn, .handle').show();
@@ -43,6 +46,7 @@ $(document).ready(function() {
     });
 
     $('#reset-btn').on('click', function() {
+        $('#alertMessage').hide();
         resetDropdowns(points);
         updatePath();
         resetMarkers([startMarker, endMarker]);
@@ -79,9 +83,19 @@ $(document).ready(function() {
 
         if(pathPoints.length > 2) {
 
-            pathPoints.forEach((point, index) => {
-                point.position = index + 1;
-            });
+            // pathPoints.forEach((point, index) => {
+            //     point.position = index + 1;
+            // });
+            console.log("tworzenie tablicy:")
+            for(let i = 0; i < pathPoints.length; i++) {
+                console.log(pathPoints[i].id);
+                
+                pathPoints[i].position = i + 1;
+                console.log(pathPoints[i].position);
+            }
+
+            console.log("gotowe punkty:");
+            console.log(pathPoints);
 
             downloadMap(selectedMapId, pathPoints);
         }

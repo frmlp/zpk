@@ -73,14 +73,20 @@ $(document).ready(function() {
             });
             
 
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
     
     getAdminTagsData()
         .then(function(result){
             tags = result.tags;
             console.log('getAdminTagsData()');
             console.log(tags);
-        })
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
     
     $('#table tbody').on('click', 'tr', function() {
         let id = $(this).data('id');
@@ -186,8 +192,8 @@ $(document).ready(function() {
             },
             error: function(xhr) {
                 // Obsługa błędu
-                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
-                
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
+                alert(message);
             }
         });
 
