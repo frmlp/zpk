@@ -182,3 +182,5 @@ function prepareHtmlForMapChoiceModal(maps, pathId) {
 
     return listHtml;
 }
+
+module.exports = {transformToWSG84, getAreaNames};
