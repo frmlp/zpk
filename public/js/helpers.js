@@ -114,7 +114,11 @@ function collectPoints(markup, points){
         let id = $(this).val();
         console.log("collectPoints() ->" + id)
         let point = points.find(p => p.id == id);
-        return point;
+        if(point){
+            return {...point};
+        }
+        return null;
+        
     }).get();
 }
 
@@ -178,3 +182,5 @@ function prepareHtmlForMapChoiceModal(maps, pathId) {
 
     return listHtml;
 }
+
+module.exports = {transformToWSG84, getAreaNames};

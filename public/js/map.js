@@ -43,8 +43,8 @@ const yellowIcon = L.icon({
     shadowSize: [41, 41],
 });
 
-initCoordinates = [54.52, 18.49];
-initZoom = 13;
+const initCoordinates = [54.52, 18.49];
+const initZoom = 13;
 
 function initMap(mapId) {
     map = L.map(mapId).setView(initCoordinates, initZoom);
@@ -113,6 +113,13 @@ function initPointsPreview2(points, markers, map) {
         markers.addLayer(m);
     });
     markers.addTo(map);
+
+    // console.log("warstwy mapy");
+
+    // map.eachLayer((layer) => {
+    //     console.log(layer); // Wyświetla informacje o każdej warstwie
+    // });
+    // console.log("koniec warstw");
 }
 
 
@@ -130,6 +137,7 @@ function drawPath(points, markers, map) {
     const polyline = L.polyline(wsg84points, { color: 'magenta' });
     markers.addLayer(polyline);
     markers.addTo(map);
+    
 }
 
 // function showPoint(point, markers, map) {
@@ -337,3 +345,5 @@ function resetMarkers(markers) {
         if(marker) marker.options.pointVirtual? marker.setIcon(yellowIcon) : marker.setIcon(defaultIcon);
     });
 }
+
+module.exports = {initMap, initMarkers, initPointsPreview2};
