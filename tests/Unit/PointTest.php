@@ -3,7 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\Point;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
 class PointTest extends TestCase
@@ -37,17 +39,22 @@ class PointTest extends TestCase
     // TEST 2
     public function test_tworzenie_punktu_z_niepoprawnymi_danymi()
     {
+        $user = User::factory()->create();
+        $this->actingAs($user); 
+
         $data = [
             'code' => 5, 
             'description' => 'Punkt testowy',
-            'easting' => 'aa', 
+            'easting' => 'bledna wartosc', 
             'northing' => 789012,
             'pointVirtual' => false,
             'url' => 'https://example.com',
         ];
 
-        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        $response = $this->post(route('admin.points.store'), $data);
 
-        Point::create($data);
+        $response->assertStatus(422); 
+        $response->assertJsonValidationErrors(['code', 'easting']); 
+
     }
 }

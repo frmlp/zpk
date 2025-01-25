@@ -36,10 +36,6 @@ class PointController extends Controller
 
             // Przypisywanie obszarów
             $point->assignAreas(); 
-            { // poprzednia wersja przypisania do tabeli pośredniej
-                // $areaIds = $request->input('area_ids', []);
-                // $point->areas()->attach($areaIds); 
-            }
             
             // Sprawdzenie okolicy (sector)
             $sectorMessage = $this->isPointInSameSector($point, $request)
@@ -99,10 +95,6 @@ class PointController extends Controller
             if ($originalEasting != $point->easting || $originalNorthing != $point->northing) {
                 $point->areas()->detach(); // Odłącz wszystkie obszary
                 $point->assignAreas();     // Przypisz na nowo
-            }
-            { // poprzednia wersja
-                // $areaId = $request->input('area_id');
-                // $point->areas()->sync($areaId);
             }
 
             $tagIds = $request->input('tag_ids', []); 
