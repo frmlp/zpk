@@ -26,19 +26,21 @@ table.dataTable {
 }
 
 .form-check-input:checked {
-    background-color: #28a745; /* Green (success) */
-    border-color: #28a745; /* Match the border with the background */
+    background-color: #28a745;
+    border-color: #28a745;
 }
 
 .handle {
-    cursor: grab; /* Wskazuje możliwość przeciągania */
+    cursor: grab;
 }
 .handle:hover {
-    background-color: #fcfcfc; /* Delikatnie jaśniejsze tło przy najechaniu */
-    cursor: grabbing; /* Zmiana kursora przy przeciąganiu */
+    background-color: #fcfcfc;
+    cursor: grabbing;
 }
 
-/* background */
+/**
+ * style odpowiedzialne za prawidłowe wyświetlenie tła
+ */
 @keyframes move {
     100% {
         transform: translate3d(0, 0, 0) rotate(360deg);
