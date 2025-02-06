@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PointResource;
 use App\Models\Point;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -36,10 +37,6 @@ class PointController extends Controller
 
             // Przypisywanie obszarów
             $point->assignAreas(); 
-            { // poprzednia wersja przypisania do tabeli pośredniej
-                // $areaIds = $request->input('area_ids', []);
-                // $point->areas()->attach($areaIds); 
-            }
             
             // Sprawdzenie okolicy (sector)
             $sectorMessage = $this->isPointInSameSector($point, $request)
@@ -54,7 +51,7 @@ class PointController extends Controller
 
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Blad walidacji',
+                'message' => 'Błąd walidacji',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -72,7 +69,7 @@ class PointController extends Controller
             $point->load('tags'); 
             return (new PointResource($point))->response()->setStatusCode(200); 
     
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception); 
 
             return response()->json([
@@ -99,10 +96,6 @@ class PointController extends Controller
             if ($originalEasting != $point->easting || $originalNorthing != $point->northing) {
                 $point->areas()->detach(); // Odłącz wszystkie obszary
                 $point->assignAreas();     // Przypisz na nowo
-            }
-            { // poprzednia wersja
-                // $areaId = $request->input('area_id');
-                // $point->areas()->sync($areaId);
             }
 
             $tagIds = $request->input('tag_ids', []); 

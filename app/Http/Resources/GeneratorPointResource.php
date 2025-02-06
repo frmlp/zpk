@@ -23,6 +23,13 @@ class GeneratorPointResource extends JsonResource
             'description' => $this->description,
             'easting' => $this->easting,
             'northing' => $this->northing,
+            'pointVirtual' => $this->pointVirtual,
+            'areas' => $this->areas->map(function ($area) { 
+                return [
+                    'id' => $area->id,
+                    'name' => $area->name,
+                ];
+            }),
             // 'position' => $this->pivot->position
         ];
     }

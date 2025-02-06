@@ -17,7 +17,12 @@ class PointFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'code' => $this->faker->unique()->word(), // Dodaj generowanie wartości dla 'code'
+            'description' => $this->faker->sentence(),
+            'easting' => $this->faker->randomNumber(),
+            'northing' => $this->faker->randomNumber(),
+            'pointVirtual' => $this->faker->boolean(),
+            'url' => $this->faker->url(),
         ];
     }
 }
