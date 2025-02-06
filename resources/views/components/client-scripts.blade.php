@@ -6,8 +6,10 @@
 <!-- DATATABLES -->
 <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
+<!-- FONTKIT -->
+<script src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.min.js"></script>
 <script src="js/map.js" defer></script>
-<script src="js/map-pdf.js" defer></script>
+<script src="js/pdf-file.js" defer></script>
 <script src="js/helpers.js" defer></script>
 <script src="js/table.js" defer></script>
 <script src="js/data.js" defer></script>

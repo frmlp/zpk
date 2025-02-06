@@ -29,8 +29,10 @@ $(document).ready(function() {
             points = result.data;
             initPointsPreview(points, markers, map, "generator");
             populateDropdowns(points);
-        })
-        .catch(() => console.log("Error"));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     getTagsData()
         .then(function(result){
@@ -53,8 +55,10 @@ $(document).ready(function() {
                 $('#tag-list').append(checkbox);
             });
 
-            
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     getAreasData()
         .then(function(result){
@@ -71,19 +75,27 @@ $(document).ready(function() {
                 `;
                 areasList.append(checkbox);
             });
-        })
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     getMapUIData()
         .then(function(result) {
             maps = result;
             console.log(maps);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     $('#tag-btn').on('click', function () {
         $('#tag-modal').modal('show');
     });
 
     $('#generatorForm').on('submit', function(event) {
+        // $('#alertMessage').hide();
+
         event.preventDefault();
 
         const startPoint = $('#start-point').val();
@@ -92,7 +104,7 @@ $(document).ready(function() {
         const pointsRange = $('#points').val();
         const selectedTags = [];
         const selectedAreas = [];
-        const virtualPoints = $('#virtualpoints').is(':checked');
+        const virtualPoints = $('#virtualpoints').is(':checked')? 1 : 0;
 
         // Pobranie zaznaczonych checkboxów
         $('#tag-list input:checked').each(function () {
@@ -119,12 +131,11 @@ $(document).ready(function() {
             .then(function(result) {
                 paths = result.data;
                 $('#form-wrapper').hide();
-                $('#table-wrapper').show();
-
+                console.log(paths);
                 const rows = paths.map(path => `
                     <tr class="" data-id="${path.id}" id="${path.id}">
                         
-                        <td>${checkPathArea(path.points)}</td>
+                        <td>${getPathAreaNames(path.points)}</td>
                         <td>${path.points.length}</td>
                         <td>${calculateRouteLength(path.points)}</td>
                         
@@ -132,15 +143,30 @@ $(document).ready(function() {
                     </tr>
                 `).join('');
 
-                populateTable(rows, columnsConfig, columnDefsConfig);
                 updateMap(null, markers, map);
-                
-            }).catch((error) => {
-                console.log(error)
 
+                if(paths.length < 1) {
+                    // const message = 'Nie udało się wygenerować trasy';
+                    // $('#alertMessage').text(message).show();
+                    $('#alertMessage').show();
+                    return;
+                }
+
+                populateTable(rows, columnsConfig, columnDefsConfig, false);
+                $('#table-wrapper').show();
+                
+            }).catch((xhr) => {
                 $('#form-wrapper').show();
+
+                const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+                alert(message);
             });
 
+    });
+
+    $('.re-generate-btn').click(function() {
+        $('#alertMessage').hide();
+        $('#generatorForm').submit();
     });
 
     $('#areas-list').on('change', 'input[type="checkbox"]', function () {
@@ -153,8 +179,9 @@ $(document).ready(function() {
         }
     });
 
-    $('#change-parameters-btn').on('click', function(event) {
+    $('.change-parameters-btn').on('click', function(event) {
         // console.log(points);
+        $('#alertMessage').hide();
         $('#table-wrapper').hide();
         $('#form-wrapper').show();
         initPointsPreview(points, markers, map, "generator");
@@ -241,6 +268,7 @@ $(document).ready(function() {
 function showLoading() {
     $('#form-wrapper').hide();
     $('#table-wrapper').hide();
+    $('#alertMessage').hide();
     $('#loading-spinner').show();
 }
 

@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $('#alertMessage').hide();
+
     let points = [];
     let maps = [];
     const map = initMap("map");
@@ -19,9 +21,14 @@ $(document).ready(function() {
         .then(function(result) {
             maps = result;
             console.log(maps);
-        }).catch((error) => console.log(error));
+        }).catch((xhr) => {
+            const message = xhr.responseJSON?.message || 'Wystąpił błąd';
+            alert(message);
+        });
 
     $(document).on('change', '.dropdown', function() {
+        // $('#alertMessage').hide();
+
         var parentGroup = $(this).closest('.dropdown-group');
         parentGroup.find('.remove-btn, .handle').show();
         // parentGroup.find('.handle').show();
@@ -39,6 +46,7 @@ $(document).ready(function() {
     });
 
     $('#reset-btn').on('click', function() {
+        $('#alertMessage').hide();
         resetDropdowns(points);
         updatePath();
         resetMarkers([startMarker, endMarker]);
@@ -50,7 +58,12 @@ $(document).ready(function() {
 
     $(document).on('click', '#finish-btn', function() {
 
-        // const pathId = 0; // Pobranie ID mapy z przycisku
+        let pathPoints = collectPoints('select', points);
+        if(pathPoints.length < 2) {
+            const message = 'Trasa musi się składać z co najmniej dwóch punktów.';
+            $('#alertMessage').text(message).show();
+            return;
+        }
 
         $('#mapList').html(prepareHtmlForMapChoiceModal(maps, 0)); // Wstawienie wygenerowanej listy do modala
 
@@ -68,11 +81,21 @@ $(document).ready(function() {
 
         let pathPoints = collectPoints('select', points);
 
-        if(pathPoints.length > 1) {
+        if(pathPoints.length > 2) {
 
-            pathPoints.forEach((point, index) => {
-                point.position = index + 1;
-            });
+            // pathPoints.forEach((point, index) => {
+            //     point.position = index + 1;
+            // });
+            console.log("tworzenie tablicy:")
+            for(let i = 0; i < pathPoints.length; i++) {
+                console.log(pathPoints[i].id);
+                
+                pathPoints[i].position = i + 1;
+                console.log(pathPoints[i].position);
+            }
+
+            console.log("gotowe punkty:");
+            console.log(pathPoints);
 
             downloadMap(selectedMapId, pathPoints);
         }

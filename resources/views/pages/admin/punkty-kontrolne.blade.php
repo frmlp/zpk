@@ -33,6 +33,6 @@
 @endsection
 
 @section('js_files')
-    <script src="../js/admin-punkty-kontrolne.js"></script>
+    <script src="../js/admin/admin-punkty-kontrolne.js"></script>
 @endsection
 

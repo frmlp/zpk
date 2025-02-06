@@ -8,7 +8,7 @@ function highlightTableRow(id) {
     }
 }
 
-function populateTable(rows, columnsConfig, columnDefsConfig)
+function populateTable(rows, columnsConfig, columnDefsConfig, hasPaging=true, emptyTableText="Brak danych w tabeli")
 {
     const table = $('#table');
 
@@ -23,12 +23,16 @@ function populateTable(rows, columnsConfig, columnDefsConfig)
     table.DataTable({
         searching: false,
         info: false,
+        paging: hasPaging,
         lengthMenu: [5, 10, 25],
         language: {
-            lengthMenu: 'Wyświetl _MENU_ wpisów na stronę'
+            lengthMenu: 'Wyświetl _MENU_ wpisów na stronę',
+            emptyTable: emptyTableText
         },
         responsive: true,
         columns: columnsConfig,
         columnDefs: columnDefsConfig
     });
 }
+
+module.exports = {populateTable};

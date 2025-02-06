@@ -453,7 +453,7 @@
       }
   
       let coords = [scene.coordinates.latitude, scene.coordinates.longitude];
-      console.log(scene);
+      // console.log(scene);
       L.marker(coords, {icon: icon}).bindPopup(scene.id).addTo(map);
         
         // Zbieranie współrzędnych dla polyline
