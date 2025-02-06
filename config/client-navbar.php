@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * dane konfiguracyjne paska nawigacyjnego aplikacji użytkownika
+ * wykorzystywane w komponencie resources/views/components/client-navbar.blage.php
+ */
 return [
     [
         'name' => 'Strona główna',

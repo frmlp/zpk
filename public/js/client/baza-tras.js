@@ -1,9 +1,17 @@
+/**
+ * Inicjalizacja widoku po załadowaniu dokumentu.
+ * - Inicjalizuje mapę i markery Leaflet.
+ * - Pobiera dane o ścieżkach i mapach z API.
+ * - Konfiguruje tabelę z trasami, obsługę wyboru wierszy i interakcje z modalem.
+ */
 $(document).ready(function() {
+    // Inicjalizacja mapy i markerów
     let map = initMap("map");
     let markers = initMarkers();
     let paths = [];
     let maps = [];
     
+    // Konfiguracja kolumn i definicji kolumn dla DataTables
     const columnsConfig = [
         { width: '28%' }, 
         { width: '15%' }, 
@@ -23,11 +31,13 @@ $(document).ready(function() {
         { orderable: false, targets: 5}
     ];
 
+    // Pobranie danych o ścieżkach z API
     getPathData()
         .then(function(result) {
-
+            // Filtrowanie tras zawierających punkty
             paths = filterPathsWithPoints(result.data);
 
+            // Generowanie wierszy tabeli
             const rows = paths.map(path => `
                 <tr class="" data-id="${path.id}" id="${path.id}">
                     <td>${path.name}</td>
@@ -39,21 +49,23 @@ $(document).ready(function() {
                 </tr>
             `).join('');
 
+            // Wypełnienie tabeli i inicjalizacja DataTables
             populateTable(rows, columnsConfig, columnDefsConfig);
     }).catch((xhr) => {
         const message = xhr.responseJSON?.message || 'Wystąpił błąd';
         alert(message);
     });
 
+    // Pobranie danych o mapach z API
     getMapUIData()
         .then(function(result) {
             maps = result;
-            console.log(maps);
         }).catch((xhr) => {
             const message = xhr.responseJSON?.message || 'Wystąpił błąd';
             alert(message);
         });
     
+    // Obsługa kliknięcia w wiersz tabeli (podświetlanie i aktualizacja mapy)
     $('#table tbody').on('click', 'tr', function() {
         let id = $(this).data('id');
         highlightTableRow(id);
@@ -62,13 +74,14 @@ $(document).ready(function() {
         updateMap(points, markers, map);
     });
 
+    // Obsługa kliknięcia przycisku "Pobierz mapę" w tabeli
     $(document).on('click', '.download-btn', function() {
 
-        const pathId = $(this).data('id'); // Pobranie ID mapy z przycisku
+        const pathId = $(this).data('id');
 
-        $('#mapList').html(prepareHtmlForMapChoiceModal(maps, pathId)); // Wstawienie wygenerowanej listy do modala
+        $('#mapList').html(prepareHtmlForMapChoiceModal(maps, pathId));
 
-        $('#mapModal').modal('show'); // Wyświetlenie modala
+        $('#mapModal').modal('show');
     });
 
     // Obsługa kliknięcia przycisku "Pobierz"
@@ -83,11 +96,11 @@ $(document).ready(function() {
         const pathId = $('#modalContainer').data('id');
         const points = paths.find(p => p.id == pathId).points;
 
-        // Wysłanie żądania GET do API w celu pobrania pliku mapy
+        // Pobranie mapy na podstawie wybranego ID
         downloadMap(selectedMapId, points);
     });
 
-    // zamknij okna popup znaczników przy kliknięciu poza mapą
+    // Zamknięcie popupów na mapie po kliknięciu poza nią
     $(document).on('click', function(event){
         if(!map.getContainer().contains(event.target)) {
             map.closePopup();

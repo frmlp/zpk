@@ -1,3 +1,6 @@
+/**
+ * Funkcja inicjalizuje widok, konfigurując mapę, markery, listy punktów, ścieżek oraz zdarzenia użytkownika.
+ */
 $(document).ready(function() {
     let map = initMap("map");
     let modalMap = initMap("map-modal");
@@ -9,6 +12,7 @@ $(document).ready(function() {
     let paths = [];
     let points = [];
 
+    // Konfiguracja kolumn i definicji kolumn dla tabeli DataTable
     const columnsConfig = [
         { width: '25%' },
         { width: '20%' },
@@ -30,11 +34,12 @@ $(document).ready(function() {
         { orderable: false, targets: [5, 6]}
     ];
     
+    // Konfiguracja CSRF tokenów dla zapytań AJAX nieobsługiwanych jako formularz
     csrfAjaxSetup();
 
+    // Pobranie danych ścieżek i ich wyświetlenie w tabeli.
     getAdminPathData()
         .then(function(result) {
-            // console.log("halo");
             paths = filterPathsWithPoints(result.data);
             
             const rows = paths.map(path => `
@@ -55,18 +60,25 @@ $(document).ready(function() {
         alert(message);
     });
 
+    // Pobranie danych punktów i przygotowanie ich do użycia w widoku.
     getAdminPointsData()
         .then(function(result) {
             points = result.data;
-            // resetDropdowns(points);
+            points.forEach(point => {
+                point.popup = point.code.concat(" - ", point.description) +
+                    `<button type='button' id='add-point-btn' value='${point.id}' class='btn btn-success btn-sm m-1 w-100'>Dodaj do trasy</button>`
+            });
+
+            // Inicjalizacja sortowania dla dropdownów modala
             initializeSortable();
-            // initPointsPreview(points, markers, modalMap, "planer");
-            console.log(points);
+
         }).catch((xhr) => {
             const message = xhr.responseJSON?.message || 'Wystąpił błąd';
             alert(message);
         });
     
+    // Obsługa kliknięcia w wiersz tabeli.
+    // Wyświetla trasę na mapie na podstawie wybranego wiersza.
     $('#table tbody').on('click', 'tr', function() {
         let id = $(this).data('id');
         highlightTableRow(id);
@@ -75,6 +87,7 @@ $(document).ready(function() {
         updateMap(points, markers, map);
     });
 
+    // Obsługa przycisku "Nowa trasa".
     $('#newPathBtn').on('click', function() {
         $('#alertMessage').hide();
         $('#pathModalLabel').text('Nowa trasa');
@@ -95,23 +108,22 @@ $(document).ready(function() {
 
         resetDropdowns(points);
         resetMapView(modalMap);
-        // let pathPoints = collectPoints('select', points);
-        // console.log("updatePath() pathPoints: " );
-        // console.log(pathPoints);
-        // initializeSortable();
+
         updatePath();
         resetMarkers([startMarker, endMarker]);
         startMarker = null;
         endMarker = null;
-        initPointsPreview(points, modalMarkers, modalMap, "planer");
+        
+        
+        initPointsPreview2(points, modalMarkers, modalMap);
 
         
     });
 
+    // Obsługa zmiany wartości w dropdownach w kontenerze.
     $(document).on('change', '.dropdown', function() {
         var parentGroup = $(this).closest('.dropdown-group');
         parentGroup.find('.remove-btn, .handle').show();
-        // parentGroup.find('.handle').show();
     
         if ($('#dropdown-container .dropdown-group').last().find('select').val()) {
             $('#dropdown-container').append(createDropdown(points));
@@ -120,11 +132,13 @@ $(document).ready(function() {
         updatePath();
     });
 
+    // Obsługa przycisku "Usuń" w dropdownach
     $(document).on('click', '.remove-btn', function() {
         $(this).closest('.dropdown-group').remove();
         updatePath();
     });
 
+    // Obsługa przycisku "Dodaj do trasy" w popupie punktu
     $(document).on('click', '#add-point-btn', function () {
         const buttonValue = $(this).val();
         const lastDropdown = $('.form-select').last();
@@ -135,12 +149,13 @@ $(document).ready(function() {
         }
     });
 
+    // Obsługa przycisku "Usuń" w tabeli.
     $('#table').on('click', '.delete-btn', function(event) {
         
         event.preventDefault();
 
         let id = $(this).data('id');
-        const deleteUrl = `/admin/paths/${id}`; // Endpoint do usunięcia
+        const deleteUrl = `/admin/paths/${id}`;
         const confirmMessage = 'Czy na pewno chcesz usunąć tę ścieżkę?';
 
         // Potwierdzenie akcji użytkownika
@@ -148,57 +163,42 @@ $(document).ready(function() {
             return;
         }
 
-        // Pobierz token przed wysłaniem żądania DELETE
-        // getToken().then(function(response) {
-        //     const token = response.token; // Pobierz token z odpowiedzi serwera
+ 
+        $.ajax({
+            url: deleteUrl,
+            type: 'DELETE',
 
-            // Wykonaj żądanie DELETE
-            $.ajax({
-                url: deleteUrl,
-                type: 'DELETE',
-                // data: {
-                //     _token: token // Dołącz token CSRF
-                // },
-                success: function(response) {
-                    // Obsługa sukcesu (np. odświeżenie listy)
-                    alert('Usunięto pomyślnie');
-                    location.reload(); // Odśwież stronę
-                },
-                error: function(xhr) {
-                    // Obsługa błędu
-                    const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
-                    alert(errorMessage);
-                }
-            });
-        // }).catch(function() {
-        //     // Obsługa błędu pobierania tokenu
-        //     alert('Nie udało się pobrać tokenu. Spróbuj ponownie.');
-        // });
+            success: function(response) {
+                alert('Usunięto pomyślnie');
+                location.reload();
+            },
+            error: function(xhr) {
+                const errorMessage = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
+                alert(errorMessage);
+            }
+        });
 
     });
 
+    // Obsługa przycisku "Edytuj".
     $('#table').on('click', '.edit-btn', function() {
         $('#alertMessage').hide();
 
         let id = $(this).data('id');
-        // console.log(id);
         const path = paths.find(path => path.id === id);
-        // console.log(path);
+
         $('#pathForm').attr('action', '/admin/paths/' + path.id);
-        $('#pathForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
+        $('#pathForm').attr('method', 'POST'); 
         $('#pathForm').append('<input type="hidden" name="_method" value="PUT">');
-        // wypełnienie formularza danymi
+
 
         $('#pathModalLabel').text('Edytuj Trasę');
         $('#pathName').val(path.name);
-        // $('#pointDescription').val(pointData.description);
-        // $('#pointEasting').val(pointData.easting);
-        // $('#pointNorthing').val(pointData.northing);
 
         $('#pathModal').modal('show');
 
         setTimeout(() => {
-            modalMap.invalidateSize(); // Poprawienie rozmiaru mapy w modal
+            modalMap.invalidateSize();
         }, 250);
 
         resetDropdowns(points);
@@ -206,7 +206,7 @@ $(document).ready(function() {
         resetMarkers([startMarker, endMarker]);
         startMarker = null;
         endMarker = null;
-        initPointsPreview(points, modalMarkers, modalMap, "planer");
+        initPointsPreview2(points, modalMarkers, modalMap);
 
         path.points.sort((p1, p2) => {
             return p1.position - p2.position;
@@ -224,6 +224,7 @@ $(document).ready(function() {
 
     });
 
+    // Obsługuje zapis trasy z modalowego formularza.
     $('#pathForm').on('submit', function(event) {
         event.preventDefault();
         let pathPoints = collectPoints('#dropdown-container select', points).map(point => point.id);
@@ -248,15 +249,15 @@ $(document).ready(function() {
         });
 
         const form = $(this);
-        const actionUrl = form.attr('action'); // Pobierz URL akcji
-        const formData = form.serialize(); // Serializuj dane formularza
+        const actionUrl = form.attr('action'); 
+        const formData = form.serialize();
 
         $.ajax({
             url: actionUrl,
-            method: form.attr('method'), // Pobierz metodę (POST lub inne)
+            method: form.attr('method'),
             data: formData,
             success: function (response, status, xhr) {
-                location.reload(); // Odśwież stronę
+                location.reload();
                 
             },
             error: function (xhr) {
@@ -268,10 +269,11 @@ $(document).ready(function() {
         });
     })
     
+    // Funkcja aktualizuje trasę wyświetlaną na mapie modalnej na podstawie punktów wybranych w dropdownach.
+    // Ustawia markery startowy i końcowy na mapie modalnej.
+    // Rysuje trasę łączącą punkty.
     function updatePath() {
         let pathPoints = collectPoints('#dropdown-container select', points);
-        console.log("updatePath() pathPoints: " );
-        console.log(pathPoints);
         if(pathPoints.length > 0) {
             let startPointId = pathPoints[0].id;
             let endPointId = pathPoints[pathPoints.length - 1].id;
@@ -283,6 +285,7 @@ $(document).ready(function() {
         drawPath(pathPoints, modalPathMarkers, modalMap);
     };
 
+    // Funkcja inicjalizuje możliwość sortowania elementów w kontenerze `#dropdown-container`.
     function initializeSortable() {
         $("#dropdown-container").sortable({
             items: "> .dropdown-group:not(:last-child)", // Wyklucz ostatni element

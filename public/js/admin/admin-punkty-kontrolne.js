@@ -1,3 +1,4 @@
+// Funkcja inicjalizuje widok konfigurując mapę, markery, listy punktów oraz zdarzenia użytkownika.
 $(document).ready(function() {
     let points = [];
     let tags = [];
@@ -5,6 +6,7 @@ $(document).ready(function() {
     let markers = initMarkers();
     let highlightedMarker = null;
 
+    // Konfiguracja kolumn dla tabeli
     const columnsConfig = [
         { width: '10%' },
         { width: '25%' },
@@ -26,13 +28,13 @@ $(document).ready(function() {
         { orderable: false, targets: [5, 6]}
     ];
 
+    // Konfiguracja CSRF tokenów dla zapytań AJAX nieobsługiwanych jako formularz
     csrfAjaxSetup();
 
+    // Pobieranie danych o punktach
     getAdminPointsData()
         .then(function(result) {
             points = result.data;
-
-            console.log(points);
 
             const rows = points.map(point => `
                 <tr class="" data-id="${point.id}" id="${point.id}">
@@ -60,7 +62,7 @@ $(document).ready(function() {
 
             initPointsPreview2(points, markers, map);
 
-            // initHighlightMarker(highlightedMarker, points, markers.getLayers(), map);
+             // Obsługa kliknięcia markera na mapie
             markers.getLayers().forEach(marker => {
                 marker.on('click', function() {
                     const pointId = marker.options.pointId;
@@ -78,16 +80,16 @@ $(document).ready(function() {
             alert(message);
         });
     
+    // Pobieranie danych o tagach
     getAdminTagsData()
         .then(function(result){
             tags = result.tags;
-            console.log('getAdminTagsData()');
-            console.log(tags);
         }).catch((xhr) => {
             const message = xhr.responseJSON?.message || 'Wystąpił błąd';
             alert(message);
         });
     
+    // Obsługa kliknięcia na wiersz w tabeli
     $('#table tbody').on('click', 'tr', function() {
         let id = $(this).data('id');
         highlightTableRow(id);
@@ -96,6 +98,7 @@ $(document).ready(function() {
         highlightedMarker = highlightMarker(point, highlightedMarker, markers.getLayers(), map);
     });
 
+    // Obsługa kliknięcia przycisku "Nowy Punkt"
     $('#newPointBtn').on('click', function() {
         $('#alertMessage').hide();
         $('#pointModalLabel').text('Nowa trasa');
@@ -112,19 +115,19 @@ $(document).ready(function() {
         $('#pointModal').modal('show');
     })
 
+    // Obsługa edycji punktu
     $(document).on('click', '.edit-btn', function() {
         $('#alertMessage').hide();
 
         let id = $(this).data('id');
 
         const point = points.find(point => point.id === id);
-        console.log(point);
         $('#pointForm').attr('action', '/admin/points/' + point.id);
         $('#pointForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
         $('#pointForm').append('<input type="hidden" name="_method" value="PUT">');
         $('#pointForm').attr('mode', 'edit');
-        // wypełnienie formularza danymi
 
+        // wypełnienie formularza danymi
         $('#pointModalLabel').text('Edytuj Punkt');
         $('#pointCode').val(point.code);
         $('#pointVirtual').prop('checked', point.pointVirtual === 1);
@@ -151,6 +154,7 @@ $(document).ready(function() {
         $('#pointModal').modal('show');
     });
 
+    // Obsługa zdarzenia zmiany w dropdownie
     $(document).on('change', '.dropdown', function() {
         var parentGroup = $(this).closest('.dropdown-group');
         parentGroup.find('.tag-remove-btn').show();
@@ -162,36 +166,33 @@ $(document).ready(function() {
 
     });
 
+    // Obsługa zdarzenia usunięcia tagu
     $(document).on('click', '.tag-remove-btn', function() {
         $(this).closest('.dropdown-group').remove();
     });
 
+    // Obsługa usuwania punktu
     $(document).on('click', '.delete-btn', function(event) {
         event.preventDefault();
 
         let id = $(this).data('id');
-        const deleteUrl = `/admin/points/${id}`; // Endpoint do usunięcia
+        const deleteUrl = `/admin/points/${id}`;
         const confirmMessage = 'Czy na pewno chcesz usunąć tę punkt kontrolny?';
 
-        // Potwierdzenie akcji użytkownika
         if (!confirm(confirmMessage)) {
             return;
         }
 
-        // Wykonaj żądanie DELETE
         $.ajax({
             url: deleteUrl,
             type: 'DELETE',
-            // data: {
-            //     _token: token // Dołącz token CSRF
-            // },
+
             success: function(response) {
-                // Obsługa sukcesu (np. odświeżenie listy)
+
                 alert('Usunięto pomyślnie');
-                location.reload(); // Odśwież stronę
+                location.reload(); 
             },
             error: function(xhr) {
-                // Obsługa błędu
                 const message = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
                 alert(message);
             }
@@ -199,7 +200,7 @@ $(document).ready(function() {
 
     })
 
-
+    // Obsługa formularza punktu
     $('#pointForm').on('submit', function(event) {
         event.preventDefault();
         const method = $('#pointForm').attr('mode') === 'edit'? 'PUT' : 'POST';
@@ -213,11 +214,9 @@ $(document).ready(function() {
             northing: parseFloat($('#pointNorthing').val()),
             pointVirtual: $('#pointVirtual').is(':checked') ? 1 : 0, // Checkbox na liczbę
             url: $('#pointUrl').val(),
-            // area_id: parseInt($('#areaId').val(), 10), // Select na liczbę
             tag_ids: pathTags,// Konwersja string na tablicę
 
         };
-
 
         $.ajax({
             url: $(this).attr('action'),
@@ -225,14 +224,9 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response, status, xhr) {
-                // console.log("xhr status: " + xhr.status);
-                // console.log(response);
-                // console.log(status);
-                // if (xhr.status === 200 || xhr.status === 201) {
-                    location.reload(); // Odśwież stronę
-                // } else {
-                //     $('#error-message').text('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.');
-                // }
+
+                location.reload(); // Odśwież stronę
+
             },
             error: function (xhr) {
                 // Wyświetl wiadomość o błędzie w zależności od odpowiedzi serwera
@@ -245,6 +239,7 @@ $(document).ready(function() {
 
     });
 
+    // Obsługa zmiany typu współrzędnych
     $('input[name="coordinateType"]').on('change', function() {
         if ($('#coordinateWSG84').is(':checked')) {
         $('#wsg84Fields').show();
@@ -255,6 +250,7 @@ $(document).ready(function() {
     }
     });
 
+    // Aktualizacja pól współrzędnych przy zmianach
     $('#pointEasting').on('input', function() {
         inputEPSG2180Field();
     });
@@ -271,22 +267,22 @@ $(document).ready(function() {
         inputWSG84Field();
     });
 
+    // Funkcja przelicza współrzędne z EPSG:2180 na WGS:84 i uzupełnia pola formularza.
     function inputEPSG2180Field() {
         let easting = Number($('#pointEasting').val());
         let northing = Number($('#pointNorthing').val());
         let wsg84coords = proj4('EPSG:2180', 'WSG:84', [easting, northing]);
-        console.log(wsg84coords);
 
         $('#pointLongitude').val(Number(wsg84coords[0].toFixed(5)));
         $('#pointLatitude').val(Number(wsg84coords[1].toFixed(5)));
         
     };
 
+    // Funkcja przelicza współrzędne z WGS:84 na EPSG:2180 i uzupełnia pola formularza.
     function inputWSG84Field() {
         let longitude = Number($('#pointLongitude').val());
         let latitude = Number($('#pointLatitude').val());
         let epsg2180coords = proj4('WSG:84', 'EPSG:2180', [longitude, latitude]);
-        console.log(epsg2180coords);
         $('#pointEasting').val(Number(epsg2180coords[0].toFixed(2)));
         $('#pointNorthing').val(Number(epsg2180coords[1].toFixed(2)));
     };

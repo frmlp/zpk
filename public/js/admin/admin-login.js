@@ -1,22 +1,18 @@
 $(document).ready(function () {
+    // Obsługa zdarzenia wysyłania formularza logowania.
     $('#loginForm').on('submit', function (e) {
-        e.preventDefault(); // Zablokowanie domyślnego wysyłania formularza
-        console.log("próba logowania");
+        e.preventDefault();
         $.ajax({
             url: '/login',
             method: 'POST',
-            data: $(this).serialize(), // Serializowanie danych formularza
-            // headers: {
-            //     'X-CSRF-TOKEN': $('input[name="_token"]').val() // Ustawienie tokenu CSRF
-            // },
+            data: $(this).serialize(),
+
             success: function (response, status, xhr) {
                 if (xhr.status === 200 || xhr.status === 201) {
-                    window.location.href = '/admin/baza-tras'; // Przekierowanie po sukcesie
-                } 
-                
+                    window.location.href = '/admin/baza-tras';
+                }    
             },
-            error: function (xhr) {
-                
+            error: function (xhr) {  
                 alert('Nieprawidłowa nazwa użytkownika lub hasło.');
             }
                 

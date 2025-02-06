@@ -1,67 +1,120 @@
+/**
+ * Pobiera dane o ścieżkach z API.
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getPathData() {
     return $.ajax({
-        url: 'http://localhost:8000/api/paths',
+        url: '/api/paths',
         type: 'GET',
         dataType: 'json',
     });
 }
 
+
+/**
+ * Funkcja pobiera dane o punktach z API
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getPointsData() {
     return $.ajax({
-        url: 'http://localhost:8000/api/points',
+        url: '/api/points',
         type: 'GET',
         dataType: 'json',
     })
 }
 
+
+/**
+ * Funkcja pobiera dane o tagach z API
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getTagsData() {
     return $.ajax({
-        url: 'http://localhost:8000/api/tags',
+        url: '/api/tags',
         type: 'GET',
         dataType: 'json',
     })
 }
 
+
+/**
+ * Funkcja pobiera dane o obszarach z API
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getAreasData() {
     return $.ajax({
-        url: 'http://localhost:8000/api/areas',
+        url: '/api/areas',
         type: 'GET',
         dataType: 'json',
     })
 }
 
+/**
+ * Funkcja pobiera dane o ścieżkach z API admina
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getAdminPathData() {
     return $.ajax({
-        url: 'http://localhost:8000/admin/paths',
+        url: '/admin/paths',
         type: 'GET',
         dataType: 'json',
     });
 }
 
+/**
+ * Funkcja pobiera dane o punktach z API admina
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getAdminPointsData() {
     return $.ajax({
-        url: 'http://localhost:8000/admin/points',
+        url: '/admin/points',
         type: 'GET',
         dataType: 'json',
     })
 }
 
+
+/**
+ * Funkcja pobiera dane o ścieżkach z API admina
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getAdminTagsData() {
     return $.ajax({
-        url: 'http://localhost:8000/admin/tags',
+        url: '/admin/tags',
         type: 'GET',
         dataType: 'json',
     })
 }
 
-
-
+/**
+ * Pobiera dane o ścieżkach z generatora tras na podstawie przekazanych parametrów.
+ * Wywołuje funkcję `showLoading` przed wysłaniem żądania i `hideLoading` po jego zakończeniu, aby obsłużyć animację ładowania.
+ *
+ * @param {Object} params - Parametry wyszukiwania tras:
+ *   - `startPoint`: ID punktu początkowego.
+ *   - `endPoint`: ID punktu końcowego.
+ *   - `distanceRange`: Zakres długości trasy.
+ *   - `pointsRange`: Zakres liczby punktów.
+ *   - `selectedTags`: Tablica wybranych tagów.
+ *   - `selectedAreas`: Tablica wybranych obszarów.
+ *   - `virtualPoints`: Flaga lub tablica określająca punkty wirtualne.
+ * @param {Function} showLoading - Funkcja uruchamiana przed wysłaniem żądania (wyświetlenie spinnera ładowania).
+ * @param {Function} hideLoading - Funkcja uruchamiana po zakończeniu żądania (ukrycie spinnera ładowania).
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getGeneratorData({startPoint, endPoint, distanceRange, pointsRange, selectedTags, selectedAreas, virtualPoints}, showLoading, hideLoading ) {
     
     showLoading();
 
     return $.ajax({
-        url: 'http://localhost:8000/api/generator',
+        url: '/api/generator',
         type: 'GET',
         dataType:'json',
         data: {
@@ -80,14 +133,12 @@ function getGeneratorData({startPoint, endPoint, distanceRange, pointsRange, sel
     });
 }
 
-// function getTagData(){
-//     return $.ajax({
-//         url: 'http://localhost:8000/admin/tags',
-//         type: 'GET',
-//         dataType: 'json'
-//     })
-// }
-
+/**
+ * Konfiguruje globalne ustawienia AJAX, dodając nagłówek `X-CSRF-TOKEN`.
+ * Token CSRF jest pobierany z meta tagu w dokumencie HTML.
+ *
+ * Zapewnia ochronę przed atakami CSRF (Cross-Site Request Forgery) w żądaniach AJAX.
+ */
 function csrfAjaxSetup() {
     $.ajaxSetup({
         headers: {
@@ -96,42 +147,15 @@ function csrfAjaxSetup() {
     })
 }
 
-function addTokenToForms(attributeArray) {
-    $.ajax({
-        url: 'http://localhost:8000/token',
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            let token = response.token;
-            attributeArray.forEach(attribute => {
-                $(attribute).append('<input type="hidden" name="_token" value="' + response.token + '">');
-            });
-            // $('form').append('<input type="hidden" name="_token" value="' + response.token + '">');
-            // $('logoutForm').append('<input type="hidden" name="_token" value="' + response.token + '">');
-        },
-        error: function(error){
-            console.log("Błąd: ", error);
-        }
-    });
-}
-
+/**
+ * Pobiera dane potrzebne do prawidłowego wyświetlenia formularza wyboru mapy podkładowej.
+ *
+ * @returns {Promise} - Obiekt `Promise` reprezentujący odpowiedź z API w formacie JSON.
+ */
 function getMapUIData() {
     return $.ajax({
-        url: 'http://localhost:8000/api/map/ui-data',
+        url: '/api/map/ui-data',
         type: 'GET',
         dataType: 'json',
     })
-}
-
-
-
-
-
-
-function getToken() {
-    return $.ajax({
-        url: 'http://localhost:8000/token',
-        type: 'GET',
-        dataType: 'json'
-    });
 }
