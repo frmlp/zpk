@@ -93,28 +93,43 @@
     // Get the hotspot container for scene.
     var container = scene.hotspotContainer();
 
-    /*** dodanie mapy do każdej sceny ***/
+  /**
+   * Tworzy i konfiguruje mapę Leaflet w kontenerze, dodając warstwę mapy, markery oraz linię.
+   * Następnie integruje mapę z systemem hotspotów.
+   *
+   * @param {Object} sceneData - Obiekt zawierający dane sceny, w tym:
+   *   - `id`: Unikalny identyfikator sceny.
+   *   - `northYaw`: Kąt północy do integracji z hotspotem.
+   * @param {Object} container - Kontener odpowiedzialny za zarządzanie hotspotami.
+   * @param {Array} data - Dane do wyświetlenia na mapie (np. markery i linie).
+   */
 
     let mapID = sceneData.id;
     var mapsContainer = document.getElementById("mapsContainer");
     var div = document.createElement('div');
 
+    // Konfiguracja nowego kontenera mapy
     div.id = mapID;
     div.className = "frame"
     mapsContainer.appendChild(div);
 
+    // Inicjalizacja mapy Leaflet w nowym kontenerze
     let map = L.map(mapID, {
       center: [54.52935, 18.46631],
       zoom: 16,
       dragging: false
     });
 
+    // Dodanie warstwy OpenTopoMap
     L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
     }).addTo(map);
 
+    
+    // Dodanie markerów i linii na podstawie danych
     addMarkersAndPolyline(sceneData, map, data);
 
+    // Dodanie mapy jako hotspot do kontenera z określoną perspektywą
     container.createHotspot(document.getElementById(mapID), { yaw: sceneData.northYaw, pitch: 90*Math.PI/180 },
       { perspective: { radius: 1230 }});
 
@@ -453,7 +468,7 @@
       }
   
       let coords = [scene.coordinates.latitude, scene.coordinates.longitude];
-      // console.log(scene);
+
       L.marker(coords, {icon: icon}).bindPopup(scene.id).addTo(map);
         
         // Zbieranie współrzędnych dla polyline

@@ -1,4 +1,8 @@
 <?php
+/**
+ * dane konfiguracyjne paska nawigacyjnego aplikacji administratora
+ * wykorzystywane w komponencie resources/views/components/admin-navbar.blage.php
+ */
 
 return [
     

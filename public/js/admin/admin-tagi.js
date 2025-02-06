@@ -1,22 +1,28 @@
+// Funkcja inicjalizuje widok 
 $(document).ready(function() {
     let tags = [];
 
+    // Konfiguracja kolumn w tabeli
     let columnsConfig = [
         {width: '50%'},
         null,
         null
     ]
 
+    // Definicja zachowań kolumn (wyłączenie sortowania dla kolumn 1 i 2)
     let columnDefsConfig = [
         { orderable: false, targets: [1, 2]}
     ];
 
+    // Konfiguracja CSRF tokenów dla zapytań AJAX nieobsługiwanych jako formularz
     csrfAjaxSetup();
 
+    // Pobranie danych o tagach z API
     getAdminTagsData()
         .then(function(result){
             tags = result.tags
 
+            // Generowanie wierszy tabeli na podstawie danych tagów
             let rows = tags.map(tag => `
                 <tr class="" data-id="${tag.id}" id="${tag.id}">
                     <td>${tag.name}</td>
@@ -25,17 +31,19 @@ $(document).ready(function() {
                 </tr>
             `).join('');
 
+            // Uzupełnienie tabeli danymi
             populateTable(rows, columnsConfig, columnDefsConfig);
         }).catch((xhr) => {
             const message = xhr.responseJSON?.message || 'Wystąpił błąd';
             alert(message);
         });
 
+    // Obsługa kliknięcia przycisku "Nowy Tag"
     $('#newTagBtn').on('click', function() {
         $('#alertMessage').hide();
         $('#tagModalLabel').text('Nowy Tag');
         $('#tagForm').attr('action', '/admin/tags');
-        $('#tagForm').attr('method', 'POST'); // Metoda POST do tworzenia nowego punktu
+        $('#tagForm').attr('method', 'POST');
         $('#tagForm').find('input[name="_method"]').remove(); 
 
         $('#tagForm')[0].reset(); // Wyczyść formularz
@@ -47,19 +55,20 @@ $(document).ready(function() {
         
     });
 
+    // Obsługa przesyłania formularza tagów
     $('#tagForm').on('submit', function(event) {
         event.preventDefault();
 
         const form = $(this);
-        const actionUrl = form.attr('action'); // Pobierz URL akcji
-        const formData = form.serialize(); // Serializuj dane formularza
+        const actionUrl = form.attr('action');
+        const formData = form.serialize();
 
         $.ajax({
             url: actionUrl,
             method: form.attr('method'),
             data:formData,
             success: function(response, status, xhr) {
-                location.reload(); // Odśwież stronę   
+                location.reload(); 
             },
             error: function(xhr) {
                 const message = xhr.responseJSON?.message || 'Wystąpił błąd. Spróbuj ponownie.';
@@ -69,6 +78,7 @@ $(document).ready(function() {
 
     });
 
+    // Obsługa kliknięcia przycisku "Edytuj"
     $('#table').on('click', '.edit-btn', function() {
         $('#alertMessage').hide();
 
@@ -77,7 +87,7 @@ $(document).ready(function() {
         
 
         $('#tagForm').attr('action', '/admin/tags/' + tag.id);
-        $('#tagForm').attr('method', 'POST'); // Ustawienie metody POST, a Laravel obsłuży PUT przez ukryte pole _method
+        $('#tagForm').attr('method', 'POST');
         $('#tagForm').append('<input type="hidden" name="_method" value="PUT">');
 
         $('#tagModalLabel').text('Edytuj Tag');
@@ -95,15 +105,15 @@ $(document).ready(function() {
         $('#tagModal').modal('show');
     });
     
+    // Obsługa kliknięcia przycisku "Usuń"
     $('#table').on('click', '.delete-btn', function(event) {
         
         event.preventDefault();
 
         let id = $(this).data('id');
-        const deleteUrl = `/admin/tags/${id}`; // Endpoint do usunięcia
+        const deleteUrl = `/admin/tags/${id}`;
         const confirmMessage = 'Czy na pewno chcesz usunąć tę ścieżkę?';
 
-        // Potwierdzenie akcji użytkownika
         if (!confirm(confirmMessage)) {
             return;
         }
@@ -112,38 +122,15 @@ $(document).ready(function() {
             url: deleteUrl,
             type: 'DELETE',
             success: function(response) {
-                // Obsługa sukcesu (np. odświeżenie listy)
                 alert('Usunięto pomyślnie');
-                location.reload(); // Odśwież stronę
+                location.reload();
             },
             error: function(xhr) {
-                // Obsługa błędu
                 const message = xhr.responseJSON?.message || 'Wystąpił błąd podczas usuwania.';
                 alert(message);
             }
             
         })
     });
-
-    
-    // $('#logout-btn').on('click', function(event){
-    //     event.preventDefault();
-    //     console.log('logout button clicked');
-    //     // console.log(token);
-    //     $.ajax({
-    //         url: 'http://localhost:8000/logout',
-    //         type: 'POST',
-    //         data: {
-    //             _token: token,
-    //         },
-    //         success: function(response) {
-    //             // alert('Wylogowano');
-    //             console.log(response);
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.log('error');
-    //         }
-    //     })
-    // });
 
 })
